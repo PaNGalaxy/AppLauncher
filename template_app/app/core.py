@@ -39,7 +39,7 @@ class App:
 
     def _sync_histories(self):
         try:
-            self.state.items_galaxyHistory = galaxy.get_histories(self.model)
+            self.state.items_galaxyHistory = galaxy.get_histories(self.state)
             if self.state.galaxyHistory not in self.state.items_galaxyHistory:
                 self.state.galaxyHistory = self.state.items_galaxyHistory[0]
         except:

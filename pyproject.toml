@@ -3,7 +3,6 @@ name = "template-app"
 version = "0.1.0"
 description = ""
 authors = ["Yakubov, Sergey <yakubovs@ornl.gov>"]
-readme = "README.md"
 packages = [{include = "template_app"}]
 
 [tool.poetry.dependencies]

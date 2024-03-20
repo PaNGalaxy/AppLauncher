@@ -36,6 +36,7 @@ class ConfigPanelTab:
                                             items=("items_"+field["variable"], field["options"]),
                                             item_title="name",
                                             item_value="id",
+                                            return_object=True,
                                             update_modelValue="flushState('model')",
                                             density="compact",
                                             hide_details="true")
