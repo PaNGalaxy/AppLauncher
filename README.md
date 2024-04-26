@@ -12,9 +12,20 @@ poetry install
 ```
 
 ## Run
+In order to use the auth module locally with a non-https server, you will need to set the following envrionment variable:
+```
+OAUTHLIB_INSECURE_TRANSPORT=1
+``` 
 
+In order to connect to Galaxy to launch a tool, you will also need to set the following environment variables:
+```
+GALAXY_URL=https://calvera-test.ornl.gov
+GALAXY_API_KEY={YOUR_API_KEY}
+```
+
+Then you can run the following to start the application:
 ```bash
-poetrty start run
+poetry start run
 ```
 
 ## Develop
