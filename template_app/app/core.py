@@ -3,17 +3,24 @@ import logging
 import os
 import threading
 
+from aiohttp import web
+from pathlib import Path
+
 from trame.app import get_server
 from trame.decorators import TrameApp
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify
+from trame.widgets import router
 from trame_client.widgets import html
+from requests_oauthlib import OAuth2Session
 
+from .auth import TrameAuth as auth
 from .base import SinglePageLayout
 from .model import Model
-from .ui_config_panel import ConfigPanel
-from .ui_execution_panel import ExecutionPanel
+from .app_launcher_panel import AppLauncherPanel
 from .utilities import galaxy
+from .login_view import LoginView
+from .main_view import MainView
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -24,7 +31,6 @@ GALAXY_UPDATE_INTERVAL_SEC = 10
 # ---------------------------------------------------------
 # Engine class
 # ---------------------------------------------------------
-
 
 @TrameApp()
 class App:
@@ -68,6 +74,9 @@ class App:
         # todo:  can we put config as state variable so that a change to a nested field would trigger state change
         self.state.model = Model()
         self.state.config_file = None
+        self.state.current_url = None
+        self.ctrl = self.server.controller
+        self.css = Path(__file__).with_name("core_style.css").read_text()
         args = self._parse_args()
         self._connect_to_galaxy(args)
         if args.config:
@@ -80,23 +89,26 @@ class App:
     def state(self):
         return self.server.state
 
+    def get_base_view(self):
+        with RouterViewLayout(self.server, "/") as layout:
+            with vuetify.VCard():
+                vuetify.VCardTitle("This is home")
+            return layout
+
+    
+
     def update_ui(self):
+        
         with SinglePageLayout(self.server) as layout:
-            client.Style(".v-label { opacity: 100; }")
+            client.Style(self.css)
 
-            layout.title.set_text("Template Trame Application")
-
+            layout.title.set_text("Trame App Launcher")
             with layout.content:
-                ConfigPanel()
-                ExecutionPanel()
-                with vuetify.VDialog(
-                        v_model="error_dialog",
-                        width="auto"
-                ):
-                    with vuetify.VCard(classes="text-center", text=("error_dialog_message",)):
-                        with vuetify.VCardActions():
-                            vuetify.VBtn("Close", block=True, click="error_dialog = False", size="small",
-                                         color="primary")
+                with vuetify.VContainer():
+
+                    LoginView()
+                    MainView(self.state, self.server)
+                                     
             with layout.footer as footer:
                 vuetify.VProgressCircular(
                     indeterminate=("!!galaxy_running",),
