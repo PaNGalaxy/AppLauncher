@@ -1,0 +1,14 @@
+.v-label { 
+	opacity: 100; 
+}
+
+main {
+
+	background-color: #369747;
+	color: white;
+}
+
+.hidden {
+	opacity: 0;
+}
+
