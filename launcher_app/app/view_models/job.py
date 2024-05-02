@@ -11,23 +11,24 @@ class JobViewModel:
 
     def __init__(self, model: JobModel, binding: BindingInterface):
         self.model = model
-        self.launching_job = False
-        self.launching_job_bind = binding.new_bind(self.launching_job)
+        self.job_state = None
+        self.job_state_bind = binding.new_bind(self.job_state)
 
     async def start_job(self, tool_id):
-        if not self.launching_job:
-            self.launching_job = True
+        if not self.job_state in ["launching", "launched"]:
+            self.job_state = "launching"
             self.update_view()
             try:
                 url = await self.model.galaxy.invoke_interactive_tool(tool_id)
-                return url
+                self.job_state = "launched"
             except Exception as e:
+                self.job_state = None
                 logger.error(e)
-            self.launching_job = False
             self.update_view()
+            return url
         else:
-            logger.warning("Already launching job. Please wait.")
+            logger.warning(f"Already {self.job_state} job.")
         return None
 
     def update_view(self):
-        self.launching_job_bind.update_in_view(self.launching_job)
+        self.job_state_bind.update_in_view(self.job_state)

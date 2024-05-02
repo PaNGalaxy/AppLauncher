@@ -12,10 +12,10 @@ class HomeView:
         self.server = server
         self.ctrl = self.server.controller
         self.job_vm = job_view_model
-        self.job_vm.launching_job_bind.connect("job_launching")
+        self.job_vm.job_state_bind.connect("job_state")
         self.user_vm = user_view_model
         self.js_navigate = client.JSEval(
-                exec="window.location.href = $event"
+                exec="window.open($event,'_blank')"
         ).exec
 
         self.create_ui()
@@ -25,7 +25,7 @@ class HomeView:
     def create_ui(self):
         with vuetify.VRow(align="center"):
             vuetify.VBtn("Start Topaz Reduction tool", id="login-button-xcams", click=self.invoke_topaz_tool, style="padding: 10px; margin: 10px;")
-            vuetify.VProgressCircular(id="launch_tool_progress", color="red", indeterminate=True, v_show="job_launching")
+            vuetify.VProgressCircular(id="launch_tool_progress", color="red", indeterminate=True, v_show="job_state =='launching'")
 
     @asynchronous.task
     async def invoke_topaz_tool(self):
