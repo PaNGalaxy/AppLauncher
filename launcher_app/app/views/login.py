@@ -1,6 +1,6 @@
 from trame.widgets import vuetify3 as vuetify
 
-from .auth import TrameAuth as auth
+from launcher_app.app.utilities.auth import TrameAuth as auth
 
 class LoginView:
 

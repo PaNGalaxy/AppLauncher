@@ -1,7 +1,7 @@
 import sys
 
-from .core import App
-from .auth import TrameAuth
+from launcher_app.app.views.main import App
+from launcher_app.app.utilities.auth import TrameAuth
 
 
 def main(server=None, **kwargs):
