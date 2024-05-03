@@ -75,8 +75,8 @@ class Galaxy:
                     target = ep["target"]
                     break
             if target is not None:
-                return f"{self.galaxy_url}{target}"
-        return None
+                return f"{self.galaxy_url}{target}", job_id
+        return None, None
 
     async def wait_for_job_running(self, job_id, interval=1, max_wait=12000):
         # No built in way for BioBlend to wait for a job.py to start running (can only wait for terminal states)
@@ -88,6 +88,9 @@ class Galaxy:
         if self.galaxy_instance.jobs.get_state(job_id) != "running":
             return False
         return True
+
+    async def stop_job(self, job_id):
+        return self.galaxy_instance.jobs.cancel_job(job_id)
 
 class SharedGalaxy:
     _instance = None
