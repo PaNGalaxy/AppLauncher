@@ -15,6 +15,7 @@ class JobViewModel:
         self.jobs = {}
         self.job_state_bind = binding.new_bind(self.job_state)
         self.jobs_bind = binding.new_bind(self.jobs)
+        self.navigation_bind = binding.new_bind()
 
     async def start_job(self, tool_id):
         if not self.job_state in ["launching", "launched"]:
@@ -29,7 +30,7 @@ class JobViewModel:
                 logger.error(e)
                 url = None
             self.update_view()
-            return url
+            self.navigation_bind.update_in_view(url)
         else:
             logger.warning(f"Already {self.job_state} job.")
         return None

@@ -3,6 +3,7 @@ from functools import partial
 from trame.app import asynchronous
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify
+from trame.widgets import html as html
 from launcher_app.app.view_models.job import JobViewModel
 from launcher_app.app.view_models.tool import ToolViewModel
 from launcher_app.app.view_models.user import UserViewModel
@@ -23,6 +24,7 @@ class HomeView:
         self.js_navigate = client.JSEval(
                 exec="window.open($event,'_blank')"
         ).exec
+        self.job_vm.navigation_bind.connect(self.js_navigate)
         self.create_ui()
 
         self.job_vm.update_view()
@@ -47,20 +49,11 @@ class HomeView:
             with vuetify.VListItem(align="center", v_for="(job_info, job_id) in jobs", style="margin: 5px;"):
                 vuetify.VTextField(" Job ID: {{ job_id }}")
                 vuetify.VTextField("{{ job_info.tool_id }}")
-                vuetify.VBtn("Go to Job", click=(self.navigate_to_tool, "[job_id]"), style="margin: 10px;")
+                html.A("Go to Job", href=("job_info.url",), target="_blank")
                 vuetify.VBtn("Stop", click=(self.stop_job, "[job_id]"), style="margin: 10px;")
 
-    @asynchronous.task
     async def invoke_tool(self, tool_id):
-        current_url = await self.job_vm.start_job(tool_id)
-        if current_url is not None:
-            self.js_navigate(current_url)
+        await self.job_vm.start_job(tool_id)
 
-    def navigate_to_tool(self, job_id):
-        info = self.job_vm.jobs[job_id]
-        url = info["url"]
-        self.js_navigate(url)
-
-    @asynchronous.task
     async def stop_job(self, job_id):
         await self.job_vm.stop_job(job_id)
