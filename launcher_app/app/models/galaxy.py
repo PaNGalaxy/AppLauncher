@@ -79,8 +79,8 @@ class Galaxy:
         return None, None
 
     async def wait_for_job_running(self, job_id, interval=1, max_wait=12000):
-        # No built in way for BioBlend to wait for a job.py to start running (can only wait for terminal states)
-        # returns true once job.py is running
+        # No built in way for BioBlend to wait for a home.py to start running (can only wait for terminal states)
+        # returns true once home.py is running
         time_left = max_wait
         while self.galaxy_instance.jobs.get_state(job_id) != "running" and time_left > 0:
             await asyncio.sleep(interval)
