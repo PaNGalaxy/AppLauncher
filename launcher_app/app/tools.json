@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Topaz Data Reduction",
+    "id": "neutrons_trame_topaz"
+  },
+  {
+    "name": "SANS Data Reduction",
+    "id": "neutrons_trame_sans"
+  }
+]

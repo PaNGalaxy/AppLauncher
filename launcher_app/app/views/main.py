@@ -29,7 +29,7 @@ class App:
         self.server = get_server(server, client_type="vue3")
         self.ctrl = self.server.controller
         binding = TrameBinding(self.server.state)
-        self.job_vm, self.user_vm = create_viewmodels(binding)
+        self.home_vm = create_viewmodels(binding)
         self.css = None
         try:
             with open(CSS_PATH, "r") as css_sheet:
@@ -55,7 +55,7 @@ class App:
                 with vuetify.VContainer():
 
                     # LoginView()
-                    HomeView(self.state, self.server, self.job_vm, self.user_vm)
+                    HomeView(self.state, self.server, self.home_vm)
                                      
             with layout.footer as footer:
                 vuetify.VProgressCircular(
