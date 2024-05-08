@@ -4,13 +4,13 @@ from trame.app import asynchronous
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify
 from launcher_app.app.view_models.job import JobViewModel
+from launcher_app.app.view_models.tool import ToolViewModel
 from launcher_app.app.view_models.user import UserViewModel
-from launcher_app.app.utilities.tools import get_tools
 
 
 class HomeView:
 
-    def __init__(self, state, server, job_view_model: JobViewModel, user_view_model: UserViewModel):
+    def __init__(self, state, server, job_view_model: JobViewModel, user_view_model: UserViewModel, tool_view_model: ToolViewModel):
         self.state = state
         self.server = server
         self.ctrl = self.server.controller
@@ -18,16 +18,17 @@ class HomeView:
         self.job_vm.job_state_bind.connect("job_state")
         self.job_vm.jobs_bind.connect("jobs")
         self.user_vm = user_view_model
+        self.tool_vm = tool_view_model
+        self.tool_vm.tool_list_bind.connect("tools")
         self.js_navigate = client.JSEval(
                 exec="window.open($event,'_blank')"
         ).exec
-        self.tool_list = get_tools()
         self.create_ui()
 
         self.job_vm.update_view()
 
     def create_ui(self):
-        for tool in self.tool_list:
+        for tool in self.tool_vm.get_tools():
             with vuetify.VRow(align="center"):
                 vuetify.VBtn(
                     tool["name"],
