@@ -35,7 +35,7 @@ class HomeView:
                 vuetify.VBtn(
                     tool["name"],
                     id=f"{tool['name']}-start-btn",
-                    click=partial(self.invoke_tool, tool["id"]),
+                    click=partial(self.job_vm.start_job, tool["id"]),
                     style="padding: 10px; margin: 10px;",
                 )
         vuetify.VProgressCircular(
@@ -50,10 +50,4 @@ class HomeView:
                 vuetify.VTextField(" Job ID: {{ job_id }}")
                 vuetify.VTextField("{{ job_info.tool_id }}")
                 html.A("Go to Job", href=("job_info.url",), target="_blank")
-                vuetify.VBtn("Stop", click=(self.stop_job, "[job_id]"), style="margin: 10px;")
-
-    async def invoke_tool(self, tool_id):
-        await self.job_vm.start_job(tool_id)
-
-    async def stop_job(self, job_id):
-        await self.job_vm.stop_job(job_id)
+                vuetify.VBtn("Stop", click=(self.job_vm.stop_job, "[job_id]"), style="margin: 10px;")
