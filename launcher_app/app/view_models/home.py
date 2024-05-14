@@ -57,7 +57,7 @@ class HomeViewModel:
     def check_tool_limit(self, tool_id):
         tool = next(filter(lambda x: x["id"] == tool_id, self.tool_list))
         num_jobs_for_tool = len(list(filter(lambda x: x["tool_id"] == tool_id, list(self.jobs.values()))))
-        if tool["max_instances"] and tool["max_instances"] <= num_jobs_for_tool:
+        if tool.get("max_instances", None) and tool["max_instances"] <= num_jobs_for_tool:
             return False
         return True
 
