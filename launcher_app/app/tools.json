@@ -1,7 +1,8 @@
 [
   {
     "name": "Topaz Data Reduction",
-    "id": "neutrons_trame_topaz"
+    "id": "neutrons_trame_topaz",
+    "max_instances": 2
   },
   {
     "name": "SANS Data Reduction",
