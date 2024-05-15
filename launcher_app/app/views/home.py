@@ -14,6 +14,7 @@ class HomeView:
         self.home_vm.job_state_bind.connect("job_state")
         self.home_vm.jobs_bind.connect("jobs")
         self.home_vm.tool_list_bind.connect("tools")
+        self.home_vm.status_bind.connect("status")
         self.js_navigate = client.JSEval(
             exec="window.open($event,'_blank')"
         ).exec
@@ -23,6 +24,8 @@ class HomeView:
         self.home_vm.update_view()
 
     def create_ui(self):
+        with vuetify.VRow():
+            vuetify.VTextField("{{ status }}")
         with vuetify.VRow(align="center", v_for="tool in tools"):
             vuetify.VBtn(
                 "{{ tool.name }}",
