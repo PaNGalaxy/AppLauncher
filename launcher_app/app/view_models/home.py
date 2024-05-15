@@ -30,6 +30,7 @@ class HomeViewModel:
             return
         if not self.job_state in ["launching"]:
             self.job_state = "launching"
+            self.status = "Launching Job"
             self.update_view()
             try:
                 url, job_id = await self.job_model.galaxy.invoke_interactive_tool(tool_id)
@@ -38,6 +39,7 @@ class HomeViewModel:
                 logger.error(e)
                 url = None
             self.job_state = None
+            self.status = ""
             self.update_view()
             self.navigation_bind.update_in_view(url)
         else:
