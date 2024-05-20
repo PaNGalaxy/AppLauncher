@@ -12,7 +12,7 @@ class HomeViewModel:
 
     def __init__(self, job_model: JobModel, tool_model: ToolModel, binding: BindingInterface):
         self.job_model = job_model
-        self.job_state = None
+        self.job_state = {}
         self.jobs = {}
         self.job_state_bind = binding.new_bind(self.job_state)
         self.jobs_bind = binding.new_bind(self.jobs)
@@ -25,8 +25,8 @@ class HomeViewModel:
         if not self.check_tool_limit(tool_id):
             self.update_view()
             return
-        if not self.job_state in ["launching", "launched"]:
-            self.job_state = "launching"
+        if not self.job_state[tool_id] in ["launching", "launched"]:
+            self.job_state[tool_id] = "launching"
             self.update_view()
             try:
                 url, job_id = await self.job_model.galaxy.invoke_interactive_tool(tool_id)
@@ -34,7 +34,7 @@ class HomeViewModel:
             except Exception as e:
                 logger.error(e)
                 url = None
-            self.job_state = "launched"
+            self.job_state[tool_id] = "launched"
             self.update_view()
             self.navigation_bind.update_in_view(url)
         else:
@@ -46,7 +46,7 @@ class HomeViewModel:
         success = await self.job_model.galaxy.stop_job(self.jobs[tool_id]["job_id"])
         if success:
             self.jobs.pop(tool_id)
-            self.job_state = None
+            self.job_state[tool_id] = None
         self.update_view()
         return success
 
@@ -56,7 +56,12 @@ class HomeViewModel:
         return True
 
     def update_view(self):
-        self.job_state_bind.update_in_view(self.job_state)
         self.jobs_bind.update_in_view(self.jobs)
         self.tool_list = self.tool_model.get_tools()
         self.tool_list_bind.update_in_view(self.tool_list)
+        for tool in self.tool_list:
+            try:
+                temp = self.job_state[tool["id"]]
+            except:
+                self.job_state[tool["id"]] = None
+        self.job_state_bind.update_in_view(self.job_state)
