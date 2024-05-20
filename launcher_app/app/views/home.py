@@ -17,9 +17,6 @@ class HomeView:
         self.js_navigate = client.JSEval(
             exec="window.open($event,'_blank')"
         ).exec
-        self.js_print = client.JSEval(
-            exec="console.log($event)"
-        ).exec
         self.home_vm.navigation_bind.connect(self.js_navigate)
         self.create_ui()
 
