@@ -10,7 +10,6 @@ class SinglePageLayout(VAppLayout):
                 self.app_layout = app_layout
                 with vuetify3.VAppBar() as toolbar:
                     self.toolbar = toolbar
-                    self.icon = vuetify3.VAppBarNavIcon()
                     self.title = vuetify3.VToolbarTitle("Trame application")
 
                 self.content = vuetify3.VMain()

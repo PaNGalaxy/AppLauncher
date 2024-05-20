@@ -44,19 +44,17 @@ class App:
     def state(self):
         return self.server.state
 
-
     def create_ui(self):
-        
         with SinglePageLayout(self.server) as layout:
             client.Style(self.css)
 
-            layout.title.set_text("Trame App Launcher")
+            layout.title.set_text("Single Crystal Diffraction")
+            with layout.toolbar:
+                LoginView()
             with layout.content:
                 with vuetify.VContainer():
-
-                    # LoginView()
                     HomeView(self.state, self.server, self.home_vm)
-                                     
+
             with layout.footer as footer:
                 vuetify.VProgressCircular(
                     indeterminate=("!!galaxy_running",),

@@ -1,24 +1,22 @@
+import os
 from aiohttp import web
-
 from trame.app import get_server
-
 from requests_oauthlib import OAuth2Session
-
 
 server = get_server()
 server_state = server.state
 server_state.is_authenticated = False
 
-auth_url = "http://localhost:8082/realms/master/protocol/openid-connect/auth"
-token_url = 'http://localhost:8082/realms/master/protocol/openid-connect/token'
-client_id = 'trame-demo'
-client_secret = 'tLVhtFouBjw7cKMbTXQEtJ89WabJcWAu'
-redirect_uri = 'http://localhost:8080/redirect'
+auth_url = os.getenv("TRAME_AUTH_URL", "http://localhost:8082/realms/master/protocol/openid-connect/auth")
+token_url = os.getenv("TRAME_TOKEN_URL", "http://localhost:8082/realms/master/protocol/openid-connect/token")
+client_id = os.getenv("TRAME_CLIENT_ID", "trame-demo")
+client_secret = os.getenv("TRAME_CLIENT_SECRET", "tLVhtFouBjw7cKMbTXQEtJ89WabJcWAu")
+redirect_uri = os.getenv("TRAME_REDIRECT_URL", "http://localhost:8080/redirect")
 scopes = ["email", "profile", "openid"]
 
-class TrameAuth:
 
-    user_auth = []
+class TrameAuth:
+    user_auth = {}
     oauth_session = None
     state = ""
     handler_path = "/redirect"
@@ -40,27 +38,33 @@ class TrameAuth:
         wslink = wslink_server
 
     def start_session(handler_path):
-        TrameAuth.oauth_session = OAuth2Session(client_id, 
-            redirect_uri=redirect_uri, 
-            scope=scopes, 
-            auto_refresh_url=token_url, 
-            token_updater=TrameAuth.save_token)
+        TrameAuth.oauth_session = OAuth2Session(client_id,
+                                                redirect_uri=redirect_uri,
+                                                scope=scopes,
+                                                auto_refresh_url=token_url,
+                                                token_updater=TrameAuth.save_token)
         TrameAuth.handler_path = handler_path
 
     def save_token(token):
-        user_auth['access_token'] = token
+        TrameAuth.user_auth['access_token'] = token
 
     def get_token():
         # TODO: REFRESH TOKEN IF EXPIRED
-        if user_auth['access_token']:
+        if TrameAuth.user_auth.get('access_token', None):
             try:
                 # doing a request will refresh token if expired before attempting request
-                oauth_session.get("")
+                TrameAuth.oauth_session.get("")
             except:
                 pass
-            return user_auth['access_token']
+            return TrameAuth.user_auth['access_token']
         else:
             return ""
+
+    def logged_in():
+        return TrameAuth.get_token() != ""
+
+    def get_email():
+        return TrameAuth.user_auth.get("email", "")
 
     def get_auth_url():
         try:
@@ -68,5 +72,3 @@ class TrameAuth:
             return auth_url_expanded
         except:
             raise Exception("OAuth Session has not been started")
-
-
