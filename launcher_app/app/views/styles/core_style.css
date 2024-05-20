@@ -64,6 +64,10 @@ main {
     margin-right: 10em;
 }
 
+.username-label {
+    margin-left: auto;
+}
+
 .hidden {
 	opacity: 0;
 }

@@ -29,7 +29,7 @@ class App:
         self.server = get_server(server, client_type="vue3")
         self.ctrl = self.server.controller
         binding = TrameBinding(self.server.state)
-        self.home_vm = create_viewmodels(binding)
+        self.home_vm, self.user_vm = create_viewmodels(binding)
         self.css = None
         try:
             with open(CSS_PATH, "r") as css_sheet:
@@ -50,7 +50,7 @@ class App:
 
             layout.title.set_text("Single Crystal Diffraction")
             with layout.toolbar:
-                LoginView()
+                LoginView(self.user_vm)
             with layout.content:
                 with vuetify.VContainer():
                     HomeView(self.state, self.server, self.home_vm)
