@@ -27,7 +27,7 @@ main {
     padding: 20px;
     height: 100%;
     border-radius: 5px;
-    box-shadow 10px 10px gray;
+    box-shadow: 1px 1px gray;
     width: 100%;
 
 }
