@@ -38,7 +38,7 @@ class TrameAuth:
         userinfo = jwt.decode(tokens["id_token"], options={"verify_signature": False})
         print(userinfo)
         TrameAuth.user_auth["email"] = userinfo["email"]
-        TrameAuth.user_auth["username"] = userinfo["preferred_username"]
+        TrameAuth.user_auth["username"] = f"{userinfo['given_name']} {userinfo['family_name']}"
         for callback in TrameAuth.auth_listeners:
             try:
                 callback()
