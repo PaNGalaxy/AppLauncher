@@ -1,6 +1,5 @@
 from trame.widgets import vuetify3 as vuetify
 
-from launcher_app.app.utilities.auth import TrameAuth as auth
 from launcher_app.app.view_models.user import UserViewModel
 
 
@@ -18,5 +17,6 @@ class LoginView:
             vuetify.VSpacer()
             vuetify.VBtn("{{username}}", readonly=True, v_show="is_logged_in", flat=True)
             vuetify.VBtn("Sign In", id="login-button", href=self.user_vm.get_auth_url(), flat=True,
-                         classes="sign-in-btn", v_show="!is_logged_in")
-            vuetify.VBtn("Log Out", id="login-button", href="", flat=True, classes="sign-in-btn", v_show="is_logged_in")
+                         classes="sign-in-btn", v_show="!is_logged_in", style="margin-right: 2em;")
+            vuetify.VBtn("Log Out", id="login-button", href="", flat=True, classes="sign-in-btn", v_show="is_logged_in",
+                         style="margin-right: 2em;")
