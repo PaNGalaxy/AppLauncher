@@ -14,6 +14,7 @@ token_url = os.getenv("TRAME_TOKEN_URL", "http://localhost:8082/realms/master/pr
 client_id = os.getenv("TRAME_CLIENT_ID", "trame-demo")
 client_secret = os.getenv("TRAME_CLIENT_SECRET", "tLVhtFouBjw7cKMbTXQEtJ89WabJcWAu")
 redirect_uri = os.getenv("TRAME_REDIRECT_URL", "http://localhost:8080/redirect")
+app_path = os.getenv("EP_PATH", "/")
 scopes = ["email", "profile", "openid", "User.Read"]
 
 
@@ -43,7 +44,7 @@ class TrameAuth:
                 callback()
             except:
                 logging.warning("Could not update callback")
-        raise web.HTTPFound("/")
+        raise web.HTTPFound(app_path)
 
     @server.controller.add("on_server_bind")
     def app_available(wslink_server):
