@@ -41,6 +41,7 @@ http {
 
         location ${EP_PATH}/redirect {
             proxy_pass   http://localhost:8080;
+        }
 
        location ${EP_PATH} {
            alias /app/www-content/;
