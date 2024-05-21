@@ -32,7 +32,7 @@ class HomeView:
         with vuetify.VCard(id="home-view-container", style="margin: auto; padding: 20px; width: 100%; height: 100%;"):
             with vuetify.VContainer(fluid=True, style="height: inherit"):
                 with vuetify.VWindow(v_model="active_tab", style="height: inherit;"):
-                    with vuetify.VWindowItem(value=1, reverse_transition="false", transition="false"):
+                    with vuetify.VWindowItem(value=1, reverse_transition=None, transition=None):
                         html.P("This is where you will launch the Garnet application. The UI is a work in progress.")
                         vuetify.VProgressCircular(color="red", classes="tool-progress-bar", indeterminate=True,
                                                   v_show="job_state[tools[active_tab].id] == 'launching'",
@@ -53,7 +53,7 @@ class HomeView:
                                          click=(self.js_navigate, "[jobs[tools[active_tab].id].url]"),
                                          disabled=("job_state[tools[active_tab].id] != 'launched'",),
                                          style="margin-right: 1em;")
-                    with vuetify.VWindowItem(value=2, reverse_transition="false", transition="false"):
+                    with vuetify.VWindowItem(value=2, reverse_transition=None, transition=None):
                         html.P("This is where you will launch the Topaz application. The UI is a work in progress.")
                         vuetify.VProgressCircular(color="red", classes="tool-progress-bar", indeterminate=True,
                                                   v_show="job_state[tools[active_tab].id] == 'launching'",
