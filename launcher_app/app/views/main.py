@@ -52,7 +52,7 @@ class App:
             with layout.toolbar:
                 LoginView(self.user_vm)
             with layout.content:
-                with vuetify.VContainer():
+                with vuetify.VContainer(style="height: 100%;"):
                     HomeView(self.state, self.server, self.home_vm)
 
             with layout.footer as footer:
