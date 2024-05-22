@@ -1,12 +1,12 @@
 [
   {
-    "name": "Topaz Data Reduction",
-    "id": "neutrons_trame_topaz",
+    "name": "Garnet",
+    "id": "neutrons_trame_garnet",
     "max_instances": 1
   },
   {
-    "name": "SANS Data Reduction",
-    "id": "neutrons_trame_sans",
+    "name": "Topaz",
+    "id": "neutrons_trame_topaz",
     "max_instances": 1
   }
 ]

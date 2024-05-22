@@ -1,14 +1,35 @@
-.v-label { 
-	opacity: 100; 
+.v-label {
+	opacity: 100;
 }
 
 main {
-
-	background-color: #369747;
+	background-color: lightgray;
 	color: white;
 }
 
-.hidden {
-	opacity: 0;
+
+.view-header-label {
+    color: gray;
+}
+
+#home-view-container {
+    color: black;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 1px 1px gray;
+}
+
+.tool-btn {
+    background: white;
+    color: black;
+    border: 2px solid black;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.tool-btn-selected {
+    background: forestgreen;
+    color: white;
+    border: 2px solid black;
+    border-radius: 5px 5px 0px 0px;
 }
 

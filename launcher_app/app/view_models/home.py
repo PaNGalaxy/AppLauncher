@@ -11,10 +11,8 @@ logger.setLevel(logging.INFO)
 class HomeViewModel:
 
     def __init__(self, job_model: JobModel, tool_model: ToolModel, binding: BindingInterface):
-        self.status = None
-        self.status_bind = binding.new_bind(self.status)
         self.job_model = job_model
-        self.job_state = None
+        self.job_state = {}
         self.jobs = {}
         self.job_state_bind = binding.new_bind(self.job_state)
         self.jobs_bind = binding.new_bind(self.jobs)
@@ -25,47 +23,45 @@ class HomeViewModel:
 
     async def start_job(self, tool_id):
         if not self.check_tool_limit(tool_id):
-            self.status = "You have met the limit of how many jobs can be launched for this tool."
             self.update_view()
             return
-        if not self.job_state in ["launching"]:
-            self.job_state = "launching"
-            self.status = "Launching Job"
+        if not self.job_state[tool_id] in ["launching", "launched"]:
+            self.job_state[tool_id] = "launching"
             self.update_view()
             try:
                 url, job_id = await self.job_model.galaxy.invoke_interactive_tool(tool_id)
-                self.jobs[job_id] = {"tool_id": tool_id, "url": url}
+                self.jobs[tool_id] = {"job_id": job_id, "url": url}
             except Exception as e:
                 logger.error(e)
                 url = None
-            self.job_state = None
-            self.status = ""
+            self.job_state[tool_id] = "launched"
             self.update_view()
             self.navigation_bind.update_in_view(url)
         else:
-            self.status = "Already launching tool. Please Wait."
             self.update_view()
             logger.warning(f"Already {self.job_state} job.")
         return None
 
-    async def stop_job(self, job_id):
-        success = await self.job_model.galaxy.stop_job(job_id)
+    async def stop_job(self, tool_id):
+        success = await self.job_model.galaxy.stop_job(self.jobs[tool_id]["job_id"])
         if success:
-            self.jobs.pop(job_id)
-            self.job_state = None
+            self.jobs.pop(tool_id)
+            self.job_state[tool_id] = None
         self.update_view()
         return success
 
     def check_tool_limit(self, tool_id):
-        tool = next(filter(lambda x: x["id"] == tool_id, self.tool_list))
-        num_jobs_for_tool = len(list(filter(lambda x: x["tool_id"] == tool_id, list(self.jobs.values()))))
-        if tool.get("max_instances", None) and tool["max_instances"] <= num_jobs_for_tool:
+        if tool_id in self.jobs.keys():
             return False
         return True
 
     def update_view(self):
-        self.status_bind.update_in_view(self.status)
-        self.job_state_bind.update_in_view(self.job_state)
         self.jobs_bind.update_in_view(self.jobs)
         self.tool_list = self.tool_model.get_tools()
         self.tool_list_bind.update_in_view(self.tool_list)
+        for tool in self.tool_list:
+            try:
+                temp = self.job_state[tool["id"]]
+            except:
+                self.job_state[tool["id"]] = None
+        self.job_state_bind.update_in_view(self.job_state)

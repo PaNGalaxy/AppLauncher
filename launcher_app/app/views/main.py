@@ -29,7 +29,7 @@ class App:
         self.server = get_server(server, client_type="vue3")
         self.ctrl = self.server.controller
         binding = TrameBinding(self.server.state)
-        self.home_vm = create_viewmodels(binding)
+        self.home_vm, self.user_vm = create_viewmodels(binding)
         self.css = None
         try:
             with open(CSS_PATH, "r") as css_sheet:
@@ -44,19 +44,17 @@ class App:
     def state(self):
         return self.server.state
 
-
     def create_ui(self):
-        
         with SinglePageLayout(self.server) as layout:
             client.Style(self.css)
 
-            layout.title.set_text("Trame App Launcher")
+            layout.title.set_text("Single Crystal Diffraction")
+            with layout.toolbar:
+                LoginView(self.user_vm)
             with layout.content:
-                with vuetify.VContainer():
-
-                    # LoginView()
+                with vuetify.VContainer(style="height: 100%;"):
                     HomeView(self.state, self.server, self.home_vm)
-                                     
+
             with layout.footer as footer:
                 vuetify.VProgressCircular(
                     indeterminate=("!!galaxy_running",),
