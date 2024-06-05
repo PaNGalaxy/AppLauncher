@@ -2,11 +2,13 @@
   {
     "name": "Garnet",
     "id": "neutrons_trame_garnet",
+    "description": "This is where you will launch the Garnet application. The UI is a work in progress.",
     "max_instances": 1
   },
   {
     "name": "Topaz",
     "id": "neutrons_trame_topaz",
+    "description": "This is where you will launch the Topaz application. The UI is a work in progress.",
     "max_instances": 1
   }
 ]
