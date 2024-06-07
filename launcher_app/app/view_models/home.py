@@ -24,7 +24,7 @@ class HomeViewModel:
         self.tool_list_bind = binding.new_bind()
         self.monitor_task = TaskMonitor(self.monitor, DEFAULT_MONITOR_UPDATE_FREQUENCY)
         self.tool_list = self.tool_model.get_tools()
-        self.auto_open_tool_id = None
+        self.auto_open_tool_list = []
         for tool in self.tool_list:
             self.job_state[tool["id"]] = None
 
@@ -36,7 +36,7 @@ class HomeViewModel:
         self.job_state[tool_id] = "launching"
         self.update_view()
         await self.job_model.galaxy.invoke_interactive_tool(tool_id)
-        self.auto_open_tool_id = tool_id
+        self.auto_open_tool_list.append(tool_id)
 
     async def stop_job(self, tool_id):
         success = await self.job_model.galaxy.stop_job(self.jobs[tool_id]["job_id"])
@@ -61,10 +61,12 @@ class HomeViewModel:
                 self.job_state[tool['id']] = None
                 if self.jobs.get(tool['id'], None):
                     self.jobs.pop(tool['id'])
-        if self.auto_open_tool_id:
-            if self.jobs[self.auto_open_tool_id]['url']:
-                self.navigation_bind.update_in_view(self.jobs[self.auto_open_tool_id]['url'])
-                self.auto_open_tool_id = None
+        if len(self.auto_open_tool_list) > 0:
+            for t in self.auto_open_tool_list.copy():
+                if self.jobs[t]['url']:
+                    self.navigation_bind.update_in_view(self.jobs[t]['url'])
+                    self.auto_open_tool_list.remove(t)
+
         self.update_view()
 
     def update_view(self):

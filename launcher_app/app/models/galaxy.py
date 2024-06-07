@@ -70,7 +70,7 @@ class Galaxy:
         return res["id"]
 
     async def invoke_interactive_tool(self, tool_id):
-        dataset = self.galaxy_instance.tools.run_tool(self.get_history_id(), tool_id, {})
+        self.galaxy_instance.tools.run_tool(self.get_history_id(), tool_id, {})
 
     async def stop_job(self, job_id):
         return self.galaxy_instance.jobs.cancel_job(job_id)
@@ -85,10 +85,11 @@ class Galaxy:
             job_id = dataset['creating_job']
             job_info = self.galaxy_instance.jobs.show_job(job_id)
             if job_info['state'] == 'queued' or job_info['state'] == 'running':
-                try:
-                    target = next(filter(lambda x: x["job_id"] == job_id, entry_points.json())).get("target", None)
-                except StopIteration:
-                    target = None
+                # Search entry points json for correct job listing and try to get the target url.
+                target = None
+                for ep in entry_points.json():
+                    if ep["job_id"] == job_id:
+                        target = ep.get("target", None)
                 if target:
                     target = f"{self.galaxy_url}{target}"
                 job_list.append({"job_id": job_id, "tool_id": job_info['tool_id'], "state": job_info['state'], "url": target})
