@@ -3,6 +3,7 @@ from trame.widgets import vuetify3 as vuetify
 from trame.widgets import html as html
 from launcher_app.app.view_models.home import HomeViewModel
 
+
 class HomeView:
 
     def __init__(self, state, server, home_view_model: HomeViewModel):
@@ -18,8 +19,8 @@ class HomeView:
         ).exec
         self.home_vm.navigation_bind.connect(self.js_navigate)
         self.create_ui()
-
         self.home_vm.update_view()
+        self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
         html.H2("Dashboard", classes="view-header-label", style="margin-bottom: 1em;")
@@ -32,12 +33,14 @@ class HomeView:
         with vuetify.VCard(id="home-view-container", style="margin: auto; padding: 20px; width: 100%; height: 100%;"):
             with vuetify.VContainer(fluid=True):
                 with vuetify.VWindow(v_model="active_tab"):
-                    with vuetify.VWindowItem(value=1, reverse_transition="false", transition="false"):
-                        html.P("This is where you will launch the Garnet application. The UI is a work in progress.")
+                    with vuetify.VWindowItem(value=1, reverse_transition="false", transition="false",
+                                             v_for="tool in tools"):
+                        html.P("{{ tools[active_tab].description }}")
                         vuetify.VProgressCircular(color="red", classes="tool-progress-bar", indeterminate=True,
                                                   v_show="job_state[tools[active_tab].id] == 'launching'",
                                                   style="margin-top: 1em")
-                        with vuetify.VRow(align="center", classes="control-btn-group", style="margin-top: 10em; margin-left: 1em;"):
+                        with vuetify.VRow(align="center", classes="control-btn-group",
+                                          style="margin-top: 10em; margin-left: 1em;"):
                             with vuetify.VCol(classes="pa-4"):
                                 vuetify.VBtn(
                                     "Launch",
@@ -52,29 +55,6 @@ class HomeView:
                                              style="margin-right: 1em;")
                                 vuetify.VBtn("Navigate to Tool", classes="control-btn",
                                              click=(self.js_navigate, "[jobs[tools[active_tab].id].url]"),
-                                             disabled=("job_state[tools[active_tab].id] != 'launched'",),
+                                             disabled=(
+                                                 "jobs[tools[active_tab].id] ? !jobs[tools[active_tab].id].url: true",),
                                              style="margin-right: 1em;")
-                    with vuetify.VWindowItem(value=2, reverse_transition="false", transition="false"):
-                        html.P("This is where you will launch the Topaz application. The UI is a work in progress.")
-                        vuetify.VProgressCircular(color="red", classes="tool-progress-bar", indeterminate=True,
-                                                  v_show="job_state[tools[active_tab].id] == 'launching'",
-                                                  style="margin-top: 1em")
-                        with vuetify.VRow(align="center", classes="control-btn-group", style="margin-top: 10em; margin-left: 1em;"):
-                            with vuetify.VCol(classes="pa-4"):
-                                vuetify.VBtn(
-                                    "Launch",
-                                    click=(self.home_vm.start_job, "[tools[active_tab].id]"),
-                                    classes="control-btn",
-                                    disabled=("job_state[tools[active_tab].id] == 'launched'",),
-                                    style="margin-right: 1em;"
-                                )
-                                vuetify.VBtn("Stop Tool", classes="control-btn",
-                                             click=(self.home_vm.stop_job, "[tools[active_tab].id]"),
-                                             disabled=("job_state[tools[active_tab].id] != 'launched'",),
-                                             style="margin-right: 1em;"
-                                             )
-                                vuetify.VBtn("Navigate to Tool", classes="control-btn",
-                                             click=(self.js_navigate, "[jobs[tools[active_tab].id].url]"),
-                                             disabled=("job_state[tools[active_tab].id] != 'launched'",),
-                                             style="margin-right: 1em;"
-                                             )

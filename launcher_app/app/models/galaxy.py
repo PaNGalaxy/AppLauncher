@@ -9,6 +9,7 @@ from bioblend import galaxy
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+LAUNCHER_HISTORY_NAME = "launcher_history"
 
 class Galaxy:
     def _parse_args(self):
@@ -55,42 +56,44 @@ class Galaxy:
         self.galaxy_current_history = None
         self._connect_to_galaxy(args)
 
-    def get_histories(self):
-        histories = self.galaxy_instance.histories.get_histories()
+    def get_histories(self, name):
+        histories = self.galaxy_instance.histories.get_histories(name=name)
         return [{"name": history["name"], "id": history["id"]} for history in histories]
 
-    async def invoke_interactive_tool(self, tool_id):
-        histories = self.get_histories()
-        current_history = histories[0]["id"]
-        dataset = self.galaxy_instance.tools.run_tool(current_history, tool_id, {})
-        job_id = dataset["jobs"][0]["id"]
-        running = await self.wait_for_job_running(job_id)
-        if running:
-            # need extra sleep somtimes for entry points to be populated
-            await asyncio.sleep(2)
-            entry_points = self.galaxy_instance.make_get_request(f"{self.galaxy_url}/api/entry_points?running=true")
-            target = None
-            for ep in entry_points.json():
-                if ep["job_id"] == job_id:
-                    target = ep["target"]
-                    break
-            if target is not None:
-                return f"{self.galaxy_url}{target}", job_id
-        return None, None
+    def get_history_id(self):
+        history_name = LAUNCHER_HISTORY_NAME
+        histories = self.get_histories(name=history_name)
+        if len(histories) > 0:
+            return histories[0]["id"]
 
-    async def wait_for_job_running(self, job_id, interval=1, max_wait=12000):
-        # No built in way for BioBlend to wait for a home.py to start running (can only wait for terminal states)
-        # returns true once home.py is running
-        time_left = max_wait
-        while self.galaxy_instance.jobs.get_state(job_id) != "running" and time_left > 0:
-            await asyncio.sleep(interval)
-            time_left -= interval
-        if self.galaxy_instance.jobs.get_state(job_id) != "running":
-            return False
-        return True
+        res = self.galaxy_instance.histories.create_history(history_name)
+        return res["id"]
+
+    async def invoke_interactive_tool(self, tool_id):
+        self.galaxy_instance.tools.run_tool(self.get_history_id(), tool_id, {})
 
     async def stop_job(self, job_id):
         return self.galaxy_instance.jobs.cancel_job(job_id)
+
+    def check_running_tools(self):
+        history = self.get_history_id()
+        history_contents = self.galaxy_instance.histories.show_history(history, contents=True, deleted=False, details="all")
+        job_list = []
+        entry_points = self.galaxy_instance.make_get_request(f"{self.galaxy_url}/api/entry_points?running=true")
+        for dataset in history_contents:
+            # dataset does not contain tool_id
+            job_id = dataset['creating_job']
+            job_info = self.galaxy_instance.jobs.show_job(job_id)
+            if job_info['state'] == 'queued' or job_info['state'] == 'running':
+                # Search entry points json for correct job listing and try to get the target url.
+                target = None
+                for ep in entry_points.json():
+                    if ep["job_id"] == job_id:
+                        target = ep.get("target", None)
+                if target:
+                    target = f"{self.galaxy_url}{target}"
+                job_list.append({"job_id": job_id, "tool_id": job_info['tool_id'], "state": job_info['state'], "url": target})
+        return job_list
 
 class SharedGalaxy:
     _instance = None
