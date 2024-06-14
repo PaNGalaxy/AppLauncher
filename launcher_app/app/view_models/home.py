@@ -3,6 +3,7 @@ import logging
 from py_mvvm.interface import BindingInterface
 from launcher_app.app.models.job import JobModel
 from launcher_app.app.models.tool import ToolModel
+from launcher_app.app.models.user import UserModel
 from launcher_app.app.utilities.monitor import TaskMonitor
 
 logger = logging.getLogger(__name__)
@@ -13,20 +14,26 @@ DEFAULT_MONITOR_UPDATE_FREQUENCY = 1
 
 class HomeViewModel:
 
-    def __init__(self, job_model: JobModel, tool_model: ToolModel, binding: BindingInterface):
+    def __init__(self, job_model: JobModel, tool_model: ToolModel, user_model: UserModel, binding: BindingInterface):
         self.job_model = job_model
+        self.tool_model = tool_model
+        self.user_model = user_model
+
         self.job_state = {}
         self.jobs = {}
         self.job_state_bind = binding.new_bind(self.job_state)
         self.jobs_bind = binding.new_bind(self.jobs)
         self.navigation_bind = binding.new_bind()
-        self.tool_model = tool_model
         self.tool_list_bind = binding.new_bind()
         self.monitor_task = TaskMonitor(self.monitor, DEFAULT_MONITOR_UPDATE_FREQUENCY)
         self.tool_list = self.tool_model.get_tools()
         self.auto_open_tool_list = []
         for tool in self.tool_list:
             self.job_state[tool["id"]] = None
+
+        self.logged_in = None
+        self.logged_in_bind = binding.new_bind(self.logged_in)
+        self.user_model.auth.register_auth_listener(self.update_view)
 
     async def start_job(self, tool_id):
         if not self.check_tool_limit(tool_id):
@@ -74,3 +81,5 @@ class HomeViewModel:
         self.tool_list = self.tool_model.get_tools()
         self.tool_list_bind.update_in_view(self.tool_list)
         self.job_state_bind.update_in_view(self.job_state)
+        self.logged_in = self.user_model.logged_in()
+        self.logged_in_bind.update_in_view(self.logged_in)

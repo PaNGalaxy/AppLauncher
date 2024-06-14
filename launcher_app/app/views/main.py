@@ -10,8 +10,9 @@ from trame_client.widgets import html
 
 from launcher_app.app.mvvm_factory import create_viewmodels
 from launcher_app.app.views.base import SinglePageLayout
-from .login import LoginView
+from .login import LogoutToolbar, LoginView
 from .home import HomeView
+from ..utilities.auth import AuthManager
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -30,6 +31,7 @@ class App:
         self.ctrl = self.server.controller
         binding = TrameBinding(self.server.state)
         self.home_vm, self.user_vm = create_viewmodels(binding)
+        self.auth = AuthManager()
         self.css = None
         try:
             with open(CSS_PATH, "r") as css_sheet:
@@ -39,6 +41,7 @@ class App:
             logger.error(e)
 
         self.create_ui()
+
 
     @property
     def state(self):
@@ -50,9 +53,10 @@ class App:
 
             layout.title.set_text("Single Crystal Diffraction")
             with layout.toolbar:
-                LoginView(self.user_vm)
+                LogoutToolbar(self.user_vm)
             with layout.content:
                 with vuetify.VContainer(style="height: 100%;"):
+                    LoginView(self.user_vm)
                     HomeView(self.state, self.server, self.home_vm)
 
             with layout.footer as footer:

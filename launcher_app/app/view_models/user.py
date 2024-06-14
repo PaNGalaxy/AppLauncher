@@ -1,22 +1,23 @@
 from launcher_app.app.models.user import UserModel
 from py_mvvm.interface import BindingInterface
-from launcher_app.app.utilities.auth import TrameAuth as auth
 
 class UserViewModel:
 
     def __init__(self, user: UserModel, binding: BindingInterface):
         self.user_model = user
-        self.auth_url = user.get_auth_url()
         self.username = None
         self.email = None
         self.logged_in = None
         self.username_bind = binding.new_bind(self.username)
         self.email_bind = binding.new_bind(self.email)
         self.logged_in_bind = binding.new_bind(self.logged_in)
-        auth.register_auth_listner(self.update_view)
+        self.user_model.auth.register_auth_listener(self.update_view)
 
     def get_auth_url(self):
-        return self.user_model.get_auth_url()
+        return self.user_model.auth.get_ucams_auth_url()
+
+    def get_xcams_auth_url(self):
+        return self.user_model.auth.get_xcams_auth_url()
 
     def update_view(self):
         self.username = self.user_model.get_username()
