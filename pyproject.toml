@@ -24,6 +24,7 @@ trame-router = "^2.2.0"
 py-mvvm = {extras = ["trame"], version = "^0.2.0"}
 pyjwt = "^2.8.0"
 
+libsass = "^0.23.0"
 [[tool.poetry.source]]
 name = "py-mvvm"
 url = "https://code.ornl.gov/api/v4/projects/15758/packages/pypi/simple"

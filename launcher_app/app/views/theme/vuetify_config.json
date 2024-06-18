@@ -1,0 +1,53 @@
+{
+    "defaults": {
+        "VAppBar": {
+            "color": "primary"
+        },
+        "VCard": {
+            "class": "bg-white pa-4"
+        },
+        "VContainer": {
+            "class": "h-100"
+        },
+        "VListItem": {
+            "class": "border-thin"
+        },
+        "VListItemAction": {
+            "VBtn": {
+                "class": "ml-2"
+            },
+            "VProgressCircular": {
+                "class": "ml-2"
+            }
+        },
+        "VProgressCircular": {
+            "color": "secondary",
+            "indeterminate": true
+        },
+        "VTabs": {
+            "color": "primary",
+            "sliderColor": "secondary"
+        },
+        "VTab": {
+            "class": "bg-white"
+        }
+    },
+    "theme": {
+        "defaultTheme": "SAETrameTheme",
+        "themes": {
+            "SAETrameTheme": {
+                "colors": {
+                    "background": "#f0f0f0",
+                    "primary": "#007833",
+                    "secondary": "#f48e5c",
+                    "accent": "#488dc8"
+                }
+            }
+        },
+        "variations": {
+            "colors": ["primary", "secondary", "accent"],
+            "darken": 5,
+            "lighten": 5
+        }
+    }
+}

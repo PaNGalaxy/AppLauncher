@@ -1,0 +1,13 @@
+html {
+    overflow-y: auto;
+}
+
+main {
+	background-color: RGB(var(--v-theme-background));
+}
+
+.v-list-item {
+	&:nth-child(odd) {
+		background-color: RGB(var(--v-theme-background));
+	}
+}

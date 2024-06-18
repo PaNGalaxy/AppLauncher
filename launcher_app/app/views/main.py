@@ -1,6 +1,10 @@
+import json
 import logging
+from pathlib import Path
 
 from py_mvvm.trame_binding import TrameBinding
+
+from sass import compile
 
 from trame.app import get_server
 from trame.decorators import TrameApp
@@ -12,12 +16,13 @@ from launcher_app.app.mvvm_factory import create_viewmodels
 from launcher_app.app.views.base import SinglePageLayout
 from .login import LogoutToolbar, LoginView
 from .home import HomeView
+from .theme import CustomComponents
 from ..utilities.auth import AuthManager
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-CSS_PATH = "launcher_app/app/views/styles/core_style.css"
+THEME_PATH = Path("launcher_app/app/views/theme")
 
 
 # ---------------------------------------------------------
@@ -34,10 +39,20 @@ class App:
         self.auth = AuthManager()
         self.css = None
         try:
-            with open(CSS_PATH, "r") as css_sheet:
-                self.css = css_sheet.read()
+            with open(THEME_PATH / "core_style.scss", "r") as scss_file:
+                self.css = compile(string=scss_file.read())
         except Exception as e:
-            logger.warning("Could not load base css stylesheet.")
+            logger.warning("Could not load base scss stylesheet.")
+            logger.error(e)
+        self.vuetify_config = None
+        try:
+            with open(
+                THEME_PATH / "vuetify_config.json",
+                "r"
+            ) as vuetify_config:
+                self.vuetify_config = json.load(vuetify_config)
+        except Exception as e:
+            logger.warning("Could not load vuetify config.")
             logger.error(e)
 
         self.create_ui()
@@ -48,31 +63,22 @@ class App:
         return self.server.state
 
     def create_ui(self):
-        with SinglePageLayout(self.server) as layout:
+        self.state.trame__title = "Single Crystal Diffraction Dashboard"
+
+        with SinglePageLayout(
+            self.server,
+            vuetify_config=self.vuetify_config
+        ) as layout:
             client.Style(self.css)
 
-            layout.title.set_text("Single Crystal Diffraction")
+            layout.title.set_text("Single Crystal Diffraction Dashboard")
             with layout.toolbar:
                 LogoutToolbar(self.user_vm)
             with layout.content:
-                with vuetify.VContainer(style="height: 100%;"):
+                with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
                     LoginView(self.user_vm)
                     HomeView(self.state, self.server, self.home_vm)
 
-            with layout.footer as footer:
-                vuetify.VProgressCircular(
-                    indeterminate=("!!galaxy_running",),
-                    color="#04a94d",
-                    size=16,
-                    width=3,
-                    classes="ml-n3 mr-1",
-                ),
-                html.A("Powered by Calvera", href=("galaxyLink",),
-                       classes="text-grey-lighten-1 text-caption text-decoration-none", target="_blank")
-                vuetify.VSpacer()
-                footer.add_child(
-                    '<a href="https://www.ornl.gov/" class="text-grey-lighten-1 text-caption text-decoration-none" '
-                    'target="_blank">© 2024 ORNL</a>'
-                )
+            CustomComponents.Footer(layout)
 
             return layout

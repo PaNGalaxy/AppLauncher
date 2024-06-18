@@ -30,10 +30,8 @@ class LoginView:
         self.create_ui()
 
     def create_ui(self):
-        with vuetify.VContainer(style="height: 100%;",v_show="!is_logged_in"):
-            with vuetify.VRow(align="right"):
-                vuetify.VBtn("Sign In with UCAMS", id="ucams-login-button", href=self.user_vm.get_auth_url(), flat=True,
-                             classes="sign-in-btn", style="margin-right: 2em;")
-                vuetify.VBtn("Sign In with XCAMS", id="xcams-login-button", href=self.user_vm.get_xcams_auth_url(), flat=True, classes="sign-in-btn",
-                             style="margin-right: 2em;")
+        with vuetify.VCard(v_if="!is_logged_in", classes="text-center", width=600):
+            vuetify.VCardTitle("Sign In", classes="mb-4")
+            vuetify.VBtn("UCAMS", id="ucams-login-button", classes="mr-4", color="primary", href=self.user_vm.get_auth_url())
+            vuetify.VBtn("XCAMS", id="xcams-login-button", color="primary", href=self.user_vm.get_xcams_auth_url())
 
