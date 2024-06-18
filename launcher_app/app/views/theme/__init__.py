@@ -1,1 +1,1 @@
-from .components import CustomComponents
+from .components import CustomComponents, ThemedApp
