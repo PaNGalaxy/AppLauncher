@@ -1,7 +1,5 @@
 from py_mvvm.trame_binding import TrameBinding
 
-from sass import compile
-
 from trame.decorators import TrameApp
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify

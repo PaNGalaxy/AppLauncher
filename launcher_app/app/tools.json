@@ -1,14 +1,14 @@
 [
   {
-    "name": "Garnet",
+    "title": "Garnet",
     "id": "neutrons_trame_garnet",
-    "description": "This is where you will launch the Garnet application. The UI is a work in progress.",
+    "subtitle": "Description of Garnet tool here.",
     "max_instances": 1
   },
   {
-    "name": "Topaz",
+    "title": "Topaz",
     "id": "neutrons_trame_topaz",
-    "description": "This is where you will launch the Topaz application. The UI is a work in progress.",
+    "subtitle": "Description of Topaz tool here.",
     "max_instances": 1
   }
 ]

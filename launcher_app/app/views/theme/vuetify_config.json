@@ -9,9 +9,6 @@
         "VContainer": {
             "class": "h-100"
         },
-        "VListItem": {
-            "class": "border-thin"
-        },
         "VListItemAction": {
             "VBtn": {
                 "class": "ml-2"

@@ -1,7 +1,9 @@
 import json
 import logging
 from pathlib import Path
+from uuid import uuid4
 
+import sass
 from trame.app import get_server
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify
@@ -22,7 +24,7 @@ class ThemedApp:
         self.css = None
         try:
             with open(THEME_PATH / "core_style.scss", "r") as scss_file:
-                self.css = compile(string=scss_file.read())
+                self.css = sass.compile(string=scss_file.read())
         except Exception as e:
             logger.warning("Could not load base scss stylesheet.")
             logger.error(e)
@@ -70,14 +72,30 @@ class ThemedApp:
             return layout
 
 
-
 class CustomComponents:
-    def List(action=None, header=None, **kwargs):
+    def List(server, items, action=None, header=None):
+        # If a user creates multiple lists, we need a way to inject the list data into the front-end
+        # without collisions. This is my approach to handling the situation.
+        with server.state:
+            if server.state.theme is None:
+                server.state.theme = {}
+            if "list_items" not in server.state.theme:
+                server.state.theme["list_items"] = {}
+            key = str(uuid4()).replace('-', '_')
+            server.state.theme["list_items"][key] = items
+
         with vuetify.VList():
             if header is not None:
                 vuetify.VListSubheader(header)
-            with vuetify.VListItem(classes="pa-2", **kwargs):
-                with vuetify.Template(v_slot_append=True, v_if=action is not None):
-                    with vuetify.VListItemAction():
-                        if callable(action):
-                            action()
+            with html.Div(classes="border-thin"):
+                with vuetify.VListItem(
+                    v_for=(f"(item, index) in theme.list_items.{key}",),
+                    classes="pa-2"
+                ) as list_item:
+                    vuetify.VListItemTitle("{{ item.title }}")
+                    vuetify.VListItemSubtitle("{{ item.subtitle }}")
+
+                    with vuetify.Template(v_slot_append=True, v_if=action is not None):
+                        with vuetify.VListItemAction():
+                            if callable(action):
+                                action()

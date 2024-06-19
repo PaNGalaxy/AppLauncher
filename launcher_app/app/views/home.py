@@ -27,27 +27,32 @@ class HomeView:
     def _job_actions(self):
         with vuetify.VBtn(
             "Launch",
-            v_if=("!['launched', 'launching'].includes(job_state[tools[index].id])",),
-            click=(self.home_vm.start_job, "[tools[index].id]"),
+            v_if=(f"!['launched', 'launching'].includes(job_state[item.id])",),
+            click=(self.home_vm.start_job, "[item.id]"),
             color="primary"
         ):
             vuetify.VIcon(icon="mdi-play")
         with vuetify.VBtn(
             "Open",
-            v_if=("jobs[tools[index].id]",),
-            click=(self.js_navigate, "[jobs[tools[index].id].url]"),
+            v_if=("jobs[item.id]",),
+            click=(self.js_navigate, "[jobs[item.id].url]"),
             color="primary"
         ):
             vuetify.VIcon(icon="mdi-open-in-new")
         with vuetify.VBtn(
             "Stop",
-            v_if=("job_state[tools[index].id] === 'launched'",),
-            click=(self.home_vm.stop_job, "[tools[index].id]"),
+            v_if=("job_state[item.id] === 'launched'",),
+            click=(self.home_vm.stop_job, "[item.id]"),
             color="error"
         ):
             vuetify.VIcon(icon="mdi-stop")
-        vuetify.VProgressCircular(v_if=("job_state[tools[index].id] === 'launching'",))
+        vuetify.VProgressCircular(v_if=("job_state[item.id] === 'launching'",))
 
     def create_ui(self):
         with vuetify.VCard(v_if="is_logged_in", width=800):
-            CustomComponents.List(v_for="(tool, index) in tools", action=self._job_actions, header="Available Tools", subtitle=("tool.description",), title=("tool.name",))
+            CustomComponents.List(
+                self.server,
+                self.home_vm.tool_list,
+                action=self._job_actions,
+                header="Available Tools",
+            )
