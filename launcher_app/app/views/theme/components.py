@@ -19,6 +19,8 @@ THEME_PATH = Path("launcher_app/app/views/theme")
 
 
 class ThemedApp:
+    """Parent class for Trame applications that injects theming into the application."""
+
     def __init__(self, server=None):
         self.server = get_server(server, client_type="vue3")
         self.css = None
@@ -73,7 +75,17 @@ class ThemedApp:
 
 
 class CustomComponents:
+
     def List(server, items, action=None, header=None):
+        """Generates a VList from an items list.
+
+        Parameters:
+        server: the trame server to attach this list to
+        items: list of dicts to generate VListItems for (each dict should contain a title attribute at a minimum)
+        action (optional): a method that generates an action to be appended to each VListItem
+        header (optional): string to use as a VListSubheader above the VListItems
+        """
+
         # If a user creates multiple lists, we need a way to inject the list data into the front-end
         # without collisions. This is my approach to handling the situation.
         with server.state:
