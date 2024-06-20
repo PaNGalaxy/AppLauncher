@@ -9,6 +9,9 @@ def create_viewmodels(binding):
     job_model = JobModel()
     tool_model = ToolModel()
     user_model = UserModel()
-    home_vm = HomeViewModel(job_model, tool_model, user_model, binding)
-    user_vm = UserViewModel(user_model, binding)
-    return home_vm, user_vm
+
+    vm = {}
+    vm["home"] = HomeViewModel(job_model, tool_model, user_model, binding)
+    vm["user"] = UserViewModel(user_model, binding)
+
+    return vm
