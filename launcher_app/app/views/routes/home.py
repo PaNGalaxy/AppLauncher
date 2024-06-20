@@ -20,6 +20,11 @@ class HomeView:
         self.home_vm.logged_in_bind.connect("is_logged_in")
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
+        self.user_vm = view_model["user"]
+        self.user_vm.given_name_bind.connect("given_name")
+        self.user_vm.email_bind.connect("email")
+        self.user_vm.logged_in_bind.connect("is_logged_in")
+
         self.create_ui()
 
         self.home_vm.update_view()
@@ -33,9 +38,8 @@ class HomeView:
                 )
                 with vuetify.VCardText():
                     html.P(
-                        "You can view the different categories of tools available below."
-                        "To see the tools available for a category, simply click on it to"
-                        "view the available tools."
+                        "You can view the different categories of tools available below. "
+                        "To see the tools available for a category, simply click on it."
                     )
 
                     with vuetify.VList():
