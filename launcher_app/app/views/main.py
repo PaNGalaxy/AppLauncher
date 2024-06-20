@@ -2,7 +2,7 @@ from py_mvvm.trame_binding import TrameBinding
 
 from trame.app import get_server
 from trame.decorators import TrameApp
-from trame.widgets import router
+from trame.widgets import html, router, vuetify3 as vuetify
 
 from launcher_app.app.mvvm_factory import create_viewmodels
 from launcher_app.app.utilities.auth import AuthManager
@@ -38,6 +38,29 @@ class App(ThemedApp):
         self.state.trame__title = "Neutrons App Dashboard"
 
         with super().create_ui() as layout:
+            with layout.toolbar:
+                with layout.actions:
+                    html.Span(
+                        "Welcome, {{ given_name }}",
+                        v_if="is_logged_in",
+                        classes="pr-2 text-button",
+                    )
+                    with vuetify.VMenu(v_else=True, open_on_hover=True):
+                        with vuetify.Template(v_slot_activator="{ props }"):
+                            with vuetify.VBtn(v_bind="props"):
+                                html.Span("Sign In")
+                        with vuetify.VList():
+                            vuetify.VListItem(
+                                "via UCAMS",
+                                v_if="!is_logged_in",
+                                href=self.vm["user"].get_auth_url(),
+                            )
+                            vuetify.VListItem(
+                                "via XCAMS",
+                                v_if="!is_logged_in",
+                                href=self.vm["user"].get_xcams_auth_url(),
+                            )
+
             with layout.content:
                 router.RouterView()
 

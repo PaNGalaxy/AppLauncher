@@ -19,12 +19,24 @@ class CategoryView:
         self.home_vm.logged_in_bind.connect("is_logged_in")
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
+        self.user_vm = view_model["user"]
+        self.user_vm.given_name_bind.connect("given_name")
+        self.user_vm.email_bind.connect("email")
+        self.user_vm.logged_in_bind.connect("is_logged_in")
+
         self.create_ui()
 
         self.home_vm.update_view()
         self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
+        with vuetify.VBreadcrumbs():
+            with vuetify.VBreadcrumbsItem(to="/"):
+                html.Span("Home")
+            vuetify.VBreadcrumbsDivider()
+            with vuetify.VBreadcrumbsItem():
+                html.Span("{{ tools[$route.params.category]['name'] }}")
+
         with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(

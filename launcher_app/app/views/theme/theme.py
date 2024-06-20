@@ -48,6 +48,9 @@ class ThemedApp:
                     text=("trame__title",),
                     click="$router.push('/')",
                 )
+                vuetify.VSpacer()
+                with html.Div(classes="mr-2") as actions:
+                    layout.actions = actions
 
             layout.content = vuetify.VMain()
 
