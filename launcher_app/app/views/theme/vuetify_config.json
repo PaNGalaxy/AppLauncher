@@ -7,7 +7,14 @@
             "class": "bg-white pa-4"
         },
         "VContainer": {
-            "class": "h-100"
+            "class": "h-100",
+            "VRow": {
+                "VCol": {
+                    "VSelect": {
+                        "density": "compact"
+                    }
+                }
+            }
         },
         "VListItemAction": {
             "VBtn": {

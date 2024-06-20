@@ -56,3 +56,15 @@ class HomeView:
                 action=self._job_actions,
                 header="Available Tools",
             )
+            # CustomComponents.Grid(
+            #     [
+            #         vuetify.VSelect(),
+            #         vuetify.VSelect(),
+            #         vuetify.VAlert("alert"),
+            #         html.Div("div"),
+            #         html.H2("h2"),
+            #         html.P("p"),
+            #         vuetify.VSelect()
+            #     ],
+            #     3
+            # )

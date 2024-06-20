@@ -76,6 +76,25 @@ class ThemedApp:
 
 class CustomComponents:
 
+    def Grid(elements, cols_per_row):
+        """Generates a grid (VContainer -> VRow -> VCol) of a specified size from an elements list.
+
+        Parameters:
+        elements: list of Trame AbstractElements to put into the grid (inserted left-to-right, top-to-bottom)
+        cols_per_row: number of VCols in each VRow
+        """
+
+        with vuetify.VContainer() as container:
+            cols = 12 // cols_per_row  # This should be the maximum size available to each VCol without exceeding 12-column limit
+            num_rows = (len(elements) // cols_per_row) + 1
+            for row in range(num_rows):
+                with vuetify.VRow():
+                    for element in elements[row * cols_per_row:row * cols_per_row + cols_per_row]:
+                        vuetify.VCol(element, cols=cols)
+
+            return container
+
+
     def List(server, items, action=None, header=None):
         """Generates a VList from an items list.
 
@@ -96,7 +115,7 @@ class CustomComponents:
             key = str(uuid4()).replace('-', '_')
             server.state.theme["list_items"][key] = items
 
-        with vuetify.VList():
+        with vuetify.VList() as list:
             if header is not None:
                 vuetify.VListSubheader(header)
             with html.Div(classes="border-thin"):
@@ -111,3 +130,5 @@ class CustomComponents:
                         with vuetify.VListItemAction():
                             if callable(action):
                                 action()
+
+            return list
