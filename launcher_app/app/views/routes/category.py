@@ -56,29 +56,37 @@ class CategoryView:
                             vuetify.VListItemSubtitle("{{ tool['description'] }}")
                             with vuetify.Template(v_slot_append=True):
                                 with vuetify.VListItemAction():
-                                    with vuetify.VBtn(
-                                        "Launch",
-                                        v_if=(
-                                            f"!['launched', 'launching'].includes(job_state[tool.id])",
-                                        ),
-                                        click=(self.home_vm.start_job, "[tool.id]"),
-                                        color="primary",
-                                    ):
-                                        vuetify.VIcon(icon="mdi-play")
-                                    with vuetify.VBtn(
-                                        "Open",
-                                        v_if=("jobs[tool.id]",),
-                                        click=(self.js_navigate, "[jobs[tool.id].url]"),
-                                        color="primary",
-                                    ):
-                                        vuetify.VIcon(icon="mdi-open-in-new")
-                                    with vuetify.VBtn(
-                                        "Stop",
-                                        v_if=("job_state[tool.id] === 'launched'",),
-                                        click=(self.home_vm.stop_job, "[tool.id]"),
-                                        color="error",
-                                    ):
-                                        vuetify.VIcon(icon="mdi-stop")
-                                    vuetify.VProgressCircular(
-                                        v_if=("job_state[tool.id] === 'launching'",)
-                                    )
+                                    with html.Div(v_if="!is_logged_in"):
+                                        vuetify.VBtn(
+                                            "Sign in to run apps", disabled=True
+                                        )
+                                    with html.Div(v_else=True):
+                                        with vuetify.VBtn(
+                                            "Launch",
+                                            v_if=(
+                                                f"!['launched', 'launching'].includes(job_state[tool.id])",
+                                            ),
+                                            click=(self.home_vm.start_job, "[tool.id]"),
+                                            color="primary",
+                                        ):
+                                            vuetify.VIcon(icon="mdi-play")
+                                        with vuetify.VBtn(
+                                            "Open",
+                                            v_if=("jobs[tool.id]",),
+                                            click=(
+                                                self.js_navigate,
+                                                "[jobs[tool.id].url]",
+                                            ),
+                                            color="primary",
+                                        ):
+                                            vuetify.VIcon(icon="mdi-open-in-new")
+                                        with vuetify.VBtn(
+                                            "Stop",
+                                            v_if=("job_state[tool.id] === 'launched'",),
+                                            click=(self.home_vm.stop_job, "[tool.id]"),
+                                            color="error",
+                                        ):
+                                            vuetify.VIcon(icon="mdi-stop")
+                                        vuetify.VProgressCircular(
+                                            v_if=("job_state[tool.id] === 'launching'",)
+                                        )

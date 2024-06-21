@@ -52,12 +52,10 @@ class App(ThemedApp):
                         with vuetify.VList():
                             vuetify.VListItem(
                                 "via UCAMS",
-                                v_if="!is_logged_in",
                                 href=self.vm["user"].get_auth_url(),
                             )
                             vuetify.VListItem(
                                 "via XCAMS",
-                                v_if="!is_logged_in",
                                 href=self.vm["user"].get_xcams_auth_url(),
                             )
 
