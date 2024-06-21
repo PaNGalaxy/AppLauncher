@@ -28,15 +28,6 @@ GALAXY_UPDATE_INTERVAL_SEC = 10
 
 @TrameApp()
 class App:
-    def _parse_args(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--galaxy-url", help="URL of the Galaxy server")
-        parser.add_argument("--galaxy-key", help="API key for accessing the Galaxy server")
-        parser.add_argument("--galaxy-history-id", help="Default Galaxy history ID to use")
-        parser.add_argument("--config", help="Path to configuration file")
-        args, unknown = parser.parse_known_args()
-        return args
-
     def _sync_histories(self):
         try:
             self.state.items_galaxyHistory = galaxy.get_histories(self.state)
@@ -65,10 +56,25 @@ class App:
 
     def __init__(self, server=None, data=None):
         self.server = get_server(server, client_type="vue3")
+
+        # CLI
+        self.server.cli.add_argument("--galaxy-url", help="URL of the Galaxy server")
+        self.server.cli.add_argument("--galaxy-key", help="API key for accessing the Galaxy server")
+        self.server.cli.add_argument("--galaxy-history-id", help="Default Galaxy history ID to use")
+        self.server.cli.add_argument("--config", help="Path to configuration file")
+        self.server.cli.add_argument("--session", help="Session identifier")
+        args, _ = self.server.cli.parse_known_args()
+
+        # TODO use it in auth
+        root_path = os.environ.get("EP_PATH", "")
+        # I don't think you need it in the state
+        self.state.base_url = f"{root_path}/api/{args.session}/"
+        print(f"Base URL to use: {self.state.base_url}")
+
         # todo:  can we put config as state variable so that a change to a nested field would trigger state change
         self.state.model = Model()
         self.state.config_file = None
-        args = self._parse_args()
+
         self._connect_to_galaxy(args)
         if args.config:
             self.state.model.loadConfig(open(args.config).read())
