@@ -6,7 +6,7 @@ from launcher_app.app.view_models.home import HomeViewModel
 
 class HomeView:
 
-    def __init__(self, server, view_model):
+    def __init__(self, server, view_model, vuetify_config):
         self.server = server
         self.ctrl = self.server.controller
 
@@ -25,12 +25,17 @@ class HomeView:
         self.user_vm.email_bind.connect("email")
         self.user_vm.logged_in_bind.connect("is_logged_in")
 
+        self.vuetify_config = vuetify_config
+
         self.create_ui()
 
         self.home_vm.update_view()
         self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
+        # This is painful but the only way I've found so far to handle this situation.
+        # Basically, the idea is to check if the authentication status has changed since
+        # the last page load, and if so, redirect the user to the last page they were on.
         client.ClientTriggers(
             mounted=(
                 "window.localStorage.getItem('lastPath') !== 'null' && "
@@ -44,7 +49,7 @@ class HomeView:
             )
         )
 
-        with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
+        with vuetify.VContainer(classes="align-start d-flex justify-center mt-16"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(
                     "Welcome to the Neutrons App Dashboard", classes="text-center"
@@ -55,12 +60,26 @@ class HomeView:
                         "To see the tools available for a category, simply click on it."
                     )
 
-                    with vuetify.VList():
-                        for key in self.home_vm.tools:
-                            category = self.home_vm.tools[key]
+                    with vuetify.VContainer(fluid=True):
+                        with vuetify.VRow():
+                            for key in self.home_vm.tools:
+                                category = self.home_vm.tools[key]
 
-                            with vuetify.VListItem(
-                                classes="my-4 pa-4", to=f"/category/{key}"
-                            ):
-                                vuetify.VListItemTitle(category["name"])
-                                vuetify.VListItemSubtitle(category["description"])
+                                with vuetify.VCol(cols=6):
+                                    vuetify.VCard(
+                                        append_icon="mdi-open-in-app",
+                                        flat=True,
+                                        prepend_icon=category["icon"],
+                                        style={
+                                            "border-color": self.vuetify_config[
+                                                "theme"
+                                            ]["themes"]
+                                            .get(category["theme"], {})
+                                            .get("colors", {})
+                                            .get("primary", "#000000"),
+                                            "border-width": "1px",
+                                        },
+                                        subtitle=category["description"],
+                                        title=category["name"],
+                                        to=f"/category/{key}",
+                                    )

@@ -1,6 +1,7 @@
 from py_mvvm.trame_binding import TrameBinding
 
 from trame.app import get_server
+from trame.assets.local import LocalFileManager
 from trame.decorators import TrameApp
 from trame.widgets import html, router, vuetify3 as vuetify
 
@@ -26,7 +27,7 @@ class App(ThemedApp):
         self.vm = create_viewmodels(binding)
         self.auth = AuthManager()
 
-        self.view_controller = ViewController(self.server, self.vm)
+        self.view_controller = ViewController(self.server, self.vm, self.vuetify_config)
 
         self.create_ui()
 
@@ -36,9 +37,20 @@ class App(ThemedApp):
 
     def create_ui(self):
         self.state.trame__title = "Neutrons App Dashboard"
+        self.state.trame__favicon = LocalFileManager(__file__).url(
+            "favicon", "./theme/assets/favicon.png"
+        )
 
         with super().create_ui() as layout:
+            layout.theme.theme = (
+                "tools !== undefined && $route.params.category !== undefined ? tools[$route.params.category]['theme'] : 'default'",
+            )
+
             with layout.toolbar:
+                layout.toolbar_title.set_text(
+                    "{{ tools !== undefined && $route.params.category !== undefined ? `${tools[$route.params.category]['name']} Applications` : 'Neutrons App Dashboard' }}"
+                )
+
                 with layout.actions:
                     html.Span(
                         "Welcome, {{ given_name }}",
@@ -49,7 +61,7 @@ class App(ThemedApp):
                         with vuetify.Template(v_slot_activator="{ props }"):
                             with vuetify.VBtn(v_bind="props"):
                                 html.Span("Sign In")
-                        with vuetify.VList():
+                        with vuetify.VList(classes="plain"):
                             vuetify.VListItem(
                                 "via UCAMS",
                                 href=self.vm["user"].get_auth_url(),

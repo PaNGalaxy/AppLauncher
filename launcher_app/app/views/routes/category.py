@@ -50,14 +50,32 @@ class CategoryView:
                     "{{ tools[$route.params.category]['name'] }} Applications",
                     classes="text-center",
                 )
+                vuetify.VCardSubtitle(
+                    (
+                        "The below tools are currently supported for running on Calvera. "
+                        "You must be signed in to launch them. "
+                        "You may sign in using the button in the top right corner of this page."
+                    ),
+                    classes="mb-4",
+                )
+                vuetify.VCardSubtitle(
+                    "If you're interested in adding a tool, then please see our developer guide { link } "
+                    "or contact { email } for more information.",
+                )
                 with vuetify.VCardText():
                     with vuetify.VList():
-                        vuetify.VListSubheader("Available Tools")
+                        vuetify.VListSubheader(
+                            "Available Tools",
+                            v_if=("tools[$route.params.category]['tools'].length > 0",),
+                        )
+                        vuetify.VListSubheader(
+                            "No Tools Available", v_else=True, classes="justify-center"
+                        )
                         with vuetify.VListItem(
                             v_for=(
                                 "(tool, index) in tools[$route.params.category]['tools']"
                             ),
-                            classes="border-thin pa-2",
+                            classes="border-sm border-primary pa-2",
                         ):
                             vuetify.VListItemTitle("{{ tool['name'] }}")
                             vuetify.VListItemSubtitle("{{ tool['description'] }}")
@@ -74,7 +92,7 @@ class CategoryView:
                                                 f"!['launched', 'launching'].includes(job_state[tool.id])",
                                             ),
                                             click=(self.home_vm.start_job, "[tool.id]"),
-                                            color="primary",
+                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-play")
                                         with vuetify.VBtn(
@@ -84,7 +102,7 @@ class CategoryView:
                                                 self.js_navigate,
                                                 "[jobs[tool.id].url]",
                                             ),
-                                            color="primary",
+                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-open-in-new")
                                         with vuetify.VBtn(

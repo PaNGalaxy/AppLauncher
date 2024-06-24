@@ -5,3 +5,7 @@ html {
 main {
 	background-color: RGB(var(--v-theme-background));
 }
+
+.v-list:not(.plain) .v-list-item:nth-child(even) {
+    background-color: RGB(var(--v-theme-primary-lighten-5));
+}
