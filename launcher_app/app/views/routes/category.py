@@ -30,6 +30,13 @@ class CategoryView:
         self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
+        client.ClientTriggers(
+            mounted=(
+                "window.localStorage.setItem('lastPath', $route.path);"
+                "window.localStorage.setItem('loggedIn', is_logged_in);"
+            )
+        )
+
         with vuetify.VBreadcrumbs():
             with vuetify.VBreadcrumbsItem(to="/"):
                 html.Span("Home")

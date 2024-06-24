@@ -31,6 +31,19 @@ class HomeView:
         self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
+        client.ClientTriggers(
+            mounted=(
+                "window.localStorage.getItem('lastPath') !== 'null' && "
+                "window.localStorage.getItem('lastPath') !== $route.path && "
+                "is_logged_in && "
+                "window.localStorage.getItem('loggedIn') !== is_logged_in.toString() "
+                " ? (window.localStorage.setItem('loggedIn', is_logged_in),"
+                "    $router.push(window.localStorage.getItem('lastPath')))"
+                " : (window.localStorage.setItem('loggedIn', is_logged_in),"
+                "    window.localStorage.setItem('lastPath', null));"
+            )
+        )
+
         with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(
