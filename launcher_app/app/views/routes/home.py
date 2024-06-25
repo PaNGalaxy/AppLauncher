@@ -1,7 +1,8 @@
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify
 from trame.widgets import html as html
-from launcher_app.app.view_models.home import HomeViewModel
+
+from launcher_app.app.views.theme.components import EasyGrid
 
 
 class HomeView:
@@ -60,26 +61,22 @@ class HomeView:
                         "To see the tools available for a category, simply click on it."
                     )
 
-                    with vuetify.VContainer(fluid=True):
-                        with vuetify.VRow():
-                            for key in self.home_vm.tools:
-                                category = self.home_vm.tools[key]
-
-                                with vuetify.VCol(cols=6):
-                                    vuetify.VCard(
-                                        append_icon="mdi-open-in-app",
-                                        flat=True,
-                                        prepend_icon=category["icon"],
-                                        style={
-                                            "border-color": self.vuetify_config[
-                                                "theme"
-                                            ]["themes"]
-                                            .get(category["theme"], {})
-                                            .get("colors", {})
-                                            .get("primary", "#000000"),
-                                            "border-width": "1px",
-                                        },
-                                        subtitle=category["description"],
-                                        title=category["name"],
-                                        to=f"/category/{key}",
-                                    )
+                    with EasyGrid(cols_per_row=2):
+                        for key, category in self.home_vm.tools.items():
+                            vuetify.VCard(
+                                append_icon="mdi-open-in-app",
+                                flat=True,
+                                prepend_icon=category["icon"],
+                                style={
+                                    "border-color": self.vuetify_config["theme"][
+                                        "themes"
+                                    ]
+                                    .get(category["theme"], {})
+                                    .get("colors", {})
+                                    .get("primary", "#000000"),
+                                    "border-width": "1px",
+                                },
+                                subtitle=category["description"],
+                                title=category["name"],
+                                to=f"/category/{key}",
+                            )
