@@ -1,0 +1,40 @@
+{
+    "defaults": {
+        "VAppBar": {
+            "color": "primary"
+        },
+        "VCard": {
+            "class": "bg-white pa-4"
+        },
+        "VListItemAction": {
+            "VBtn": {
+                "class": "ml-2"
+            },
+            "VProgressCircular": {
+                "class": "ml-2"
+            }
+        },
+        "VProgressCircular": {
+            "color": "secondary",
+            "indeterminate": true
+        }
+    },
+    "theme": {
+        "defaultTheme": "NeutronsTheme",
+        "themes": {
+            "NeutronsTheme": {
+                "colors": {
+                    "background": "#f0f0f0",
+                    "primary": "#007833",
+                    "secondary": "#f48e5c",
+                    "accent": "#488dc8"
+                }
+            }
+        },
+        "variations": {
+            "colors": ["primary", "secondary", "accent"],
+            "darken": 5,
+            "lighten": 5
+        }
+    }
+}
