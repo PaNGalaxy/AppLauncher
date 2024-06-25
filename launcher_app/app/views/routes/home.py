@@ -1,0 +1,49 @@
+from trame.widgets import client
+from trame.widgets import vuetify3 as vuetify
+from trame.widgets import html as html
+from launcher_app.app.view_models.home import HomeViewModel
+
+
+class HomeView:
+
+    def __init__(self, server, view_model):
+        self.server = server
+        self.ctrl = self.server.controller
+
+        self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
+
+        self.home_vm = view_model["home"]
+        self.home_vm.job_state_bind.connect("job_state")
+        self.home_vm.jobs_bind.connect("jobs")
+        self.home_vm.tools_bind.connect("tools")
+        self.home_vm.tool_list_bind.connect("tool_list")
+        self.home_vm.logged_in_bind.connect("is_logged_in")
+        self.home_vm.navigation_bind.connect(self.js_navigate)
+
+        self.create_ui()
+
+        self.home_vm.update_view()
+        self.home_vm.monitor_task.start_monitor()
+
+    def create_ui(self):
+        with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
+            with vuetify.VCard(width=800):
+                vuetify.VCardTitle(
+                    "Welcome to the Neutrons App Dashboard", classes="text-center"
+                )
+                with vuetify.VCardText():
+                    html.P(
+                        "You can view the different categories of tools available below."
+                        "To see the tools available for a category, simply click on it to"
+                        "view the available tools."
+                    )
+
+                    with vuetify.VList():
+                        for key in self.home_vm.tools:
+                            category = self.home_vm.tools[key]
+
+                            with vuetify.VListItem(
+                                classes="my-4 pa-4", to=f"/category/{key}"
+                            ):
+                                vuetify.VListItemTitle(category["name"])
+                                vuetify.VListItemSubtitle(category["description"])
