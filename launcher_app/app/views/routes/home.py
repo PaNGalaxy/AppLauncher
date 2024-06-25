@@ -63,17 +63,20 @@ class HomeView:
 
                     with EasyGrid(cols_per_row=2):
                         for key, category in self.home_vm.tools.items():
+                            color = (
+                                self.vuetify_config["theme"]["themes"]
+                                .get(category["theme"], {})
+                                .get("colors", {})
+                                .get("primary", "#000000")
+                            )
+
                             vuetify.VCard(
                                 append_icon="mdi-open-in-app",
                                 flat=True,
                                 prepend_icon=category["icon"],
                                 style={
-                                    "border-color": self.vuetify_config["theme"][
-                                        "themes"
-                                    ]
-                                    .get(category["theme"], {})
-                                    .get("colors", {})
-                                    .get("primary", "#000000"),
+                                    "background-color": f"{color}19",  # 8-digit hex code, 19 represents ~10% opacity
+                                    "border-color": color,
                                     "border-width": "1px",
                                 },
                                 subtitle=category["description"],

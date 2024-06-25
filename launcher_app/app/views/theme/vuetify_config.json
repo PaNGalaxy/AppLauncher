@@ -4,7 +4,7 @@
             "color": "primary"
         },
         "VCard": {
-            "class": "bg-white pa-4",
+            "class": "pa-4",
             "VCardSubtitle": {
                 "opacity": 0.8,
                 "style": {
