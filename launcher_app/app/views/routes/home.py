@@ -20,12 +20,33 @@ class HomeView:
         self.home_vm.logged_in_bind.connect("is_logged_in")
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
+        self.user_vm = view_model["user"]
+        self.user_vm.given_name_bind.connect("given_name")
+        self.user_vm.email_bind.connect("email")
+        self.user_vm.logged_in_bind.connect("is_logged_in")
+
         self.create_ui()
 
         self.home_vm.update_view()
         self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
+        # This is painful but the only way I've found so far to handle this situation.
+        # Basically, the idea is to check if the authentication status has changed since
+        # the last page load, and if so, redirect the user to the last page they were on.
+        client.ClientTriggers(
+            mounted=(
+                "window.localStorage.getItem('lastPath') !== 'null' && "
+                "window.localStorage.getItem('lastPath') !== $route.path && "
+                "is_logged_in && "
+                "window.localStorage.getItem('loggedIn') !== is_logged_in.toString() "
+                " ? (window.localStorage.setItem('loggedIn', is_logged_in),"
+                "    $router.push(window.localStorage.getItem('lastPath')))"
+                " : (window.localStorage.setItem('loggedIn', is_logged_in),"
+                "    window.localStorage.setItem('lastPath', null));"
+            )
+        )
+
         with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(

@@ -6,12 +6,17 @@
         "VCard": {
             "class": "bg-white pa-4"
         },
-        "VListItemAction": {
-            "VBtn": {
-                "class": "ml-2"
+        "VList": {
+            "VListItemSubtitle": {
+                "opacity": 0.8
             },
-            "VProgressCircular": {
-                "class": "ml-2"
+            "VListItemAction": {
+                "VBtn": {
+                    "class": "ml-2"
+                },
+                "VProgressCircular": {
+                    "class": "ml-2"
+                }
             }
         },
         "VProgressCircular": {
