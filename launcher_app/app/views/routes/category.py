@@ -37,13 +37,6 @@ class CategoryView:
             )
         )
 
-        with vuetify.VBreadcrumbs():
-            with vuetify.VBreadcrumbsItem(to="/"):
-                html.Span("Home")
-            vuetify.VBreadcrumbsDivider()
-            with vuetify.VBreadcrumbsItem():
-                html.Span("{{ tools[$route.params.category]['name'] }}")
-
         with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(

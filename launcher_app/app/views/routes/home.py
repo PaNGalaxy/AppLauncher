@@ -51,8 +51,9 @@ class HomeView:
                 )
                 with vuetify.VCardText():
                     html.P(
-                        "You can view the different categories of tools available below. "
-                        "To see the tools available for a category, simply click on it."
+                        "You can view the different categories of tools available below."
+                        "To see the tools available for a category, simply click on it to"
+                        "view the available tools."
                     )
 
                     with vuetify.VList():
