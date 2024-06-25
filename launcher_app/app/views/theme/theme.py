@@ -48,9 +48,6 @@ class ThemedApp:
 
                     with vuetify.VAppBarTitle() as toolbar_title:
                         layout.toolbar_title = toolbar_title
-                    vuetify.VSpacer()
-                    with html.Div(classes="mr-2") as actions:
-                        layout.actions = actions
 
                 layout.content = vuetify.VMain()
 

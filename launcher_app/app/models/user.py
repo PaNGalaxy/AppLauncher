@@ -14,8 +14,11 @@ class UserModel:
         except:
             return ""
 
-    def get_given_name(self):
-        return self.auth.get_given_name()
+    def get_username(self):
+        try:
+            return self.auth.get_username()
+        except:
+            return ""
 
     def logged_in(self):
         return self.auth.logged_in()

@@ -51,26 +51,6 @@ class App(ThemedApp):
                     "{{ tools !== undefined && $route.params.category !== undefined ? `${tools[$route.params.category]['name']} Applications` : 'Neutrons App Dashboard' }}"
                 )
 
-                with layout.actions:
-                    html.Span(
-                        "Welcome, {{ given_name }}",
-                        v_if="is_logged_in",
-                        classes="pr-2 text-button",
-                    )
-                    with vuetify.VMenu(v_else=True, open_on_hover=True):
-                        with vuetify.Template(v_slot_activator="{ props }"):
-                            with vuetify.VBtn(v_bind="props"):
-                                html.Span("Sign In")
-                        with vuetify.VList(classes="plain"):
-                            vuetify.VListItem(
-                                "via UCAMS",
-                                href=self.vm["user"].get_auth_url(),
-                            )
-                            vuetify.VListItem(
-                                "via XCAMS",
-                                href=self.vm["user"].get_xcams_auth_url(),
-                            )
-
             with layout.content:
                 router.RouterView()
 
