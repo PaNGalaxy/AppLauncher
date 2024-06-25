@@ -5,3 +5,7 @@ html {
 main {
 	background-color: RGB(var(--v-theme-background));
 }
+
+.v-app-bar-title {
+    flex-basis: auto;
+}

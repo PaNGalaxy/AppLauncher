@@ -44,7 +44,7 @@ class ThemedApp:
                 layout.toolbar = toolbar
 
                 vuetify.VAppBarTitle(
-                    classes="cursor-pointer",
+                    classes="cursor-pointer flex-grow-0 py-2",
                     text=("trame__title",),
                     click="$router.push('/')",
                 )
