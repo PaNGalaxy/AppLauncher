@@ -45,7 +45,9 @@ class App(ThemedApp):
                         v_if="is_logged_in",
                         classes="pr-2 text-button",
                     )
-                    with vuetify.VMenu(v_else=True, open_on_hover=True):
+                    with vuetify.VMenu(
+                        v_else=True, close_delay=10000, open_on_hover=True
+                    ):
                         with vuetify.Template(v_slot_activator="{ props }"):
                             with vuetify.VBtn(v_bind="props"):
                                 html.Span("Sign In")
