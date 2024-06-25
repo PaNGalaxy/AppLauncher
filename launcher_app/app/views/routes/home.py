@@ -72,7 +72,9 @@ class HomeView:
 
                             vuetify.VCard(
                                 append_icon="mdi-open-in-app",
+                                classes="d-flex flex-column justify-center",
                                 flat=True,
+                                height=150,
                                 prepend_icon=category["icon"],
                                 style={
                                     "background-color": f"{color}19",  # 8-digit hex code, 19 represents ~10% opacity
