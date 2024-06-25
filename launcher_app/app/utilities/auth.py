@@ -64,9 +64,9 @@ class TrameAuth:
         self.user_auth = tokens
         server_state.is_authenticated = True
         userinfo = jwt.decode(tokens["id_token"], options={"verify_signature": False})
-        print(userinfo)
         self.user_auth["email"] = userinfo["email"]
-        self.user_auth["username"] = f"{userinfo['given_name']} {userinfo['family_name']}"
+        self.user_auth["given_name"] = userinfo["given_name"]
+        self.user_auth["family_name"] = userinfo["family_name"]
         for callback in self.auth_listeners:
             try:
                 callback()
@@ -90,10 +90,10 @@ class TrameAuth:
             self.xcams_handler_path = handler_path + "/xcams"
 
     def save_token(self, token):
-        self.user_auth['access_token'] = token
+        self.user_auth["access_token"] = token
 
     def get_token(self):
-        if self.user_auth.get('access_token', None):
+        if self.user_auth.get("access_token", None):
             try:
                 # doing a request will refresh token if expired before attempting request
                 if self.xcams:
@@ -102,7 +102,7 @@ class TrameAuth:
                     self.ucams_session.get("")
             except:
                 pass
-            return self.user_auth['access_token']
+            return self.user_auth["access_token"]
         else:
             return ""
 
@@ -112,8 +112,8 @@ class TrameAuth:
     def get_email(self):
         return self.user_auth.get("email", "")
 
-    def get_username(self):
-        return self.user_auth.get("username", "")
+    def get_given_name(self):
+        return self.user_auth.get("given_name", "Guest")
 
     def get_ucams_auth_url(self):
         try:
