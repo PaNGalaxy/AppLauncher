@@ -63,7 +63,7 @@ class CategoryView:
                             v_for=(
                                 "(tool, index) in tools[$route.params.category]['tools']"
                             ),
-                            classes="border-sm border-primary pa-2",
+                            classes="pa-2",
                         ):
                             vuetify.VListItemTitle("{{ tool['name'] }}")
                             vuetify.VListItemSubtitle("{{ tool['description'] }}")

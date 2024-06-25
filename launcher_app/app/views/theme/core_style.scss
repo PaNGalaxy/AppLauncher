@@ -7,5 +7,9 @@ main {
 }
 
 .v-list:not(.plain) .v-list-item:nth-child(even) {
-    background-color: RGB(var(--v-theme-primary-lighten-5));
+    background-color: rgba(var(--v-theme-primary), 0.1);
+}
+
+.v-list:not(.plain) .v-list-item:nth-child(odd) {
+    background-color: rgba(var(--v-theme-secondary), 0.1);
 }
