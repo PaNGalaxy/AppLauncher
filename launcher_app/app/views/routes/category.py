@@ -19,12 +19,24 @@ class CategoryView:
         self.home_vm.logged_in_bind.connect("is_logged_in")
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
+        self.user_vm = view_model["user"]
+        self.user_vm.given_name_bind.connect("given_name")
+        self.user_vm.email_bind.connect("email")
+        self.user_vm.logged_in_bind.connect("is_logged_in")
+
         self.create_ui()
 
         self.home_vm.update_view()
         self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
+        client.ClientTriggers(
+            mounted=(
+                "window.localStorage.setItem('lastPath', $route.path);"
+                "window.localStorage.setItem('loggedIn', is_logged_in);"
+            )
+        )
+
         with vuetify.VBreadcrumbs():
             with vuetify.VBreadcrumbsItem(to="/"):
                 html.Span("Home")
@@ -69,29 +81,37 @@ class CategoryView:
                             vuetify.VListItemSubtitle("{{ tool['description'] }}")
                             with vuetify.Template(v_slot_append=True):
                                 with vuetify.VListItemAction():
-                                    with vuetify.VBtn(
-                                        "Launch",
-                                        v_if=(
-                                            f"!['launched', 'launching'].includes(job_state[tool.id])",
-                                        ),
-                                        click=(self.home_vm.start_job, "[tool.id]"),
-                                        color="secondary",
-                                    ):
-                                        vuetify.VIcon(icon="mdi-play")
-                                    with vuetify.VBtn(
-                                        "Open",
-                                        v_if=("jobs[tool.id]",),
-                                        click=(self.js_navigate, "[jobs[tool.id].url]"),
-                                        color="secondary",
-                                    ):
-                                        vuetify.VIcon(icon="mdi-open-in-new")
-                                    with vuetify.VBtn(
-                                        "Stop",
-                                        v_if=("job_state[tool.id] === 'launched'",),
-                                        click=(self.home_vm.stop_job, "[tool.id]"),
-                                        color="error",
-                                    ):
-                                        vuetify.VIcon(icon="mdi-stop")
-                                    vuetify.VProgressCircular(
-                                        v_if=("job_state[tool.id] === 'launching'",)
-                                    )
+                                    with html.Div(v_if="!is_logged_in"):
+                                        vuetify.VBtn(
+                                            "Sign in to run apps", disabled=True
+                                        )
+                                    with html.Div(v_else=True):
+                                        with vuetify.VBtn(
+                                            "Launch",
+                                            v_if=(
+                                                f"!['launched', 'launching'].includes(job_state[tool.id])",
+                                            ),
+                                            click=(self.home_vm.start_job, "[tool.id]"),
+                                            color="secondary",
+                                        ):
+                                            vuetify.VIcon(icon="mdi-play")
+                                        with vuetify.VBtn(
+                                            "Open",
+                                            v_if=("jobs[tool.id]",),
+                                            click=(
+                                                self.js_navigate,
+                                                "[jobs[tool.id].url]",
+                                            ),
+                                            color="secondary",
+                                        ):
+                                            vuetify.VIcon(icon="mdi-open-in-new")
+                                        with vuetify.VBtn(
+                                            "Stop",
+                                            v_if=("job_state[tool.id] === 'launched'",),
+                                            click=(self.home_vm.stop_job, "[tool.id]"),
+                                            color="error",
+                                        ):
+                                            vuetify.VIcon(icon="mdi-stop")
+                                        vuetify.VProgressCircular(
+                                            v_if=("job_state[tool.id] === 'launching'",)
+                                        )
