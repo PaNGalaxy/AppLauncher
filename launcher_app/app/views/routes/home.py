@@ -31,6 +31,9 @@ class HomeView:
         self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
+        # This is painful but the only way I've found so far to handle this situation.
+        # Basically, the idea is to check if the authentication status has changed since
+        # the last page load, and if so, redirect the user to the last page they were on.
         client.ClientTriggers(
             mounted=(
                 "window.localStorage.getItem('lastPath') !== 'null' && "
