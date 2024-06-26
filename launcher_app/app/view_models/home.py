@@ -54,6 +54,8 @@ class HomeViewModel:
         self.auto_open_tool_list.append(tool_id)
 
     async def stop_job(self, tool_id):
+        self.job_state[tool_id] = "stopping"
+        self.update_view()
         success = await self.job_model.galaxy.stop_job(self.jobs[tool_id]["job_id"])
         return success
 

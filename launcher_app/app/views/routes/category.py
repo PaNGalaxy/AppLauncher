@@ -84,7 +84,7 @@ class CategoryView:
                                         with vuetify.VBtn(
                                             "Launch",
                                             v_if=(
-                                                f"!['launched', 'launching'].includes(job_state[tool.id])",
+                                                f"!['launched', 'launching', 'stopping'].includes(job_state[tool.id])",
                                             ),
                                             click=(self.home_vm.start_job, "[tool.id]"),
                                             color="secondary",
@@ -108,5 +108,7 @@ class CategoryView:
                                         ):
                                             vuetify.VIcon(icon="mdi-stop")
                                         vuetify.VProgressCircular(
-                                            v_if=("job_state[tool.id] === 'launching'",)
+                                            v_if=(
+                                                "['launching', 'stopping'].includes(job_state[tool.id])",
+                                            )
                                         )
