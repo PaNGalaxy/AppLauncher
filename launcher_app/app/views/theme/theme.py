@@ -73,7 +73,7 @@ class ThemedApp:
                     html.A(
                         "Powered by Calvera",
                         classes="text-grey-lighten-1 text-caption text-decoration-none",
-                        href=("galaxyLink",),
+                        href=("galaxy_url",),
                         target="_blank",
                     )
                     vuetify.VSpacer()

@@ -14,6 +14,7 @@ class HomeView:
         self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
 
         self.home_vm = view_model["home"]
+        self.home_vm.galaxy_url_bind.connect("galaxy_url")
         self.home_vm.job_state_bind.connect("job_state")
         self.home_vm.jobs_bind.connect("jobs")
         self.home_vm.tools_bind.connect("tools")

@@ -27,6 +27,7 @@ class HomeViewModel:
 
         self.job_state = {}
         self.jobs = {}
+        self.galaxy_url_bind = binding.new_bind()
         self.job_state_bind = binding.new_bind(self.job_state)
         self.jobs_bind = binding.new_bind(self.jobs)
         self.navigation_bind = binding.new_bind()
@@ -92,6 +93,7 @@ class HomeViewModel:
         self.update_view()
 
     def update_view(self):
+        self.galaxy_url_bind.update_in_view(self.job_model.galaxy.galaxy_url)
         self.jobs_bind.update_in_view(self.jobs)
         self.tools = self.tool_model.get_tools()
         self.tool_list = self.tool_model.get_tools(as_list=True)
