@@ -10,6 +10,11 @@
                 "style": {
                     "white-space": "normal"
                 }
+            },
+            "VCardTitle": {
+                "style": {
+                    "white-space": "normal"
+                }
             }
         },
         "VList": {

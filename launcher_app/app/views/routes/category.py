@@ -55,12 +55,7 @@ class CategoryView:
                         "The below tools are currently supported for running on Calvera. "
                         "You must be signed in to launch them. "
                         "You may sign in using the button in the top right corner of this page."
-                    ),
-                    classes="mb-4",
-                )
-                vuetify.VCardSubtitle(
-                    "If you're interested in adding a tool, then please see our developer guide { link } "
-                    "or contact { email } for more information.",
+                    )
                 )
                 with vuetify.VCardText():
                     with vuetify.VList():
