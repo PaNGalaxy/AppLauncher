@@ -23,6 +23,7 @@ aiohttp = "^3.9.3"
 trame-router = "^2.2.0"
 py-mvvm = {extras = ["trame"], version = "^0.2.0"}
 pyjwt = "^2.8.0"
+libsass = "^0.23.0"
 
 [[tool.poetry.source]]
 name = "py-mvvm"
