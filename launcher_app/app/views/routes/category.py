@@ -97,7 +97,7 @@ class CategoryView:
                                             vuetify.VIcon(icon="mdi-play")
                                         with vuetify.VBtn(
                                             "Open",
-                                            v_if=("jobs[tool.id]",),
+                                            v_if=("job_state[tool.id] === 'launched'",),
                                             click=(
                                                 self.js_navigate,
                                                 "[jobs[tool.id].url]",
