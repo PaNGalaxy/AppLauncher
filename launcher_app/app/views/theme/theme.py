@@ -55,12 +55,14 @@ class ThemedApp:
                 layout.content = vuetify.VMain()
 
                 with vuetify.VFooter(
-                    app=True, classes="my-0 py-0 text-center justify-center", border=True
+                    app=True,
+                    classes="my-0 px-1 py-0 text-center justify-center",
+                    border=True,
                 ) as footer:
                     layout.footer = footer
 
                     vuetify.VProgressCircular(
-                        classes="ml-n3 mr-1",
+                        classes="mr-1",
                         color="primary",
                         indeterminate=(
                             "galaxy_running",
