@@ -40,42 +40,44 @@ class ThemedApp:
         with VAppLayout(self.server, vuetify_config=self.vuetify_config) as layout:
             client.Style(self.css)
 
-            with vuetify.VAppBar() as toolbar:
-                layout.toolbar = toolbar
+            with vuetify.VThemeProvider() as theme:
+                layout.theme = theme
 
-                vuetify.VAppBarTitle(
-                    classes="cursor-pointer flex-0-1 py-2",
-                    text=("trame__title",),
-                    click="$router.push('/')",
-                )
-                vuetify.VSpacer()
-                with html.Div(classes="mr-2") as actions:
-                    layout.actions = actions
+                with vuetify.VAppBar() as toolbar:
+                    layout.toolbar = toolbar
 
-            layout.content = vuetify.VMain()
+                    with vuetify.VAppBarTitle() as toolbar_title:
+                        layout.toolbar_title = toolbar_title
+                    vuetify.VSpacer()
+                    with html.Div(classes="mr-2") as actions:
+                        layout.actions = actions
 
-            with vuetify.VFooter(
-                app=True, classes="my-0 py-0 text-center justify-center", border=True
-            ) as footer:
-                layout.footer = footer
+                layout.content = vuetify.VMain()
 
-                vuetify.VProgressCircular(
-                    classes="ml-n3 mr-1",
-                    color="primary",
-                    indeterminate=("galaxy_running",),
-                    size=16,
-                    width=3,
-                )
-                html.A(
-                    "Powered by Calvera",
-                    classes="text-grey-lighten-1 text-caption text-decoration-none",
-                    href=("galaxyLink",),
-                    target="_blank",
-                )
-                vuetify.VSpacer()
-                footer.add_child(
-                    '<a href="https://www.ornl.gov/" class="text-grey-lighten-1 text-caption text-decoration-none" '
-                    'target="_blank">© 2024 ORNL</a>'
-                )
+                with vuetify.VFooter(
+                    app=True, classes="my-0 py-0 text-center justify-center", border=True
+                ) as footer:
+                    layout.footer = footer
+
+                    vuetify.VProgressCircular(
+                        classes="ml-n3 mr-1",
+                        color="primary",
+                        indeterminate=(
+                            "galaxy_running",
+                        ),  # TODO: determine the logic for this
+                        size=16,
+                        width=3,
+                    )
+                    html.A(
+                        "Powered by Calvera",
+                        classes="text-grey-lighten-1 text-caption text-decoration-none",
+                        href=("galaxyLink",),
+                        target="_blank",
+                    )
+                    vuetify.VSpacer()
+                    footer.add_child(
+                        '<a href="https://www.ornl.gov/" class="text-grey-lighten-1 text-caption text-decoration-none" '
+                        'target="_blank">© 2024 ORNL</a>'
+                    )
 
             return layout

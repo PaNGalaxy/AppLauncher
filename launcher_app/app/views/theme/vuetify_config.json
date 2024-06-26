@@ -4,7 +4,13 @@
             "color": "primary"
         },
         "VCard": {
-            "class": "bg-white pa-4"
+            "class": "pa-4",
+            "VCardSubtitle": {
+                "opacity": 0.8,
+                "style": {
+                    "white-space": "normal"
+                }
+            }
         },
         "VList": {
             "VListItemSubtitle": {
@@ -33,6 +39,22 @@
                     "primary": "#007833",
                     "secondary": "#f48e5c",
                     "accent": "#488dc8"
+                }
+            },
+            "HFIRTheme": {
+                "colors": {
+                    "background": "#f0f0f0",
+                    "primary": "#4cdbc8",
+                    "secondary": "#db5f4d",
+                    "accent": "#db914d"
+                }
+            },
+            "SNSTheme": {
+                "colors": {
+                    "background": "#f0f0f0",
+                    "primary": "#6065dc",
+                    "secondary": "#dbb560",
+                    "accent": "#dbd260"
                 }
             }
         },

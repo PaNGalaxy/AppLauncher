@@ -1,8 +1,9 @@
 {
-  "reflectivity": {
-    "name": "Reflectivity",
-    "description": "Reflectivity Tools",
-    "theme": "ReflectivityTheme",
+  "biosans": {
+    "name": "Bio-SANS",
+    "description": "Biological Small-Angle Neutron Scattering",
+    "icon": "mdi-dna",
+    "theme": "HFIRTheme",
     "tools": [
       {
         "name": "Garnet",
@@ -18,10 +19,11 @@
       }
     ]
   },
-  "imaging": {
-    "name": "Imaging",
-    "description": "Imaging Tools",
-    "theme": "ImagingTheme",
+  "ctax": {
+    "name": "CTAX",
+    "description": "Cold Neutron Triple-Axis Spectroscopy",
+    "icon": "mdi-microscope",
+    "theme": "HFIRTheme",
     "tools": [
       {
         "name": "Garnet",
@@ -31,11 +33,31 @@
       }
     ]
   },
-  "sans": {
-    "name": "SANS",
-    "description": "Small-Angle Neutron Scattering Tools",
-    "theme": "SANSTheme",
+  "demand": {
+    "name": "DEMAND",
+    "description": "Dimensional Extreme Magnetic Neutron Diffractometer",
+    "icon": "mdi-diamond-stone",
+    "theme": "HFIRTheme",
+    "tools": []
+  },
+  "eqsans": {
+    "name": "EQ-SANS",
+    "description": "Extended Q-Range Small-Angle Neutron Scattering",
+    "icon": "mdi-atom",
+    "theme": "SNSTheme",
     "tools": [
+      {
+        "name": "Topaz",
+        "id": "neutrons_trame_topaz",
+        "description": "Topaz Data Reduction Application",
+        "max_instances": 1
+      },
+      {
+        "name": "Topaz",
+        "id": "neutrons_trame_topaz",
+        "description": "Topaz Data Reduction Application",
+        "max_instances": 1
+      },
       {
         "name": "Topaz",
         "id": "neutrons_trame_topaz",
