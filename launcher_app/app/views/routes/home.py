@@ -1,12 +1,13 @@
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify
 from trame.widgets import html as html
-from launcher_app.app.view_models.home import HomeViewModel
+
+from launcher_app.app.views.theme.components import EasyGrid
 
 
 class HomeView:
 
-    def __init__(self, server, view_model):
+    def __init__(self, server, view_model, vuetify_config):
         self.server = server
         self.ctrl = self.server.controller
 
@@ -24,6 +25,8 @@ class HomeView:
         self.user_vm.given_name_bind.connect("given_name")
         self.user_vm.email_bind.connect("email")
         self.user_vm.logged_in_bind.connect("is_logged_in")
+
+        self.vuetify_config = vuetify_config
 
         self.create_ui()
 
@@ -47,24 +50,38 @@ class HomeView:
             )
         )
 
-        with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
+        with vuetify.VContainer(classes="align-start d-flex justify-center mt-16"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(
                     "Welcome to the Neutrons App Dashboard", classes="text-center"
                 )
                 with vuetify.VCardText():
                     html.P(
-                        "You can view the different categories of tools available below."
-                        "To see the tools available for a category, simply click on it to"
-                        "view the available tools."
+                        "You can view the different categories of tools available below. "
+                        "To see the tools available for a category, simply click on it."
                     )
 
-                    with vuetify.VList():
-                        for key in self.home_vm.tools:
-                            category = self.home_vm.tools[key]
+                    with EasyGrid(cols_per_row=2):
+                        for key, category in self.home_vm.tools.items():
+                            color = (
+                                self.vuetify_config["theme"]["themes"]
+                                .get(category["theme"], {})
+                                .get("colors", {})
+                                .get("primary", "#000000")
+                            )
 
-                            with vuetify.VListItem(
-                                classes="my-4 pa-4", to=f"/category/{key}"
-                            ):
-                                vuetify.VListItemTitle(category["name"])
-                                vuetify.VListItemSubtitle(category["description"])
+                            vuetify.VCard(
+                                append_icon="mdi-open-in-app",
+                                classes="d-flex flex-column justify-center",
+                                flat=True,
+                                height=150,
+                                prepend_icon=category["icon"],
+                                style={
+                                    "background-color": f"{color}19",  # 8-digit hex code, 19 represents ~10% opacity
+                                    "border-color": color,
+                                    "border-width": "1px",
+                                },
+                                subtitle=category["description"],
+                                title=category["name"],
+                                to=f"/category/{key}",
+                            )

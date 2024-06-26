@@ -37,20 +37,45 @@ class CategoryView:
             )
         )
 
+        with vuetify.VBreadcrumbs():
+            with vuetify.VBreadcrumbsItem(to="/"):
+                html.Span("Home")
+            vuetify.VBreadcrumbsDivider()
+            with vuetify.VBreadcrumbsItem():
+                html.Span("{{ tools[$route.params.category]['name'] }}")
+
         with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(
                     "{{ tools[$route.params.category]['name'] }} Applications",
                     classes="text-center",
                 )
+                vuetify.VCardSubtitle(
+                    (
+                        "The below tools are currently supported for running on Calvera. "
+                        "You must be signed in to launch them. "
+                        "You may sign in using the button in the top right corner of this page."
+                    ),
+                    classes="mb-4",
+                )
+                vuetify.VCardSubtitle(
+                    "If you're interested in adding a tool, then please see our developer guide { link } "
+                    "or contact { email } for more information.",
+                )
                 with vuetify.VCardText():
                     with vuetify.VList():
-                        vuetify.VListSubheader("Available Tools")
+                        vuetify.VListSubheader(
+                            "Available Tools",
+                            v_if=("tools[$route.params.category]['tools'].length > 0",),
+                        )
+                        vuetify.VListSubheader(
+                            "No Tools Available", v_else=True, classes="justify-center"
+                        )
                         with vuetify.VListItem(
                             v_for=(
                                 "(tool, index) in tools[$route.params.category]['tools']"
                             ),
-                            classes="border-thin pa-2",
+                            classes="pa-2",
                         ):
                             vuetify.VListItemTitle("{{ tool['name'] }}")
                             vuetify.VListItemSubtitle("{{ tool['description'] }}")
@@ -67,17 +92,17 @@ class CategoryView:
                                                 f"!['launched', 'launching'].includes(job_state[tool.id])",
                                             ),
                                             click=(self.home_vm.start_job, "[tool.id]"),
-                                            color="primary",
+                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-play")
                                         with vuetify.VBtn(
                                             "Open",
-                                            v_if=("jobs[tool.id]",),
+                                            v_if=("job_state[tool.id] === 'launched'",),
                                             click=(
                                                 self.js_navigate,
                                                 "[jobs[tool.id].url]",
                                             ),
-                                            color="primary",
+                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-open-in-new")
                                         with vuetify.VBtn(
