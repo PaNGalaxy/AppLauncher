@@ -57,8 +57,11 @@ class HomeView:
                 )
                 with vuetify.VCardText():
                     html.P(
-                        "You can view the different categories of tools available below. "
-                        "To see the tools available for a category, simply click on it."
+                        (
+                            "You can view the different categories of tools available below. "
+                            "Simply click on a category to access its tools."
+                        ),
+                        classes="text-center",
                     )
 
                     with EasyGrid(cols_per_row=2):
