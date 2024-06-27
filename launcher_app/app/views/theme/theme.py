@@ -64,9 +64,7 @@ class ThemedApp:
                     vuetify.VProgressCircular(
                         classes="mr-1",
                         color="primary",
-                        indeterminate=(
-                            "galaxy_running",
-                        ),  # TODO: determine the logic for this
+                        indeterminate=("!!galaxy_running",),
                         size=16,
                         width=3,
                     )

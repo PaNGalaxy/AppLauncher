@@ -12,6 +12,7 @@ class CategoryView:
         self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
 
         self.home_vm = view_model["home"]
+        self.home_vm.galaxy_running_bind.connect("galaxy_running")
         self.home_vm.galaxy_url_bind.connect("galaxy_url")
         self.home_vm.job_state_bind.connect("job_state")
         self.home_vm.jobs_bind.connect("jobs")
