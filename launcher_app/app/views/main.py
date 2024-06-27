@@ -63,7 +63,7 @@ class App(ThemedApp):
                         with vuetify.Template(v_slot_activator="{ props }"):
                             with vuetify.VBtn(v_bind="props"):
                                 html.Span("Sign In")
-                        with vuetify.VList(classes="plain"):
+                        with vuetify.VList():
                             vuetify.VListItem(
                                 "via UCAMS",
                                 href=self.vm["user"].get_auth_url(),

@@ -42,7 +42,7 @@ class EasyGrid(vuetify.VContainer):
 
         # Again, we need to skip the next child since we're going to add it manually
         self.skip_child = True
-        col = vuetify.VCol(cols=VUETIFY_COLS // self.cols_per_row)
+        col = vuetify.VCol(cols="12", lg=VUETIFY_COLS // self.cols_per_row)
         col.add_child(child)
 
         self.last_row.add_child(col)
