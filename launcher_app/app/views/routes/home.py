@@ -51,7 +51,7 @@ class HomeView:
         )
 
         with vuetify.VContainer(classes="align-start d-flex justify-center mt-16"):
-            with vuetify.VCard(width=800):
+            with vuetify.VCard(width=1280):
                 vuetify.VCardTitle(
                     "Welcome to the Neutrons App Dashboard", classes="text-center"
                 )
@@ -64,7 +64,7 @@ class HomeView:
                         classes="text-center",
                     )
 
-                    with EasyGrid(cols_per_row=2):
+                    with EasyGrid(cols_per_row=3):
                         for key, category in self.home_vm.tools.items():
                             color = (
                                 self.vuetify_config["theme"]["themes"]
@@ -75,10 +75,8 @@ class HomeView:
 
                             vuetify.VCard(
                                 append_icon="mdi-open-in-app",
-                                classes="d-flex flex-column justify-center",
+                                classes="d-flex fill-height flex-column justify-center",
                                 flat=True,
-                                height=150,
-                                prepend_icon=category["icon"],
                                 style={
                                     "background-color": f"{color}19",  # 8-digit hex code, 19 represents ~10% opacity
                                     "border-color": color,

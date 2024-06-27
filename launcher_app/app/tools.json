@@ -1,20 +1,21 @@
 {
-  "data-reduction": {
-    "name": "Data Reduction",
-    "description": "Interactive Tools for Executing Data Reduction Workflows",
+  "powder-diffraction": {
+    "name": "Powder Diffraction",
+    "description": "NOMAD, POWDER, POWGEN",
     "icon": "mdi-filter-outline",
+    "theme": "NeutronsTheme",
+    "tools": []
+  },
+  "single-crystal-diffraction": {
+    "name": "Single Crystal Diffraction",
+    "description": "CORELLI, DEMAND, IMAGINE, MANDI, TOPAZ, WAND²",
+    "icon": "mdi-diamond-outline",
     "theme": "NeutronsTheme",
     "tools": [
       {
         "id": "neutrons_trame_garnet",
         "name": "Garnet",
         "description": "Single Crystal Grapical Advanced Reduction Neutron Event Toolkit",
-        "max_instances": 1
-      },
-      {
-        "id": "neutrons_trame_sans",
-        "name": "SANS Data Reduction",
-        "description": "Small-Angle Neutron Scattering Data Reduction Application",
         "max_instances": 1
       },
       {
@@ -25,9 +26,16 @@
       }
     ]
   },
+  "engineering-diffraction": {
+    "name": "Engineering Diffraction",
+    "description": "HIDRA, SNAP, VULCAN",
+    "icon": "mdi-wrench",
+    "theme": "NeutronsTheme",
+    "tools": []
+  },
   "reflectometry": {
     "name": "Reflectometry",
-    "description": "Interactive Tools for Reflectometry Data Analysis",
+    "description": "LIQREF, MAGREF",
     "icon": "mdi-angle-obtuse",
     "theme": "NeutronsTheme",
     "tools": [
@@ -39,22 +47,64 @@
       }
     ]
   },
-  "visualization": {
-    "name": "Imaging/Visualization",
-    "description": "Interactive Tools for Visualizing and Analyzing Data",
+  "sans": {
+    "name": "Small-Angle Neutron Scattering",
+    "description": "BIO-SANS, EQ-SANS, GP-SANS, USANS",
+    "icon": "mdi-atom",
+    "theme": "NeutronsTheme",
+    "tools": [
+      {
+        "id": "neutrons_trame_sans",
+        "name": "SANS Data Reduction",
+        "description": "Small-Angle Neutron Scattering Data Reduction Application",
+        "max_instances": 1
+      }
+    ]
+  },
+  "direct-geometry-spectroscopy": {
+    "name": "Direct-Geometry Spectroscopy",
+    "description": "ARCS, CNCS, CTAX, HYSPEC, NSE, PTAX, SEQUOIA, TAX, VERITAS",
+    "icon": "mdi-microscope",
+    "theme": "NeutronsTheme",
+    "tools": []
+  },
+  "chemical-spectroscopy": {
+    "name": "Chemical Spectroscopy",
+    "description": "BASIS, VISION",
+    "icon": "mdi-microscope",
+    "theme": "NeutronsTheme",
+    "tools": []
+  },
+  "imaging": {
+    "name": "Imaging",
+    "description": "MARS, VENUS",
     "icon": "mdi-chart-bell-curve-cumulative",
     "theme": "NeutronsTheme",
     "tools": [
       {
-        "id": "interactive_tool_paraview",
-        "name": "Paraview",
-        "description": "Paraview Server for Scientific Visualization",
-        "max_instances": 1
-      },
-      {
         "id": "neutrons_ctr",
         "name": "CT Reconstruction",
         "description": "Computed Tomography Reconstruction in a Jupyter Notebook",
+        "max_instances": 1
+      }
+    ]
+  },
+  "tools": {
+    "name": "Miscellaneous",
+    "description": "Jupyter Notebook, Paraview",
+    "icon": "mdi-tools",
+    "theme": "SNSTheme",
+    "tools": [
+      {
+        "id": "interactive_tool_generic_output",
+        "name": "Jupyter Notebook",
+        "description": "Run a Jupyter Notebook",
+        "max_instances": 1
+      },
+      {
+        "id": "interactive_tool_paraview",
+        "name": "Paraview",
+        "description": "Paraview Server for Scientific Visualization",
         "max_instances": 1
       },
       {
@@ -67,20 +117,6 @@
         "id": "interactive_tool_jana2020",
         "name": "Jana2020",
         "description": "Jana2020 Visualizer",
-        "max_instances": 1
-      }
-    ]
-  },
-  "tools": {
-    "name": "Miscellaneous",
-    "description": "Jupyter Notebook",
-    "icon": "mdi-tools",
-    "theme": "SNSTheme",
-    "tools": [
-      {
-        "id": "interactive_tool_generic_output",
-        "name": "Jupyter Notebook",
-        "description": "Run a Jupyter Notebook",
         "max_instances": 1
       },
       {
