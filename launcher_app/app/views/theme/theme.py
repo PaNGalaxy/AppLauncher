@@ -55,23 +55,23 @@ class ThemedApp:
                 layout.content = vuetify.VMain()
 
                 with vuetify.VFooter(
-                    app=True, classes="my-0 py-0 text-center justify-center", border=True
+                    app=True,
+                    classes="my-0 px-1 py-0 text-center justify-center",
+                    border=True,
                 ) as footer:
                     layout.footer = footer
 
                     vuetify.VProgressCircular(
-                        classes="ml-n3 mr-1",
+                        classes="mr-1",
                         color="primary",
-                        indeterminate=(
-                            "galaxy_running",
-                        ),  # TODO: determine the logic for this
+                        indeterminate=("!!galaxy_running",),
                         size=16,
                         width=3,
                     )
                     html.A(
                         "Powered by Calvera",
                         classes="text-grey-lighten-1 text-caption text-decoration-none",
-                        href=("galaxyLink",),
+                        href=("galaxy_url",),
                         target="_blank",
                     )
                     vuetify.VSpacer()

@@ -27,6 +27,9 @@ class HomeViewModel:
 
         self.job_state = {}
         self.jobs = {}
+        self.galaxy_jobs = 0
+        self.galaxy_running_bind = binding.new_bind()
+        self.galaxy_url_bind = binding.new_bind()
         self.job_state_bind = binding.new_bind(self.job_state)
         self.jobs_bind = binding.new_bind(self.jobs)
         self.navigation_bind = binding.new_bind()
@@ -48,15 +51,24 @@ class HomeViewModel:
             # TODO: maybe set some status here
             self.update_view()
             return
+
+        self.galaxy_jobs += 1
         self.job_state[tool_id] = "launching"
         self.update_view()
+
         await self.job_model.galaxy.invoke_interactive_tool(tool_id)
         self.auto_open_tool_list.append(tool_id)
 
     async def stop_job(self, tool_id):
+        self.galaxy_jobs += 1
         self.job_state[tool_id] = "stopping"
         self.update_view()
+
         success = await self.job_model.galaxy.stop_job(self.jobs[tool_id]["job_id"])
+
+        self.galaxy_jobs -= 1
+        self.update_view()
+
         return success
 
     def check_tool_limit(self, tool_id):
@@ -76,6 +88,8 @@ class HomeViewModel:
                     "url": matched_tool["url"],
                 }
                 if matched_tool["state"] == "running":
+                    if self.job_state[tool["id"]] == "launching":
+                        self.galaxy_jobs -= 1
                     self.job_state[tool["id"]] = "launched"
                 elif matched_tool["state"] == "queued":
                     self.job_state[tool["id"]] = "launching"
@@ -92,6 +106,8 @@ class HomeViewModel:
         self.update_view()
 
     def update_view(self):
+        self.galaxy_running_bind.update_in_view(self.galaxy_jobs > 0)
+        self.galaxy_url_bind.update_in_view(self.job_model.galaxy.galaxy_url)
         self.jobs_bind.update_in_view(self.jobs)
         self.tools = self.tool_model.get_tools()
         self.tool_list = self.tool_model.get_tools(as_list=True)
