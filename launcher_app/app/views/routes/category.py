@@ -12,6 +12,7 @@ class CategoryView:
         self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
 
         self.home_vm = view_model["home"]
+        self.home_vm.open_after_launch_bind.connect("open_after_launch")
         self.home_vm.galaxy_running_bind.connect("galaxy_running")
         self.home_vm.galaxy_url_bind.connect("galaxy_url")
         self.home_vm.job_state_bind.connect("job_state")
@@ -34,6 +35,10 @@ class CategoryView:
     def create_ui(self):
         client.ClientTriggers(
             mounted=(
+                "window.localStorage.getItem('autoOpen') !== null && "
+                "window.localStorage.getItem('autoOpen') !== 'null' "
+                " ? open_after_launch = window.localStorage.getItem('autoOpen') === 'true' "
+                " : '';"
                 "window.localStorage.setItem('lastPath', $route.path);"
                 "window.localStorage.setItem('loggedIn', is_logged_in);"
             )
@@ -60,6 +65,23 @@ class CategoryView:
                     )
                 )
                 with vuetify.VCardText():
+                    vuetify.VSwitch(
+                        v_model="open_after_launch",
+                        color="primary",
+                        hide_details=True,
+                        label="Automatically Open Tools in a New Tab After Launch",
+                        click="window.localStorage.setItem('autoOpen', !open_after_launch)",
+                    )
+                    html.P(
+                        (
+                            "If tools don't automatically open after launching, then you "
+                            "may need to allow pop-ups on this site in your browser or "
+                            "browser extension settings."
+                        ),
+                        v_if="open_after_launch",
+                        classes="text-caption",
+                    )
+
                     with vuetify.VList(classes="with-color"):
                         vuetify.VListSubheader(
                             "Available Tools",

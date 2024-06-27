@@ -39,6 +39,7 @@ class HomeViewModel:
         self.tools = self.tool_model.get_tools()
         self.tool_list = self.tool_model.get_tools(as_list=True)
         self.auto_open_tool_list = []
+        self.open_after_launch_bind = binding.new_bind()
         for tool in self.tool_list:
             self.job_state[tool["id"]] = None
 
@@ -99,7 +100,11 @@ class HomeViewModel:
                     self.jobs.pop(tool["id"])
         if len(self.auto_open_tool_list) > 0:
             for t in self.auto_open_tool_list.copy():
-                if self.jobs[t]["url"]:
+                if (
+                    t in self.jobs
+                    and self.jobs[t]["url"]
+                    and self.open_after_launch_bind.state.open_after_launch
+                ):
                     self.navigation_bind.update_in_view(self.jobs[t]["url"])
                     self.auto_open_tool_list.remove(t)
 
