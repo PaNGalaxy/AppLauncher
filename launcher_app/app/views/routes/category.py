@@ -9,10 +9,12 @@ class CategoryView:
         self.server = server
         self.ctrl = self.server.controller
 
+        self.js_local_storage = client.JSEval(
+            exec="window.localStorage.setItem($event.key, $event.value)"
+        ).exec
         self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
 
         self.home_vm = view_model["home"]
-        self.home_vm.open_after_launch_bind.connect("open_after_launch")
         self.home_vm.galaxy_running_bind.connect("galaxy_running")
         self.home_vm.galaxy_url_bind.connect("galaxy_url")
         self.home_vm.job_state_bind.connect("job_state")
@@ -20,6 +22,8 @@ class CategoryView:
         self.home_vm.tool_list_bind.connect("tools")
         self.home_vm.tool_list_bind.connect("tool_list")
         self.home_vm.logged_in_bind.connect("is_logged_in")
+        self.home_vm.auto_open_bind.connect("auto_open")
+        self.home_vm.local_storage_bind.connect(self.js_local_storage)
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
         self.user_vm = view_model["user"]
@@ -35,12 +39,14 @@ class CategoryView:
     def create_ui(self):
         client.ClientTriggers(
             mounted=(
-                "window.localStorage.getItem('autoOpen') !== null && "
-                "window.localStorage.getItem('autoOpen') !== 'null' "
-                " ? open_after_launch = window.localStorage.getItem('autoOpen') === 'true' "
-                " : '';"
-                "window.localStorage.setItem('lastPath', $route.path);"
-                "window.localStorage.setItem('loggedIn', is_logged_in);"
+                self.home_vm.set_local_storage,
+                (
+                    "[{"
+                    "  'auto_open': window.localStorage.getItem('auto_open') === 'true',"
+                    "  'last_path': $route.path,"
+                    "  'logged_in': is_logged_in"
+                    "}]"
+                ),
             )
         )
 
@@ -66,11 +72,14 @@ class CategoryView:
                 )
                 with vuetify.VCardText():
                     vuetify.VSwitch(
-                        v_model="open_after_launch",
+                        v_model="auto_open",
                         color="primary",
                         hide_details=True,
                         label="Automatically Open Tools in a New Tab After Launch",
-                        click="window.localStorage.setItem('autoOpen', !open_after_launch)",
+                        click=(
+                            self.home_vm.set_local_storage,
+                            "[{'auto_open': !auto_open}]",
+                        ),
                     )
                     html.P(
                         (
@@ -78,7 +87,7 @@ class CategoryView:
                             "may need to allow pop-ups on this site in your browser or "
                             "browser extension settings."
                         ),
-                        v_if="open_after_launch",
+                        v_if="auto_open",
                         classes="text-caption",
                     )
 

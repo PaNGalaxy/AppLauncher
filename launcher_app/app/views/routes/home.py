@@ -21,6 +21,7 @@ class HomeView:
         self.home_vm.tools_bind.connect("tools")
         self.home_vm.tool_list_bind.connect("tool_list")
         self.home_vm.logged_in_bind.connect("is_logged_in")
+        self.home_vm.auto_open_bind.connect("auto_open")
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
         self.user_vm = view_model["user"]
@@ -41,14 +42,14 @@ class HomeView:
         # the last page load, and if so, redirect the user to the last page they were on.
         client.ClientTriggers(
             mounted=(
-                "window.localStorage.getItem('lastPath') !== 'null' && "
-                "window.localStorage.getItem('lastPath') !== $route.path && "
+                "window.localStorage.getItem('last_path') !== 'null' && "
+                "window.localStorage.getItem('last_path') !== $route.path && "
                 "is_logged_in && "
-                "window.localStorage.getItem('loggedIn') !== is_logged_in.toString() "
-                " ? (window.localStorage.setItem('loggedIn', is_logged_in),"
-                "    $router.push(window.localStorage.getItem('lastPath')))"
-                " : (window.localStorage.setItem('loggedIn', is_logged_in),"
-                "    window.localStorage.setItem('lastPath', null));"
+                "window.localStorage.getItem('logged_in') !== is_logged_in.toString() "
+                " ? (window.localStorage.setItem('logged_in', is_logged_in),"
+                "    $router.push(window.localStorage.getItem('last_path')))"
+                " : (window.localStorage.setItem('logged_in', is_logged_in),"
+                "    window.localStorage.setItem('last_path', null));"
             )
         )
 
