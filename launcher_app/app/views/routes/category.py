@@ -66,7 +66,9 @@ class CategoryView:
                             v_if=("tools[$route.params.category]['tools'].length > 0",),
                         )
                         vuetify.VListSubheader(
-                            "No Tools Available", v_else=True, classes="justify-center"
+                            "Stay tuned, we will be adding tools here soon!",
+                            v_else=True,
+                            classes="justify-center",
                         )
                         with vuetify.VListItem(
                             v_for=(
