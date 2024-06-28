@@ -55,6 +55,9 @@ class HomeViewModel:
         self.galaxy_jobs += 1
         self.job_state[tool_id] = "launching"
         self.update_view()
+        import time
+
+        time.sleep(5)
 
         await self.job_model.galaxy.invoke_interactive_tool(tool_id)
         self.auto_open_tool_list.append(tool_id)
