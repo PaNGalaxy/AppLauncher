@@ -55,9 +55,6 @@ class HomeViewModel:
         self.galaxy_jobs += 1
         self.job_state[tool_id] = "launching"
         self.update_view()
-        import time
-
-        time.sleep(5)
 
         await self.job_model.galaxy.invoke_interactive_tool(tool_id)
         self.auto_open_tool_list.append(tool_id)
@@ -93,11 +90,13 @@ class HomeViewModel:
                 if matched_tool["state"] == "running":
                     if self.job_state[tool["id"]] == "launching":
                         self.galaxy_jobs -= 1
-                    self.job_state[tool["id"]] = "launched"
+                    if self.job_state[tool["id"]] != "stopping":
+                        self.job_state[tool["id"]] = "launched"
                 elif matched_tool["state"] == "queued":
                     self.job_state[tool["id"]] = "launching"
             except StopIteration:
-                self.job_state[tool["id"]] = None
+                if self.job_state[tool["id"]] not in ["launching"]:
+                    self.job_state[tool["id"]] = None
                 if self.jobs.get(tool["id"], None):
                     self.jobs.pop(tool["id"])
         if len(self.auto_open_tool_list) > 0:
