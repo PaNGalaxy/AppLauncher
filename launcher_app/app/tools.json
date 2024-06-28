@@ -93,7 +93,7 @@
     "name": "Miscellaneous",
     "description": "Jupyter Notebook, Paraview",
     "icon": "mdi-tools",
-    "theme": "SNSTheme",
+    "theme": "NeutronsTheme",
     "tools": [
       {
         "id": "interactive_tool_generic_output",
