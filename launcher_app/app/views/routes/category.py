@@ -60,13 +60,15 @@ class CategoryView:
                     )
                 )
                 with vuetify.VCardText():
-                    with vuetify.VList(classes="striped"):
+                    with vuetify.VList(classes="with-color"):
                         vuetify.VListSubheader(
                             "Available Tools",
                             v_if=("tools[$route.params.category]['tools'].length > 0",),
                         )
                         vuetify.VListSubheader(
-                            "No Tools Available", v_else=True, classes="justify-center"
+                            "Stay tuned, we will be adding tools here soon!",
+                            v_else=True,
+                            classes="justify-center",
                         )
                         with vuetify.VListItem(
                             v_for=(
