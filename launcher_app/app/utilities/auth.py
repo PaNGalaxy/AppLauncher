@@ -23,7 +23,7 @@ xcams_client_secret = os.getenv("TRAME_XCAMS_CLIENT_SECRET", "tLVhtFouBjw7cKMbTX
 xcams_redirect_uri = redirect_uri + "/xcams"
 
 app_path = os.getenv("EP_PATH", "/")
-scopes = ["email", "profile", "openid", "User.Read"]
+scopes = ["email", "profile", "openid", "User.Read", "https://galaxyproject.org/api:*"]
 
 
 @server.controller.add("on_server_bind")

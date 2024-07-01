@@ -2,14 +2,17 @@ import argparse
 import asyncio
 import logging
 import os
+import requests
 import threading
 
 from bioblend import galaxy
+from launcher_app.app.utilities.auth import AuthManager
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 LAUNCHER_HISTORY_NAME = "launcher_history"
+GALAXY_API_KEY_ENDPOINT = "/api/authenticate/baseauth"
 
 class Galaxy:
     def _parse_args(self):
@@ -37,24 +40,34 @@ class Galaxy:
             thread.daemon = True
             thread.start()
 
-    def _connect_to_galaxy(self, args):
-        self.galaxy_url = args.galaxy_url or os.getenv("GALAXY_URL")
-        self.galaxy_api_key = args.galaxy_key or os.getenv("GALAXY_API_KEY")
-        initial_history = args.galaxy_history_id or os.getenv("GALAXY_HISTORY_ID")
+    def _connect_to_galaxy(self):
         try:
             self.galaxy_instance = galaxy.GalaxyInstance(url=self.galaxy_url, key=self.galaxy_api_key)
         except:
             self.galaxy_instance = None
         self.sync_histories()
         for history in self.galaxy_history_list:
-            if history["id"] == initial_history:
+            if history["id"] == self.initial_history:
                 self.galaxy_current_history = history
                 break
+
+    def connect_to_galaxy_api(self):
+        url = self.galaxy_url + GALAXY_API_KEY_ENDPOINT
+        headers = {"Authorization": f"Bearer {AuthManager().get_token()}"}
+        r = requests.get(url, headers=headers)
+        self.galaxy_api_key = r.json()["api_key"]
+        self._connect_to_galaxy()
 
     def __init__(self):
         args = self._parse_args()
         self.galaxy_current_history = None
-        self._connect_to_galaxy(args)
+        self.galaxy_url = args.galaxy_url or os.getenv("GALAXY_URL")
+        self.galaxy_api_key = args.galaxy_key or os.getenv("GALAXY_API_KEY")
+        self.initial_history = args.galaxy_history_id or os.getenv("GALAXY_HISTORY_ID")
+        if self.galaxy_api_key == "" or self.galaxy_api_key is None:
+            AuthManager().register_auth_listener(self.connect_to_galaxy_api)
+        else:
+            self._connect_to_galaxy()
 
     def get_histories(self, name):
         histories = self.galaxy_instance.histories.get_histories(name=name)
