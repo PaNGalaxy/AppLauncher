@@ -9,6 +9,9 @@ class CategoryView:
         self.server = server
         self.ctrl = self.server.controller
 
+        self.js_local_storage = client.JSEval(
+            exec="window.localStorage.setItem($event.key, $event.value)"
+        ).exec
         self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
 
         self.home_vm = view_model["home"]
@@ -19,6 +22,8 @@ class CategoryView:
         self.home_vm.tool_list_bind.connect("tools")
         self.home_vm.tool_list_bind.connect("tool_list")
         self.home_vm.logged_in_bind.connect("is_logged_in")
+        self.home_vm.auto_open_bind.connect("auto_open")
+        self.home_vm.local_storage_bind.connect(self.js_local_storage)
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
         self.user_vm = view_model["user"]
@@ -34,8 +39,14 @@ class CategoryView:
     def create_ui(self):
         client.ClientTriggers(
             mounted=(
-                "window.localStorage.setItem('lastPath', $route.path);"
-                "window.localStorage.setItem('loggedIn', is_logged_in);"
+                self.home_vm.set_local_storage,
+                (
+                    "[{"
+                    "  'auto_open': window.localStorage.getItem('auto_open') === 'true',"
+                    "  'last_path': $route.path,"
+                    "  'logged_in': is_logged_in"
+                    "}]"
+                ),
             )
         )
 
@@ -60,6 +71,26 @@ class CategoryView:
                     )
                 )
                 with vuetify.VCardText():
+                    vuetify.VSwitch(
+                        v_model="auto_open",
+                        color="primary",
+                        hide_details=True,
+                        label="Automatically Open Tools in a New Tab After Launch",
+                        click=(
+                            self.home_vm.set_local_storage,
+                            "[{'auto_open': !auto_open}]",
+                        ),
+                    )
+                    html.P(
+                        (
+                            "If tools don't automatically open after launching, then you "
+                            "may need to allow pop-ups on this site in your browser or "
+                            "browser extension settings."
+                        ),
+                        v_if="auto_open",
+                        classes="text-caption",
+                    )
+
                     with vuetify.VList(classes="with-color"):
                         vuetify.VListSubheader(
                             "Available Tools",
