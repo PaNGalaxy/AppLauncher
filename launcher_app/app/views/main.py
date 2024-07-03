@@ -1,4 +1,5 @@
 from py_mvvm.trame_binding import TrameBinding
+from trame_facade import ThemedApp
 
 from trame.app import get_server
 from trame.assets.local import LocalFileManager
@@ -7,7 +8,6 @@ from trame.widgets import html, router, vuetify3 as vuetify
 
 from launcher_app.app.mvvm_factory import create_viewmodels
 from launcher_app.app.utilities.auth import AuthManager
-from launcher_app.app.views.theme import ThemedApp
 from launcher_app.app.views.view_controller import ViewController
 
 
