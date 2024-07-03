@@ -1,6 +1,6 @@
+import os
 from py_mvvm.trame_binding import TrameBinding
 
-from trame.app import get_server
 from trame.assets.local import LocalFileManager
 from trame.decorators import TrameApp
 from trame.widgets import html, router, vuetify3 as vuetify
@@ -21,11 +21,20 @@ class App(ThemedApp):
     def __init__(self, server=None):
         super().__init__(server=server)
 
-        self.server = get_server(server, client_type="vue3")
-        self.ctrl = self.server.controller
+        # CLI to get base URL
+        self.server.cli.add_argument("--session", help="Session identifier")
+        args, _ = self.server.cli.parse_known_args()
+
+        # Setup Auth
+        redirect_path = os.getenv("TRAME_REDIRECT_PATH", "/redirect")
+        root_path = os.getenv("EP_PATH", "")
+        full_redirect_path =  f"{root_path}/api/{args.session}{redirect_path}"
+        self.auth = AuthManager()
+        self.auth.start_session(full_redirect_path)
+
+        # State binding with models
         binding = TrameBinding(self.server.state)
         self.vm = create_viewmodels(binding)
-        self.auth = AuthManager()
 
         self.view_controller = ViewController(self.server, self.vm, self.vuetify_config)
 

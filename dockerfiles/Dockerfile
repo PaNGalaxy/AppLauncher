@@ -10,24 +10,11 @@ RUN poetry build --format=wheel
 
 
 
-FROM --platform=amd64 kitware/trame:py3.10-conda-glvnd-2024-01 as run
-
-RUN pip install --extra-index-url https://wheels.vtk.org vtk-egl
-RUN pip install --extra-index-url https://code.ornl.gov/api/v4/projects/15758/packages/pypi/simple py-mvvm
+FROM --platform=amd64 kitware/trame:py3.10-conda-glvnd-2024-06 as run
 
 COPY --from=build /src/dist /dist
-RUN pip install /dist/*.whl
+COPY --chown=trame-user:trame-user dockerfiles/setup /deploy/setup
 
-RUN apt update && apt install -y nginx
-RUN chmod og+rwX -R /var/lib/nginx
-RUN chmod og+rwX -R /var/log/nginx
-RUN chmod og+rwX -R /etc/nginx
+ENV TRAME_CLIENT_TYPE=vue3
 
-COPY dockerfiles/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY dockerfiles/prepare_nginx.sh /
-
-RUN python -m trame.tools.www --client-type vue3 --output /app/www-content
-
-
-USER trame-user
-ENTRYPOINT []
+RUN /opt/trame/entrypoint.sh build
