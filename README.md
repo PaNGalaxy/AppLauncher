@@ -28,13 +28,13 @@ to configure your IDE to select the correct Python interpreter.
 with conda and mantid
 
 ```bash
-docker build -f dockerfiles/Dockerfile -t app .
+docker build -f dockerfiles/Dockerfile --no-cache --progress=plain -t app .
 ```
 
 ### Run the container
 
 ```
-docker run -p 8080:80 -it -e EP_PATH=/app app
+docker run -p 8080:80 -it -e EP_PATH=/app -e TRAME_URL_PREFIX=/app app
 ```
 
 then open your browser at http://localhost:8081/app/
