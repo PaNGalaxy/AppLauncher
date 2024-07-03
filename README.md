@@ -25,22 +25,16 @@ to configure your IDE to select the correct Python interpreter.
 ## Docker
 ### Build the image
 
-without conda and mantid:
-
-```bash
-docker build -f dockerfiles/Dockerfile -t app .
-```
-
 with conda and mantid
 
 ```bash
-docker build --build-arg BUILD_ENV=conda -f dockerfiles/Dockerfile -t app .
+docker build -f dockerfiles/Dockerfile --no-cache --progress=plain -t app .
 ```
 
 ### Run the container
 
 ```
-docker run -p 8081:8081 -it -e EP_PATH=/app app bash -c "/prepare_nginx.sh && python -m template_app.app --host 0.0.0.0 --server"  
+docker run -p 8080:80 -it -e EP_PATH=/app -e TRAME_URL_PREFIX=/app app
 ```
 
 then open your browser at http://localhost:8081/app/
