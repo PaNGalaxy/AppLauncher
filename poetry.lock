@@ -2155,6 +2155,26 @@ url = "https://code.ornl.gov/api/v4/projects/15758/packages/pypi/simple"
 reference = "py-mvvm"
 
 [[package]]
+name = "trame-facade"
+version = "0.0.1"
+description = "A Python Package for injecting curated themes into Trame applications"
+optional = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "trame_facade-0.0.1-py3-none-any.whl", hash = "sha256:b3bc75a60a3a865740e7958c9308f434e8c86a77ecc8cc2fa32dbb9c6fa4acaf"},
+    {file = "trame_facade-0.0.1.tar.gz", hash = "sha256:3b2285ad121d8c9aa6530ba861533f40afce27d7b00ed744f35462cab01c16b8"},
+]
+
+[package.dependencies]
+libsass = ">=0.23.0,<0.24.0"
+trame = ">=3.5.1,<4.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://code.ornl.gov/api/v4/projects/16294/packages/pypi/simple"
+reference = "trame-facade"
+
+[[package]]
 name = "trame-keycloak"
 version = "0.1.1"
 description = "Keycloak Authentication trame widget"
@@ -2583,4 +2603,4 @@ reference = "py-mvvm"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "70f928bc0ba409e265001c747eb814253af9ce791c6058ff07c92112805a836c"
+content-hash = "048acf8fba8ec4560661a9b119eef546484a92f1bea30220a25834007490c9e6"

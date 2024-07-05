@@ -1,8 +1,8 @@
+from trame_facade.components import EasyGrid
+
 from trame.widgets import client
 from trame.widgets import vuetify3 as vuetify
 from trame.widgets import html as html
-
-from launcher_app.app.views.theme.components import EasyGrid
 
 
 class HomeView:
