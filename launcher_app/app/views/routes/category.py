@@ -50,14 +50,14 @@ class CategoryView:
             )
         )
 
-        with vuetify.VBreadcrumbs():
+        with vuetify.VBreadcrumbs(classes="position-fixed", style={"top": "64px"}):
             with vuetify.VBreadcrumbsItem(to="/"):
                 html.Span("Home")
             vuetify.VBreadcrumbsDivider()
             with vuetify.VBreadcrumbsItem():
                 html.Span("{{ tools[$route.params.category]['name'] }}")
 
-        with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
+        with vuetify.VContainer(classes="align-start d-flex justify-center mt-16"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(
                     "{{ tools[$route.params.category]['name'] }} Applications",
@@ -73,7 +73,6 @@ class CategoryView:
                 with vuetify.VCardText():
                     vuetify.VSwitch(
                         v_model="auto_open",
-                        color="primary",
                         hide_details=True,
                         label="Automatically Open Tools in a New Tab After Launch",
                         click=(
@@ -88,10 +87,10 @@ class CategoryView:
                             "browser extension settings."
                         ),
                         v_if="auto_open",
-                        classes="text-caption",
+                        classes="mb-4 text-caption",
                     )
 
-                    with vuetify.VList(classes="with-color"):
+                    with vuetify.VList():
                         vuetify.VListSubheader(
                             "Available Tools",
                             v_if=("tools[$route.params.category]['tools'].length > 0",),
@@ -113,7 +112,9 @@ class CategoryView:
                                 with vuetify.VListItemAction():
                                     with html.Div(v_if="!is_logged_in"):
                                         vuetify.VBtn(
-                                            "Sign in to run apps", disabled=True
+                                            "Sign in to run apps",
+                                            color=False,
+                                            disabled=True,
                                         )
                                     with html.Div(v_else=True):
                                         with vuetify.VBtn(
@@ -122,7 +123,6 @@ class CategoryView:
                                                 f"!['launched', 'launching', 'stopping'].includes(job_state[tool.id])",
                                             ),
                                             click=(self.home_vm.start_job, "[tool.id]"),
-                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-play")
                                         with vuetify.VBtn(
@@ -132,7 +132,6 @@ class CategoryView:
                                                 self.js_navigate,
                                                 "[jobs[tool.id].url]",
                                             ),
-                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-open-in-new")
                                         with vuetify.VBtn(
@@ -145,5 +144,6 @@ class CategoryView:
                                         vuetify.VProgressCircular(
                                             v_if=(
                                                 "['launching', 'stopping'].includes(job_state[tool.id])",
-                                            )
+                                            ),
+                                            indeterminate=True,
                                         )
