@@ -2,7 +2,6 @@ from py_mvvm.trame_binding import TrameBinding
 from trame_facade import ThemedApp
 
 from trame.app import get_server
-from trame.assets.local import LocalFileManager
 from trame.decorators import TrameApp
 from trame.widgets import html, router, vuetify3 as vuetify
 
@@ -37,9 +36,6 @@ class App(ThemedApp):
 
     def create_ui(self):
         self.state.trame__title = "Neutrons App Dashboard"
-        self.state.trame__favicon = LocalFileManager(__file__).url(
-            "favicon", "./theme/assets/favicon.png"
-        )
 
         with super().create_ui() as layout:
             layout.theme.theme = (
