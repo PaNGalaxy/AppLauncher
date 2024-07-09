@@ -113,7 +113,6 @@ class CategoryView:
                                     with html.Div(v_if="!is_logged_in"):
                                         vuetify.VBtn(
                                             "Sign in to run apps",
-                                            color=False,
                                             disabled=True,
                                         )
                                     with html.Div(v_else=True):
