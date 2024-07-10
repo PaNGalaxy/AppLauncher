@@ -2,15 +2,11 @@
   "powder-diffraction": {
     "name": "Powder Diffraction",
     "description": "NOMAD, POWDER, POWGEN",
-    "icon": "mdi-filter-outline",
-    "theme": "NeutronsTheme",
     "tools": []
   },
   "single-crystal-diffraction": {
     "name": "Single Crystal Diffraction",
     "description": "CORELLI, DEMAND, IMAGINE, MANDI, TOPAZ, WAND²",
-    "icon": "mdi-diamond-outline",
-    "theme": "NeutronsTheme",
     "tools": [
       {
         "id": "neutrons_trame_garnet",
@@ -29,15 +25,11 @@
   "engineering-diffraction": {
     "name": "Engineering Diffraction",
     "description": "HIDRA, SNAP, VULCAN",
-    "icon": "mdi-wrench",
-    "theme": "NeutronsTheme",
     "tools": []
   },
   "reflectometry": {
     "name": "Reflectometry",
     "description": "LIQREF, MAGREF",
-    "icon": "mdi-angle-obtuse",
-    "theme": "NeutronsTheme",
     "tools": [
       {
         "id": "neutrons_reflectometry_refl1d",
@@ -50,8 +42,6 @@
   "sans": {
     "name": "Small-Angle Neutron Scattering",
     "description": "BIO-SANS, EQ-SANS, GP-SANS, USANS",
-    "icon": "mdi-atom",
-    "theme": "NeutronsTheme",
     "tools": [
       {
         "id": "neutrons_trame_sans",
@@ -64,22 +54,16 @@
   "direct-geometry-spectroscopy": {
     "name": "Direct-Geometry Spectroscopy",
     "description": "ARCS, CNCS, CTAX, HYSPEC, NSE, PTAX, SEQUOIA, TAX, VERITAS",
-    "icon": "mdi-microscope",
-    "theme": "NeutronsTheme",
     "tools": []
   },
   "chemical-spectroscopy": {
     "name": "Chemical Spectroscopy",
     "description": "BASIS, VISION",
-    "icon": "mdi-microscope",
-    "theme": "NeutronsTheme",
     "tools": []
   },
   "imaging": {
     "name": "Imaging",
     "description": "MARS, VENUS",
-    "icon": "mdi-chart-bell-curve-cumulative",
-    "theme": "NeutronsTheme",
     "tools": [
       {
         "id": "neutrons_ctr",
@@ -92,8 +76,6 @@
   "tools": {
     "name": "Miscellaneous",
     "description": "Jupyter Notebook, Paraview",
-    "icon": "mdi-tools",
-    "theme": "NeutronsTheme",
     "tools": [
       {
         "id": "interactive_tool_generic_output",
