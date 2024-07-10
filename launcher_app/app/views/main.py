@@ -38,10 +38,6 @@ class App(ThemedApp):
         self.state.trame__title = "Neutrons App Dashboard"
 
         with super().create_ui() as layout:
-            layout.theme.theme = (
-                "tools !== undefined && $route.params.category !== undefined ? tools[$route.params.category]['theme'] : 'default'",
-            )
-
             with layout.toolbar:
                 layout.toolbar_title.set_text(
                     "{{ tools !== undefined && $route.params.category !== undefined ? `${tools[$route.params.category]['name']} Applications` : 'Neutrons App Dashboard' }}"
