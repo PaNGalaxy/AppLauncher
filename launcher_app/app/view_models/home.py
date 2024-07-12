@@ -32,19 +32,35 @@ class HomeViewModel:
         self.galaxy_url_bind = binding.new_bind()
         self.job_state_bind = binding.new_bind(self.job_state)
         self.jobs_bind = binding.new_bind(self.jobs)
+        self.local_storage_bind = binding.new_bind()
         self.navigation_bind = binding.new_bind()
         self.tools_bind = binding.new_bind()
         self.tool_list_bind = binding.new_bind()
         self.monitor_task = TaskMonitor(self.monitor, DEFAULT_MONITOR_UPDATE_FREQUENCY)
         self.tools = self.tool_model.get_tools()
         self.tool_list = self.tool_model.get_tools(as_list=True)
+        self.auto_open = False
         self.auto_open_tool_list = []
+        self.auto_open_bind = binding.new_bind(self.auto_open)
         for tool in self.tool_list:
             self.job_state[tool["id"]] = None
 
         self.logged_in = None
         self.logged_in_bind = binding.new_bind(self.logged_in)
         self.user_model.auth.register_auth_listener(self.update_view)
+
+    def set_local_storage(self, values):
+        # Store dict in the view model and sync it with window.localStorage
+        for key in values:
+            value = values[key]
+
+            if hasattr(self, key):
+                setattr(self, key, value)
+            self.local_storage_bind.update_in_view(
+                {"key": key, "value": str(value).lower()}
+            )
+
+        self.update_view()
 
     async def start_job(self, tool_id):
         if not self.check_tool_limit(tool_id):
@@ -90,16 +106,16 @@ class HomeViewModel:
                 if matched_tool["state"] == "running":
                     if self.job_state[tool["id"]] == "launching":
                         self.galaxy_jobs -= 1
-                    self.job_state[tool["id"]] = "launched"
-                elif matched_tool["state"] == "queued":
-                    self.job_state[tool["id"]] = "launching"
+                    if self.job_state[tool["id"]] != "stopping":
+                        self.job_state[tool["id"]] = "launched"
             except StopIteration:
-                self.job_state[tool["id"]] = None
+                if self.job_state[tool["id"]] not in ["launching"]:
+                    self.job_state[tool["id"]] = None
                 if self.jobs.get(tool["id"], None):
                     self.jobs.pop(tool["id"])
         if len(self.auto_open_tool_list) > 0:
             for t in self.auto_open_tool_list.copy():
-                if self.jobs[t]["url"]:
+                if t in self.jobs and self.jobs[t]["url"] and self.auto_open:
                     self.navigation_bind.update_in_view(self.jobs[t]["url"])
                     self.auto_open_tool_list.remove(t)
 
@@ -116,3 +132,4 @@ class HomeViewModel:
         self.job_state_bind.update_in_view(self.job_state)
         self.logged_in = self.user_model.logged_in()
         self.logged_in_bind.update_in_view(self.logged_in)
+        self.auto_open_bind.update_in_view(self.auto_open)

@@ -9,6 +9,9 @@ class CategoryView:
         self.server = server
         self.ctrl = self.server.controller
 
+        self.js_local_storage = client.JSEval(
+            exec="window.localStorage.setItem($event.key, $event.value)"
+        ).exec
         self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
 
         self.home_vm = view_model["home"]
@@ -19,6 +22,8 @@ class CategoryView:
         self.home_vm.tool_list_bind.connect("tools")
         self.home_vm.tool_list_bind.connect("tool_list")
         self.home_vm.logged_in_bind.connect("is_logged_in")
+        self.home_vm.auto_open_bind.connect("auto_open")
+        self.home_vm.local_storage_bind.connect(self.js_local_storage)
         self.home_vm.navigation_bind.connect(self.js_navigate)
 
         self.user_vm = view_model["user"]
@@ -34,19 +39,25 @@ class CategoryView:
     def create_ui(self):
         client.ClientTriggers(
             mounted=(
-                "window.localStorage.setItem('lastPath', $route.path);"
-                "window.localStorage.setItem('loggedIn', is_logged_in);"
+                self.home_vm.set_local_storage,
+                (
+                    "[{"
+                    "  'auto_open': window.localStorage.getItem('auto_open') === 'true',"
+                    "  'last_path': $route.path,"
+                    "  'logged_in': is_logged_in"
+                    "}]"
+                ),
             )
         )
 
-        with vuetify.VBreadcrumbs():
+        with vuetify.VBreadcrumbs(classes="position-fixed", style={"top": "64px"}):
             with vuetify.VBreadcrumbsItem(to="/"):
                 html.Span("Home")
             vuetify.VBreadcrumbsDivider()
             with vuetify.VBreadcrumbsItem():
                 html.Span("{{ tools[$route.params.category]['name'] }}")
 
-        with vuetify.VContainer(classes="align-start d-flex justify-center mt-8"):
+        with vuetify.VContainer(classes="align-start d-flex justify-center mt-16"):
             with vuetify.VCard(width=800):
                 vuetify.VCardTitle(
                     "{{ tools[$route.params.category]['name'] }} Applications",
@@ -60,7 +71,26 @@ class CategoryView:
                     )
                 )
                 with vuetify.VCardText():
-                    with vuetify.VList(classes="with-color"):
+                    vuetify.VSwitch(
+                        v_model="auto_open",
+                        hide_details=True,
+                        label="Automatically Open Tools in a New Tab After Launch",
+                        click=(
+                            self.home_vm.set_local_storage,
+                            "[{'auto_open': !auto_open}]",
+                        ),
+                    )
+                    html.P(
+                        (
+                            "If tools don't automatically open after launching, then you "
+                            "may need to allow pop-ups on this site in your browser or "
+                            "browser extension settings."
+                        ),
+                        v_if="auto_open",
+                        classes="mb-4 text-caption",
+                    )
+
+                    with vuetify.VList():
                         vuetify.VListSubheader(
                             "Available Tools",
                             v_if=("tools[$route.params.category]['tools'].length > 0",),
@@ -82,7 +112,8 @@ class CategoryView:
                                 with vuetify.VListItemAction():
                                     with html.Div(v_if="!is_logged_in"):
                                         vuetify.VBtn(
-                                            "Sign in to run apps", disabled=True
+                                            "Sign in to run apps",
+                                            disabled=True,
                                         )
                                     with html.Div(v_else=True):
                                         with vuetify.VBtn(
@@ -91,7 +122,6 @@ class CategoryView:
                                                 f"!['launched', 'launching', 'stopping'].includes(job_state[tool.id])",
                                             ),
                                             click=(self.home_vm.start_job, "[tool.id]"),
-                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-play")
                                         with vuetify.VBtn(
@@ -101,7 +131,6 @@ class CategoryView:
                                                 self.js_navigate,
                                                 "[jobs[tool.id].url]",
                                             ),
-                                            color="secondary",
                                         ):
                                             vuetify.VIcon(icon="mdi-open-in-new")
                                         with vuetify.VBtn(
@@ -114,5 +143,6 @@ class CategoryView:
                                         vuetify.VProgressCircular(
                                             v_if=(
                                                 "['launching', 'stopping'].includes(job_state[tool.id])",
-                                            )
+                                            ),
+                                            indeterminate=True,
                                         )
