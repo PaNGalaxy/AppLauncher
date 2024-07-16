@@ -50,8 +50,8 @@ docker build --build-arg BUILD_ENV=conda -f dockerfiles/Dockerfile -t app .
 
 ### Run the container
 
-```
-docker run -p 8081:8081 -it -e EP_PATH=/app app"
+```bash
+docker run -p 8081:8081 -it -e EP_PATH=/app app
 ```
 
 then open your browser at http://localhost:8081/app/

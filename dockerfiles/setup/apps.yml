@@ -2,7 +2,7 @@ trame:
   cmd:
     - python
     - -m
-    - template_app.app
+    - launcher_app.app
     - --host
     - ${host}
     - --port

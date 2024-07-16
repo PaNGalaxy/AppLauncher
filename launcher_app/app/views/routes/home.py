@@ -34,7 +34,7 @@ class HomeView:
         self.create_ui()
 
         self.home_vm.update_view()
-        self.home_vm.monitor_task.start_monitor()
+        # self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
         # This is painful but the only way I've found so far to handle this situation.

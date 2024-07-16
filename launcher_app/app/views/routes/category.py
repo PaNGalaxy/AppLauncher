@@ -34,7 +34,7 @@ class CategoryView:
         self.create_ui()
 
         self.home_vm.update_view()
-        self.home_vm.monitor_task.start_monitor()
+        # self.home_vm.monitor_task.start_monitor()
 
     def create_ui(self):
         client.ClientTriggers(

@@ -8,7 +8,7 @@ class ViewController:
         self.server = server
         self.vm = view_model
 
-        self.create_routes(vuetify_config)
+        # self.create_routes(vuetify_config)
 
     def create_routes(self, vuetify_config):
         with RouterViewLayout(self.server, "/"):

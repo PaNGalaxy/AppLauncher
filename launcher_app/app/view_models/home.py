@@ -36,7 +36,8 @@ class HomeViewModel:
         self.navigation_bind = binding.new_bind()
         self.tools_bind = binding.new_bind()
         self.tool_list_bind = binding.new_bind()
-        self.monitor_task = TaskMonitor(self.monitor, DEFAULT_MONITOR_UPDATE_FREQUENCY)
+        # self.monitor_task = TaskMonitor(self.monitor, DEFAULT_MONITOR_UPDATE_FREQUENCY)
+        self.monitor_task = None
         self.tools = self.tool_model.get_tools()
         self.tool_list = self.tool_model.get_tools(as_list=True)
         self.auto_open = False

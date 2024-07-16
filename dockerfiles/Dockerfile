@@ -10,11 +10,12 @@ RUN poetry build --format=wheel
 
 
 
-FROM --platform=amd64 kitware/trame:py3.10-conda-glvnd-2024-06 as run
+FROM --platform=amd64 kitware/trame:py3.10-glvnd-2024-06 as run
 
 COPY --from=build /src/dist /dist
 COPY --chown=trame-user:trame-user dockerfiles/setup /deploy/setup
 
 ENV TRAME_CLIENT_TYPE=vue3
+ENV OAUTHLIB_INSECURE_TRANSPORT=1
 
 RUN /opt/trame/entrypoint.sh build

@@ -26,12 +26,12 @@ app_path = os.getenv("EP_PATH", "/")
 scopes = ["email", "profile", "openid", "User.Read"]
 
 
-@server.controller.add("on_server_bind")
-def app_available(wslink_server):
-    """Add our custom REST endpoints to the trame server."""
-    wslink_server.app.add_routes([web.get(AuthManager().ucams_handler_path, AuthManager().ucams_auth_handler),
-                                  web.get(AuthManager().xcams_handler_path, AuthManager().xcams_auth_handler)])
-    wslink = wslink_server
+# @server.controller.add("on_server_bind")
+# def app_available(wslink_server):
+#     """Add our custom REST endpoints to the trame server."""
+#     wslink_server.app.add_routes([web.get(AuthManager().ucams_handler_path, AuthManager().ucams_auth_handler),
+#                                   web.get(AuthManager().xcams_handler_path, AuthManager().xcams_auth_handler)])
+#     wslink = wslink_server
 
 
 class TrameAuth:
