@@ -29,14 +29,15 @@ class App(ThemedApp):
         redirect_path = os.getenv("TRAME_REDIRECT_PATH", "/redirect")
         root_path = os.getenv("EP_PATH", "")
         full_redirect_path =  f"{root_path}/api/{args.session}{redirect_path}"
-        # self.auth = AuthManager()
-        # self.auth.start_session(full_redirect_path)
+        self.auth = AuthManager()
+        self.auth.start_session(full_redirect_path)
 
         # State binding with models
-        # binding = TrameBinding(self.server.state)
-        # self.vm = create_viewmodels(binding)
+        binding = TrameBinding(self.server.state)
+        self.vm = create_viewmodels(binding)
+        # self.vm = None
 
-        # self.view_controller = ViewController(self.server, self.vm, self.vuetify_config)
+        self.view_controller = ViewController(self.server, self.vm, self.vuetify_config)
 
         self.create_ui()
 
@@ -51,38 +52,37 @@ class App(ThemedApp):
         )
 
         with super().create_ui() as layout:
-            # layout.theme.theme = (
-            #     "tools !== undefined && $route.params.category !== undefined ? tools[$route.params.category]['theme'] : 'default'",
-            # )
+            layout.theme.theme = (
+                "tools !== undefined && $route.params.category !== undefined ? tools[$route.params.category]['theme'] : 'default'",
+            )
 
-            # with layout.toolbar:
-                # layout.toolbar_title.set_text(
-                #     "{{ tools !== undefined && $route.params.category !== undefined ? `${tools[$route.params.category]['name']} Applications` : 'Neutrons App Dashboard' }}"
-                # )
+            with layout.toolbar:
+                layout.toolbar_title.set_text(
+                    "{{ tools !== undefined && $route.params.category !== undefined ? `${tools[$route.params.category]['name']} Applications` : 'Neutrons App Dashboard' }}"
+                )
 
-                # with layout.actions:
-                #     html.Span(
-                #         "Welcome, {{ given_name }}",
-                #         v_if="is_logged_in",
-                #         classes="pr-2 text-button",
-                #     )
-                #     with vuetify.VMenu(
-                #         v_else=True, close_delay=10000, open_on_hover=True
-                #     ):
-                #         with vuetify.Template(v_slot_activator="{ props }"):
-                #             with vuetify.VBtn(v_bind="props"):
-                #                 html.Span("Sign In")
-                #         with vuetify.VList():
-                #             vuetify.VListItem(
-                #                 "via UCAMS",
-                #                 href=self.vm["user"].get_auth_url(),
-                #             )
-                #             vuetify.VListItem(
-                #                 "via XCAMS",
-                #                 href=self.vm["user"].get_xcams_auth_url(),
-                #             )
+                with layout.actions:
+                    html.Span(
+                        "Welcome, {{ given_name }}",
+                        v_if="is_logged_in",
+                        classes="pr-2 text-button",
+                    )
+                    with vuetify.VMenu(
+                        v_else=True, close_delay=10000, open_on_hover=True
+                    ):
+                        with vuetify.Template(v_slot_activator="{ props }"):
+                            with vuetify.VBtn(v_bind="props"):
+                                html.Span("Sign In")
+                        with vuetify.VList():
+                            vuetify.VListItem(
+                                "via UCAMS",
+                                href=self.vm["user"].get_auth_url(),
+                            )
+                            vuetify.VListItem(
+                                "via XCAMS",
+                                href=self.vm["user"].get_xcams_auth_url(),
+                            )
 
             with layout.content:
-                # router.RouterView()
-                vuetify.VTextField("hello")
+                router.RouterView()
             return layout

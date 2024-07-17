@@ -17,5 +17,5 @@ COPY --chown=trame-user:trame-user dockerfiles/setup /deploy/setup
 
 ENV TRAME_CLIENT_TYPE=vue3
 ENV OAUTHLIB_INSECURE_TRANSPORT=1
-
+RUN ls
 RUN /opt/trame/entrypoint.sh build
