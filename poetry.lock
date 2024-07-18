@@ -2156,13 +2156,13 @@ reference = "py-mvvm"
 
 [[package]]
 name = "trame-facade"
-version = "0.1.0"
+version = "0.2.1"
 description = "A Python Package for injecting curated themes into Trame applications"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "trame_facade-0.1.0-py3-none-any.whl", hash = "sha256:f5d70eec03af769fa53cb279f1b1c2b8fe397b21e2a57ebeab80b66f06dadc93"},
-    {file = "trame_facade-0.1.0.tar.gz", hash = "sha256:10579815824932c760499d8f3c0cc4cf89554fcda34f57072aa9fcea3a513f77"},
+    {file = "trame_facade-0.2.1-py3-none-any.whl", hash = "sha256:ce885570c27fe461a35e871c6b6daedd223dbf1c5923dec9819244b2e0657363"},
+    {file = "trame_facade-0.2.1.tar.gz", hash = "sha256:a47b9408bc52b6412ffcbdcf9fbd0c886e751cc4121483f13938c6439fbc52be"},
 ]
 
 [package.dependencies]
@@ -2604,4 +2604,4 @@ reference = "py-mvvm"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "e31dfe3032221129d68111f8a1ce6bf49258d2fa1203cc20900dc11b8d509fcd"
+content-hash = "da53d6a7c44cb3baa71beb0bad084925a8cc8d68b2e89a5b9d4d7e894a072598"
