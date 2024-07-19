@@ -23,6 +23,11 @@ GALAXY_URL=https://calvera-test.ornl.gov
 GALAXY_API_KEY={YOUR_API_KEY}
 ```
 
+You will also need to provide a JSON file containing the data for all the tools that can be launched from this
+application. One is provided at `"launcher_app/app/tools.json"`, however you can also set the environment variable:
+`TRAME_LAUNCHER_TOOL_PATH` to point to another file if you wish. The format of the file should follow that of the provided 
+example. 
+
 Then you can run the following to start the application:
 ```bash
 poetry start run
