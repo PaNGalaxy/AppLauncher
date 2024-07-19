@@ -71,25 +71,6 @@ class CategoryView:
                     )
                 )
                 with vuetify.VCardText():
-                    vuetify.VSwitch(
-                        v_model="auto_open",
-                        hide_details=True,
-                        label="Automatically Open Tools in a New Tab After Launch",
-                        click=(
-                            self.home_vm.set_local_storage,
-                            "[{'auto_open': !auto_open}]",
-                        ),
-                    )
-                    html.P(
-                        (
-                            "If tools don't automatically open after launching, then you "
-                            "may need to allow pop-ups on this site in your browser or "
-                            "browser extension settings."
-                        ),
-                        v_if="auto_open",
-                        classes="mb-4 text-caption",
-                    )
-
                     with vuetify.VList():
                         vuetify.VListSubheader(
                             "Available Tools",
