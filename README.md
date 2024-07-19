@@ -23,10 +23,27 @@ GALAXY_URL=https://calvera-test.ornl.gov
 GALAXY_API_KEY={YOUR_API_KEY}
 ```
 
-You will also need to provide a JSON file containing the data for all the tools that can be launched from this
-application. One is provided at `"launcher_app/app/tools.json"`, however you can also set the environment variable:
-`TRAME_LAUNCHER_TOOL_PATH` to point to another file if you wish. The format of the file should follow that of the provided 
-example. 
+You will also need to provide a JSON file containing the configuration data for all the tools that can be launched from this
+application. The default config is provided at `launcher_app/app/tools.json`, however you can also set the environment variable:
+`TRAME_LAUNCHER_TOOL_PATH` to a relative or absolute path to another JSON file. The format of the file  should follow that 
+of the provided default file. 
+
+```json
+{
+  "imaging": {
+    "name": "Imaging",
+    "description": "MARS, VENUS",
+    "tools": [
+      {
+        "id": "neutrons_ctr",
+        "name": "CT Reconstruction",
+        "description": "Computed Tomography Reconstruction in a Jupyter Notebook",
+        "max_instances": 1
+      }
+    ]
+  }
+}
+```
 
 Then you can run the following to start the application:
 ```bash
