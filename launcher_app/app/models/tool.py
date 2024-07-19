@@ -1,13 +1,18 @@
 import json
-from pathlib import Path
+import logging
+import os
 
-TOOL_PATH = Path("launcher_app/app/tools.json")
+TOOL_PATH = os.getenv("TRAME_LAUNCHER_TOOL_PATH", "launcher_app/app/tools.json")
 
 
 class ToolModel:
 
     def __init__(self):
-        self.tools = json.load(open(TOOL_PATH, "r"))
+        try:
+            self.tools = json.load(open(TOOL_PATH, "r"))
+        except:
+            logging.error(f"Could not load tools from provided path: {TOOL_PATH}")
+            self.tools = {}
 
     def get_tools(self, as_list=False):
         if as_list:
