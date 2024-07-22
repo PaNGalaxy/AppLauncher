@@ -65,6 +65,32 @@ class App(ThemedApp):
                                 href=self.vm["user"].get_xcams_auth_url(),
                             )
 
+                    with vuetify.VMenu(
+                        v_if="is_logged_in", close_on_content_click=False
+                    ):
+                        with vuetify.Template(v_slot_activator="{ props }"):
+                            vuetify.VBtn(v_bind="props", icon="mdi-cogs")
+                        with vuetify.VCard(title="Preferences", width=400):
+                            with vuetify.VCardText():
+                                vuetify.VSwitch(
+                                    v_model="auto_open",
+                                    hide_details=True,
+                                    label="Automatically Open Tools in a New Tab After Launch",
+                                    click=(
+                                        self.vm["home"].set_local_storage,
+                                        "[{'auto_open': !auto_open}]",
+                                    ),
+                                )
+                                html.P(
+                                    (
+                                        "If tools don't automatically open after launching, then you "
+                                        "may need to allow pop-ups on this site in your browser or "
+                                        "browser extension settings."
+                                    ),
+                                    v_if="auto_open",
+                                    classes="text-caption",
+                                )
+
             with layout.content:
                 router.RouterView()
 
