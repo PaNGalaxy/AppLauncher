@@ -14,5 +14,5 @@ class ViewController:
         with RouterViewLayout(self.server, "/"):
             HomeView(self.server, self.vm, vuetify_config)
 
-        with RouterViewLayout(self.server, "/category/:category"):
+        with RouterViewLayout(self.server, "/:category"):
             CategoryView(self.server, self.vm)
