@@ -20,7 +20,7 @@ xcams_token_url = os.getenv("TRAME_XCAMS_TOKEN_URL",
                             "http://localhost:8082/realms/master/protocol/openid-connect/token")
 xcams_client_id = os.getenv("TRAME_XCAMS_CLIENT_ID", "trame-demo")
 xcams_client_secret = os.getenv("TRAME_XCAMS_CLIENT_SECRET", "tLVhtFouBjw7cKMbTXQEtJ89WabJcWAu")
-xcams_redirect_uri = redirect_uri + "/xcams"
+ucams_redirect_uri = redirect_uri + "/ucams"
 
 app_path = os.getenv("EP_PATH", "/")
 scopes = ["email", "profile", "openid", "User.Read"]
@@ -76,18 +76,18 @@ class TrameAuth:
 
     def start_session(self, handler_path=None):
         self.ucams_session = OAuth2Session(client_id,
-                                           redirect_uri=redirect_uri,
+                                           redirect_uri=ucams_redirect_uri,
                                            scope=scopes,
                                            auto_refresh_url=token_url,
                                            token_updater=self.save_token)
         self.xcams_session = OAuth2Session(xcams_client_id,
-                                           redirect_uri=xcams_redirect_uri,
+                                           redirect_uri=redirect_uri,
                                            scope=scopes,
                                            auto_refresh_url=xcams_token_url,
                                            token_updater=self.save_token)
         if handler_path:
-            self.ucams_handler_path = handler_path
-            self.xcams_handler_path = handler_path + "/xcams"
+            self.ucams_handler_path = handler_path + "/ucams"
+            self.xcams_handler_path = handler_path 
 
     def save_token(self, token):
         self.user_auth["access_token"] = token
