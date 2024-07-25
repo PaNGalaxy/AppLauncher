@@ -24,6 +24,7 @@ trame-router = "^2.2.0"
 py-mvvm = {extras = ["trame"], version = "^0.2.0"}
 trame-facade = "^0.1.0"
 pyjwt = "^2.8.0"
+python-dotenv = "^1.0.1"
 
 [[tool.poetry.source]]
 name = "py-mvvm"

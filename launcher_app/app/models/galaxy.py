@@ -1,18 +1,16 @@
 import argparse
-import asyncio
 import logging
-import os
 import requests
 import threading
 
 from bioblend import galaxy
+from launcher_app.app.config import GALAXY_URL, GALAXY_API_KEY, GALAXY_HISTORY_ID, GALAXY_LAUNCHER_HISTORY_NAME, \
+    GALAXY_API_KEY_ENDPOINT
 from launcher_app.app.utilities.auth import AuthManager
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-LAUNCHER_HISTORY_NAME = "launcher_history"
-GALAXY_API_KEY_ENDPOINT = "/api/authenticate/baseauth"
 
 class Galaxy:
     def _parse_args(self):
@@ -61,9 +59,9 @@ class Galaxy:
     def __init__(self):
         args = self._parse_args()
         self.galaxy_current_history = None
-        self.galaxy_url = args.galaxy_url or os.getenv("GALAXY_URL")
-        self.galaxy_api_key = args.galaxy_key or os.getenv("GALAXY_API_KEY")
-        self.initial_history = args.galaxy_history_id or os.getenv("GALAXY_HISTORY_ID")
+        self.galaxy_url = args.galaxy_url or GALAXY_URL
+        self.galaxy_api_key = args.galaxy_key or GALAXY_API_KEY
+        self.initial_history = args.galaxy_history_id or GALAXY_HISTORY_ID
         if self.galaxy_api_key == "" or self.galaxy_api_key is None:
             AuthManager().register_auth_listener(self.connect_to_galaxy_api)
         else:
@@ -74,7 +72,7 @@ class Galaxy:
         return [{"name": history["name"], "id": history["id"]} for history in histories]
 
     def get_history_id(self):
-        history_name = LAUNCHER_HISTORY_NAME
+        history_name = GALAXY_LAUNCHER_HISTORY_NAME
         histories = self.get_histories(name=history_name)
         if len(histories) > 0:
             return histories[0]["id"]
@@ -90,7 +88,8 @@ class Galaxy:
 
     def check_running_tools(self):
         history = self.get_history_id()
-        history_contents = self.galaxy_instance.histories.show_history(history, contents=True, deleted=False, details="all")
+        history_contents = self.galaxy_instance.histories.show_history(history, contents=True, deleted=False,
+                                                                       details="all")
         job_list = []
         entry_points = self.galaxy_instance.make_get_request(f"{self.galaxy_url}/api/entry_points?running=true")
         for dataset in history_contents:
@@ -105,8 +104,10 @@ class Galaxy:
                         target = ep.get("target", None)
                 if target:
                     target = f"{self.galaxy_url}{target}"
-                job_list.append({"job_id": job_id, "tool_id": job_info['tool_id'], "state": job_info['state'], "url": target})
+                job_list.append(
+                    {"job_id": job_id, "tool_id": job_info['tool_id'], "state": job_info['state'], "url": target})
         return job_list
+
 
 class SharedGalaxy:
     _instance = None
