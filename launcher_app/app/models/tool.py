@@ -1,6 +1,5 @@
 import json
 import logging
-
 from launcher_app.app.config import TRAME_LAUNCHER_TOOL_PATH
 
 class ToolModel:

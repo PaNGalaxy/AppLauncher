@@ -18,6 +18,28 @@ A sample file `.env.sample` is provided with all the configuration options avail
 secrets, make sure this does not get committed to the upstream repository. You can also set the environment variables
 manually in your environment or prefix them to your run command.
 
+You will also need to provide a JSON file containing the configuration data for all the tools that can be launched from this
+application. The default config is provided at `launcher_app/app/tools.json`, however you can also set the environment variable:
+`TRAME_LAUNCHER_TOOL_PATH` to a relative or absolute path to another JSON file. The format of the file  should follow that 
+of the provided default file. 
+
+```json
+{
+  "imaging": {
+    "name": "Imaging",
+    "description": "MARS, VENUS",
+    "tools": [
+      {
+        "id": "neutrons_ctr",
+        "name": "CT Reconstruction",
+        "description": "Computed Tomography Reconstruction in a Jupyter Notebook",
+        "max_instances": 1
+      }
+    ]
+  }
+}
+```
+
 After your environment is configured, run the following to start the application:
 ```bash
 poetry run start
