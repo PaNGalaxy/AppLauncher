@@ -10,7 +10,7 @@ RUN poetry build --format=wheel
 
 
 
-FROM --platform=amd64 kitware/trame:py3.10-conda-glvnd-2024-06 as run
+FROM --platform=amd64 kitware/trame:py3.10-glvnd-2024-06 as run
 
 COPY --from=build /src/dist /dist
 COPY --chown=trame-user:trame-user dockerfiles/setup /deploy/setup
