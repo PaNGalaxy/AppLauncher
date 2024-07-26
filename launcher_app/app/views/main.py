@@ -1,13 +1,12 @@
-import os
 from py_mvvm.trame_binding import TrameBinding
+from trame_facade import ThemedApp
 
-from trame.assets.local import LocalFileManager
+from trame.app import get_server
 from trame.decorators import TrameApp
 from trame.widgets import html, router, vuetify3 as vuetify
 
 from launcher_app.app.mvvm_factory import create_viewmodels
 from launcher_app.app.utilities.auth import AuthManager
-from launcher_app.app.views.theme import ThemedApp
 from launcher_app.app.views.view_controller import ViewController
 
 
@@ -21,20 +20,11 @@ class App(ThemedApp):
     def __init__(self, server=None):
         super().__init__(server=server)
 
-        # CLI to get base URL
-        self.server.cli.add_argument("--session", help="Session identifier")
-        args, _ = self.server.cli.parse_known_args()
-
-        # Setup Auth
-        redirect_path = os.getenv("TRAME_REDIRECT_PATH", "/redirect")
-        root_path = os.getenv("EP_PATH", "")
-        full_redirect_path =  f"{root_path}/api/{args.session}{redirect_path}"
-        self.auth = AuthManager()
-        self.auth.start_session(full_redirect_path)
-
-        # State binding with models
+        self.server = get_server(server, client_type="vue3")
+        self.ctrl = self.server.controller
         binding = TrameBinding(self.server.state)
         self.vm = create_viewmodels(binding)
+        self.auth = AuthManager()
 
         self.view_controller = ViewController(self.server, self.vm, self.vuetify_config)
 
@@ -46,15 +36,8 @@ class App(ThemedApp):
 
     def create_ui(self):
         self.state.trame__title = "Neutrons App Dashboard"
-        self.state.trame__favicon = LocalFileManager(__file__).url(
-            "favicon", "./theme/assets/favicon.png"
-        )
 
         with super().create_ui() as layout:
-            layout.theme.theme = (
-                "tools !== undefined && $route.params.category !== undefined ? tools[$route.params.category]['theme'] : 'default'",
-            )
-
             with layout.toolbar:
                 layout.toolbar_title.set_text(
                     "{{ tools !== undefined && $route.params.category !== undefined ? `${tools[$route.params.category]['name']} Applications` : 'Neutrons App Dashboard' }}"
@@ -81,6 +64,32 @@ class App(ThemedApp):
                                 "via XCAMS",
                                 href=self.vm["user"].get_xcams_auth_url(),
                             )
+
+                    with vuetify.VMenu(
+                        v_if="is_logged_in", close_on_content_click=False
+                    ):
+                        with vuetify.Template(v_slot_activator="{ props }"):
+                            vuetify.VBtn(v_bind="props", icon="mdi-cogs")
+                        with vuetify.VCard(title="Preferences", width=400):
+                            with vuetify.VCardText():
+                                vuetify.VSwitch(
+                                    v_model="auto_open",
+                                    hide_details=True,
+                                    label="Automatically Open Tools in a New Tab After Launch",
+                                    click=(
+                                        self.vm["home"].set_local_storage,
+                                        "[{'auto_open': !auto_open}]",
+                                    ),
+                                )
+                                html.P(
+                                    (
+                                        "If tools don't automatically open after launching, then you "
+                                        "may need to allow pop-ups on this site in your browser or "
+                                        "browser extension settings."
+                                    ),
+                                    v_if="auto_open",
+                                    classes="text-caption",
+                                )
 
             with layout.content:
                 router.RouterView()

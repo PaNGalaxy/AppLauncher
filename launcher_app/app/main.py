@@ -5,6 +5,8 @@ from launcher_app.app.utilities.auth import AuthManager
 
 
 def main(server=None, **kwargs):
+    auth_manager = AuthManager()
+    auth_manager.start_session()
     app = App(server)
     for arg in sys.argv[1:]:
         try:

@@ -1,13 +1,15 @@
 import json
-from pathlib import Path
-
-TOOL_PATH = Path("launcher_app/app/tools.json")
-
+import logging
+from launcher_app.app.config import TRAME_LAUNCHER_TOOL_PATH
 
 class ToolModel:
 
     def __init__(self):
-        self.tools = json.load(open(TOOL_PATH, "r"))
+        try:
+            self.tools = json.load(open(TRAME_LAUNCHER_TOOL_PATH, "r"))
+        except:
+            logging.error(f"Could not load tools from provided path: {TRAME_LAUNCHER_TOOL_PATH}")
+            self.tools = {}
 
     def get_tools(self, as_list=False):
         if as_list:

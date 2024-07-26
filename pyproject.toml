@@ -22,14 +22,19 @@ requests-oauthlib = "^2.0.0"
 aiohttp = "^3.9.3"
 trame-router = "^2.2.0"
 py-mvvm = {extras = ["trame"], version = "^0.2.0"}
+trame-facade = "^0.2.1"
 pyjwt = "^2.8.0"
-libsass = "^0.23.0"
+python-dotenv = "^1.0.1"
 
 [[tool.poetry.source]]
 name = "py-mvvm"
 url = "https://code.ornl.gov/api/v4/projects/15758/packages/pypi/simple"
 priority = "primary"
 
+[[tool.poetry.source]]
+name = "trame-facade"
+url = "https://code.ornl.gov/api/v4/projects/16294/packages/pypi/simple"
+priority = "primary"
 
 [build-system]
 requires = ["poetry-core"]
