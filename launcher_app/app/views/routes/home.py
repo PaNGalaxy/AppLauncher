@@ -74,5 +74,5 @@ class HomeView:
                                 classes="d-flex fill-height flex-column justify-center",
                                 subtitle=category["description"],
                                 title=category["name"],
-                                to=f"/category/{key}",
+                                to=f"/{key}",
                             )
