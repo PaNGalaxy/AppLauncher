@@ -43,6 +43,7 @@ class Galaxy:
             self.galaxy_instance = galaxy.GalaxyInstance(url=self.galaxy_url, key=self.galaxy_api_key)
         except:
             self.galaxy_instance = None
+            return
         self.sync_histories()
         for history in self.galaxy_history_list:
             if history["id"] == self.initial_history:

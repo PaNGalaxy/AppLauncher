@@ -13,6 +13,8 @@ class TaskMonitor:
         self._monitor_task = None
 
     def start_monitor(self):
+        if self._run_monitor:
+            return
         self._run_monitor = True
         self._monitor_task = trame_server.utils.asynchronous.create_task(self._monitor())
 

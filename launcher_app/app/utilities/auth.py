@@ -61,8 +61,8 @@ class TrameAuth:
         for callback in self.auth_listeners:
             try:
                 callback()
-            except:
-                logging.warning("Could not update callback.")
+            except Exception as e:
+                logging.warning(f"Could not update callback: {callback}. Error: {e}")
         raise web.HTTPFound(EP_PATH)
 
     def start_session(self):

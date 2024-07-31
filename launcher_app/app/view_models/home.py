@@ -93,7 +93,10 @@ class HomeViewModel:
         return True
 
     def monitor(self):
-        running_tools = self.job_model.galaxy.check_running_tools()
+        try:
+            running_tools = self.job_model.galaxy.check_running_tools()
+        except:
+            return
         for tool in self.tool_list:
             try:
                 matched_tool = next(
