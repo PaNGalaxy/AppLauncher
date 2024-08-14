@@ -1,3 +1,4 @@
+
 import jwt
 import logging
 from aiohttp import web
@@ -19,7 +20,6 @@ def app_available(wslink_server):
     """Add our custom REST endpoints to the trame server."""
     wslink_server.app.add_routes([web.get(AuthManager().ucams_handler_path, AuthManager().ucams_auth_handler),
                                   web.get(AuthManager().xcams_handler_path, AuthManager().xcams_auth_handler)])
-
 
 class TrameAuth:
 
@@ -65,19 +65,30 @@ class TrameAuth:
                 logging.warning("Could not update callback.")
         raise web.HTTPFound(EP_PATH)
 
-    def start_session(self):
+
+    def start_session(self, path_prefix="", session_id=""):
         self.ucams_session = OAuth2Session(TRAME_UCAMS_CLIENT_ID,
                                            redirect_uri=TRAME_UCAMS_REDIRECT_URL,
                                            scope=TRAME_UCAMS_SCOPES.split(" "),
                                            auto_refresh_url=TRAME_UCAMS_TOKEN_URL,
-                                           token_updater=self.save_token)
+                                           token_updater=self.save_token,
+                                           state=session_id)
         self.xcams_session = OAuth2Session(TRAME_XCAMS_CLIENT_ID,
                                            redirect_uri=TRAME_XCAMS_REDIRECT_URL,
                                            scope=TRAME_XCAMS_SCOPES.split(" "),
                                            auto_refresh_url=TRAME_XCAMS_TOKEN_URL,
-                                           token_updater=self.save_token)
+                                           token_updater=self.save_token,
+                                           state=session_id)
+
         self.ucams_handler_path = urlparse(TRAME_UCAMS_REDIRECT_URL).path
         self.xcams_handler_path = urlparse(TRAME_XCAMS_REDIRECT_URL).path
+
+    def add_path_prefix_to_url(self, url=None, path_prefix=None):
+        if path_prefix:
+            new_path = path_prefix + urlparse(url).path
+            return urlparse(url)._replace(path=new_path).geturl()
+        return url
+
 
     def save_token(self, token):
         self.user_auth["access_token"] = token

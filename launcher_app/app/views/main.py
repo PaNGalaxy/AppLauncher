@@ -3,7 +3,7 @@ from trame_facade import ThemedApp
 
 from trame.app import get_server
 from trame.decorators import TrameApp
-from trame.widgets import html, router, vuetify3 as vuetify
+from trame.widgets import client, html, router, vuetify3 as vuetify
 
 from launcher_app.app.mvvm_factory import create_viewmodels
 from launcher_app.app.utilities.auth import AuthManager
@@ -19,16 +19,25 @@ from launcher_app.app.views.view_controller import ViewController
 class App(ThemedApp):
     def __init__(self, server=None):
         super().__init__(server=server)
-
         self.server = get_server(server, client_type="vue3")
         self.ctrl = self.server.controller
+        self.server.cli.add_argument("--session", help="Session identifier")
+        args, _ = self.server.cli.parse_known_args()
+        self.session = args.session
+        self.session_key = args.authKey
+        self.full_redirect_path = f"/api/{args.session}"
+
+        print(self.full_redirect_path)
+        print(self.session_key)
         binding = TrameBinding(self.server.state)
         self.vm = create_viewmodels(binding)
+
         self.auth = AuthManager()
+        self.auth.start_session(path_prefix=self.full_redirect_path, session_id=self.session)
 
         self.view_controller = ViewController(self.server, self.vm, self.vuetify_config)
-
         self.create_ui()
+
 
     @property
     def state(self):
@@ -38,6 +47,14 @@ class App(ThemedApp):
         self.state.trame__title = "Neutrons App Dashboard"
 
         with super().create_ui() as layout:
+            client.ClientTriggers(
+                mounted=(
+                    f"""
+                    window.document.cookie = 'trame_launcher_session={self.session}';
+                    window.document.cookie = 'trame_session_key={self.session_key}';
+                    """
+                )
+            )
             with layout.toolbar:
                 layout.toolbar_title.set_text(
                     "{{ tools !== undefined && $route.params.category !== undefined ? `${tools[$route.params.category]['name']} Applications` : 'Neutrons App Dashboard' }}"
