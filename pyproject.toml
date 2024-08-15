@@ -9,6 +9,7 @@ packages = [{include = "launcher_app"}]
 python = "^3.10"
 trame = "^3.5.1"
 trame-vuetify = "^2.4.2"
+trame-client = "3.2.5"
 bioblend = "^1.2.0"
 pywebview = "^4.4.1"
 oauthlib = "^3.2.2"
