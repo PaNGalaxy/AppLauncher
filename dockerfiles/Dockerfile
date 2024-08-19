@@ -15,6 +15,12 @@ FROM --platform=amd64 kitware/trame:py3.10-glvnd-2024-08 as run
 RUN apt update
 RUN apt install -y mc && apt install -y vim
 
+# NGINX
+RUN apt install -y nginx
+RUN service nginx stop
+COPY dockerfiles/nginx/trame /etc/nginx/sites-enabled/trame
+RUN unlink /etc/nginx/sites-enabled/default
+
 COPY --from=build /src/dist /dist
 COPY --chown=trame-user:trame-user dockerfiles/setup /deploy/setup
 ENV TRAME_CLIENT_TYPE=vue3
@@ -49,5 +55,5 @@ ENV TRAME_LAUNCHER_TOOL_PATH="/config/tools.json"
 ENV EP_PATH="/"
 ENV TRAME_ROUTER_HISTORY_MODE=html5
 
-
-
+# Add nginx in entrypoint
+COPY dockerfiles/entrypoint.sh /opt/trame/entrypoint.sh

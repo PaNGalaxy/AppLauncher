@@ -1,0 +1,69 @@
+server {
+    listen 81;
+    listen [::]:81;
+    server_name localhost;
+
+    root  /deploy/server/www;
+
+    location /paraview {
+        proxy_pass http://127.0.0.1:9000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /proxy {
+        set $backend_server_port "";
+
+        if ($request_uri ~* "^/([^/]+)/([^/]+)$") {
+            set $backend_server_port $2;
+        }
+
+        rewrite ^/(.*)$ / break;
+        proxy_pass http://127.0.0.1:$backend_server_port/ws;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_socket_keepalive on;
+        proxy_connect_timeout 120;
+        proxy_send_timeout 360;
+        proxy_read_timeout 360;
+    }
+
+    # Redirect based on query parameter and include its value in the URL
+    location / {
+        # API call
+        if ($arg_state) {
+            proxy_pass http://127.0.0.1:80/api/$arg_state$request_uri;
+            break;
+        }
+
+        # Session URL
+        if ($arg_sessionURL) {
+           break;
+        }
+
+        # Static files
+        if ($request_uri ~* "\.(js|html|woff2|css|png|tpl)$") {
+            break;
+        }
+
+        # Served by trame modules (vuetify, ...)
+        if ($request_uri ~* ^/__) {
+            break;
+        }
+
+        # Cookie redirect for JS processing
+        if ($cookie_trame_launcher_session) {
+            # FIXME - static URL
+            return 302 https://ornl.trame.kitware.com/?sessionURL=ws://USE_HOST/proxy/$cookie_trame_launcher_port&secret=$cookie_trame_session_key;
+        }
+    }
+}
