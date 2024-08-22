@@ -19,6 +19,7 @@ else
   # Start the server
   /opt/trame/runtime_patch.sh
   service nginx restart
+  service cron restart
   echo "Starting server..."
   gosu trame-user /opt/trame/run.sh
 fi

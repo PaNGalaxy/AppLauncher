@@ -16,7 +16,7 @@ RUN apt update
 RUN apt install -y mc && apt install -y vim
 
 # NGINX
-RUN apt install -y nginx
+RUN apt install -y nginx netcat cron
 RUN service nginx stop
 COPY dockerfiles/nginx/trame /etc/nginx/sites-enabled/trame
 RUN unlink /etc/nginx/sites-enabled/default
@@ -28,6 +28,10 @@ ENV TRAME_CLIENT_TYPE=vue3
 COPY launcher_app/default-launcher.json /opt/trame/default-launcher.json
 RUN /opt/trame/entrypoint.sh build
 COPY launcher_app/app/tools.json /config/tools.json
+
+# Monitor running sessions
+COPY dockerfiles/check_running_session.sh /opt/trame/check_running_session.sh
+RUN (crontab -l ; echo "* * * * * /opt/trame/check_running_session.sh") | crontab -
 
 # credentials for a dummy Google project. Non-sensitive so I can commit them
 ENV TRAME_UCAMS_AUTH_URL="https://accounts.google.com/o/oauth2/v2/auth"

@@ -2,6 +2,7 @@ server {
     listen 81;
     listen [::]:81;
     server_name localhost;
+    set $port_check /opt/trame/session_ports;
 
     location /paraview {
         proxy_pass http://127.0.0.1:9000;
@@ -63,8 +64,7 @@ server {
         }
 
         # Cookie redirect for JS processing
-        if ($cookie_trame_launcher_session) {
-            # FIXME - static URL
+        if (-f $port_check/$cookie_trame_launcher_port) {
             return 302 $scheme://$http_host$request_uri?sessionURL=ws://USE_HOST/proxy/$cookie_trame_launcher_port&secret=$cookie_trame_session_key;
         }
     }
