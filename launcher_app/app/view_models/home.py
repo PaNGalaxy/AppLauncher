@@ -27,7 +27,9 @@ class HomeViewModel:
 
         self.job_state = {}
         self.jobs = {}
+        self.galaxy_error = ""
         self.galaxy_jobs = 0
+        self.galaxy_error_bind = binding.new_bind()
         self.galaxy_running_bind = binding.new_bind()
         self.galaxy_url_bind = binding.new_bind()
         self.job_state_bind = binding.new_bind(self.job_state)
@@ -95,8 +97,12 @@ class HomeViewModel:
     def monitor(self):
         try:
             running_tools = self.job_model.galaxy.check_running_tools()
-        except:
+        except Exception as e:
+            self.galaxy_error = f"Galaxy error: {str(e)}"
+            self.update_view()
+
             return
+
         for tool in self.tool_list:
             try:
                 matched_tool = next(
@@ -112,8 +118,9 @@ class HomeViewModel:
                     if self.job_state[tool["id"]] != "stopping":
                         self.job_state[tool["id"]] = "launched"
             except StopIteration:
-                if self.job_state[tool["id"]] not in ["launching"]:
-                    self.job_state[tool["id"]] = None
+                if self.job_state[tool["id"]] == "launching":
+                    self.galaxy_jobs -= 1
+                self.job_state[tool["id"]] = None
                 if self.jobs.get(tool["id"], None):
                     self.jobs.pop(tool["id"])
         if len(self.auto_open_tool_list) > 0:
@@ -122,9 +129,11 @@ class HomeViewModel:
                     self.navigation_bind.update_in_view(self.jobs[t]["url"])
                     self.auto_open_tool_list.remove(t)
 
+        self.galaxy_error = ""
         self.update_view()
 
     def update_view(self):
+        self.galaxy_error_bind.update_in_view(self.galaxy_error)
         self.galaxy_running_bind.update_in_view(self.galaxy_jobs > 0)
         self.galaxy_url_bind.update_in_view(self.job_model.galaxy.galaxy_url)
         self.jobs_bind.update_in_view(self.jobs)

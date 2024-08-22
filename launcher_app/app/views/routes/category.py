@@ -15,6 +15,7 @@ class CategoryView:
         self.js_navigate = client.JSEval(exec="window.open($event,'_blank')").exec
 
         self.home_vm = view_model["home"]
+        self.home_vm.galaxy_error_bind.connect("galaxy_error")
         self.home_vm.galaxy_running_bind.connect("galaxy_running")
         self.home_vm.galaxy_url_bind.connect("galaxy_url")
         self.home_vm.job_state_bind.connect("job_state")
@@ -71,6 +72,12 @@ class CategoryView:
                     )
                 )
                 with vuetify.VCardText():
+                    vuetify.VBanner(
+                        "{{ galaxy_error }}",
+                        v_if="galaxy_error",
+                        classes="bg-error text-center",
+                    )
+
                     with vuetify.VList():
                         vuetify.VListSubheader(
                             "Available Tools",
