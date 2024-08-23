@@ -15,12 +15,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 
 from launcher_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/redirect", views.redirect),
+    path("api/redirect/", views.redirect),
+    # path("api/galaxy/monitor/", views.galaxy_monitor),
+    # path("api/galaxy/launch/", views.galaxy_launch),
+    # path("api/galaxy/stop/", views.galaxy_stop),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        re_path("^.*/?$", views.client_proxy),
+    ]
