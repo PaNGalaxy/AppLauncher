@@ -13,9 +13,9 @@
 
         <v-container>
           <v-row>
-            <v-col v-for="(tool, index) in tools" :key="index" cols="12" lg="4">
+            <v-col v-for="(tool, key) in props.tools" :key="key" cols="12" lg="4">
               <v-card
-                :to="`/${tool.path}`"
+                :to="`/${key}`"
                 class="d-flex fill-height flex-column justify-center"
               >
                 <v-card-item>
@@ -35,18 +35,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-
-const tools = ref([])
-
-onMounted(() => {
-  fetch('/tools.json').then((response) => response.json()).then((data) => {
-    for (let key in data) {
-      tools.value.push({
-        path: key,
-        ...data[key]
-      })
-    }
-  })
+const props = defineProps({
+  tools: {
+    required: true,
+    type: Object,
+  }
 })
 </script>
