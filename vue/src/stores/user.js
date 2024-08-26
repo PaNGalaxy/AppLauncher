@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore('user', {
     state: () => {
         return {
+            autoopen: false,
             given_name: null,
             is_logged_in: false,
             ucams_auth_url: "/",
@@ -19,6 +20,13 @@ export const useUserStore = defineStore('user', {
             this.is_logged_in = data.is_logged_in
             this.ucams_auth_url = data.ucams
             this.xcams_auth_url = data.xcams
+        },
+        getAutoopen() {
+            this.autoopen = window.localStorage.getItem('autoopen') === 'true'
+        },
+        toggleAutoopen() {
+            this.autoopen = !this.autoopen
+            window.localStorage.setItem('autoopen', this.autoopen)
         }
     }
 })

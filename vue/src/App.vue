@@ -4,7 +4,9 @@
       <v-app-bar>
         <v-app-bar-title class="cursor-pointer" @click="$router.push('/')">NDIP App Dashboard</v-app-bar-title>
 
-        <span v-if="user.is_logged_in" class="mr-4">Welcome, {{ user.given_name }}</span>
+        <v-spacer />
+
+        <span v-if="user.is_logged_in" class="pr-2 text-button">Welcome, {{ user.given_name }}</span>
         <v-btn v-else>
           Sign In
 
@@ -13,6 +15,23 @@
               <v-list-item :href="ucams_auth_url">via UCAMS</v-list-item>
               <v-list-item :href="xcams_auth_url">via XCAMS</v-list-item>
             </v-list>
+          </v-menu>
+        </v-btn>
+
+        <v-btn v-if="user.is_logged_in" icon>
+          <v-icon>mdi-cogs</v-icon>
+
+          <v-menu activator="parent" :close-on-content-click="false">
+            <v-card width="400">
+              <v-card-title>Preferences</v-card-title>
+
+              <v-card-text>
+                <v-switch v-model="user.autoopen" label="Automatically Open Tools in a New Tab After Launch" hide-details @click="user.toggleAutoopen()" />
+                <p class="text-caption">
+                  If tools don't automatically open after launching, then you may need to allow pop-ups on this site in your browser or browser extension settings.
+                </p>
+              </v-card-text>
+            </v-card>
           </v-menu>
         </v-btn>
       </v-app-bar>
@@ -42,5 +61,6 @@ const { ucams_auth_url, xcams_auth_url } = storeToRefs(user)
 
 onMounted(() => {
   user.getUser()
+  user.getAutoopen()
 })
 </script>
