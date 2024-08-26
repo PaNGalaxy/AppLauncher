@@ -1,5 +1,5 @@
 <template>
   <main>
-    <h2>Home</h2>
+    <h2>Category</h2>
   </main>
 </template>

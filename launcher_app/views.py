@@ -7,7 +7,7 @@ def redirect(request):
 
 
 def client_proxy(request):
-    response = proxy_request(
+    proxy_response = proxy_request(
         "GET",  # TODO: Support other HTTP methods
         f"http://localhost:5173{request.path}",
         headers=request.headers,
@@ -15,4 +15,7 @@ def client_proxy(request):
         # TODO: Support params & data in requests
     )
 
-    return StreamingHttpResponse(response.raw)
+    response = StreamingHttpResponse(proxy_response.raw)
+    response["Content-Type"] = proxy_response.headers["Content-Type"]
+
+    return response
