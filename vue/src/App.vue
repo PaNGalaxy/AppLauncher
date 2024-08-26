@@ -39,8 +39,7 @@
       <RouterView />
 
       <v-footer class="justify-center my-0 px-1 py-0 text-center" app border>
-        <!-- TODO: set galaxy state -->
-        <v-progress-circular class="mr-1" color="primary" size="16" width="3" indeterminate />
+        <v-progress-circular :indeterminate="running" class="mr-1" color="primary" size="16" width="3" />
         <a href="" class="text-grey-lighten-1 text-caption text-decoration-none" target="_blank">Powered by Calvera</a>
         <v-spacer />
         <a href="https://www.ornl.gov/" class="text-grey-lighten-1 text-caption text-decoration-none" target="_blank">© 2024 ORNL</a>
@@ -54,12 +53,18 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { RouterView } from 'vue-router'
 
+import { useJobStore } from '@/stores/job'
 import { useUserStore } from '@/stores/user'
 
+const job = useJobStore()
+const { running } = storeToRefs(job)
 const user = useUserStore()
 const { autoopen, given_name, is_logged_in, ucams_auth_url, xcams_auth_url } = storeToRefs(user)
 
 onMounted(() => {
+  job.monitorJobs(true)
+  setInterval(job.monitorJobs.bind(false), 2000)
+
   user.getUser()
   user.getAutoopen()
 })

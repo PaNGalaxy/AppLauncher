@@ -7,6 +7,7 @@ packages = [{include = "launcher_app"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+bioblend = "^1.3.0"
 django = "<6"
 django-extensions = "^3.2.3"
 pyjwt = "^2.9.0"

@@ -116,6 +116,13 @@ XCAMS_CLIENT_SECRET = os.environ.get("XCAMS_CLIENT_SECRET")
 XCAMS_REDIRECT_URL = os.environ.get("XCAMS_REDIRECT_URL")
 XCAMS_SCOPES = os.environ.get("XCAMS_SCOPES")
 
+
+# Galaxy settings
+GALAXY_URL = os.environ.get("GALAXY_URL")
+GALAXY_API_KEY = os.environ.get("GALAXY_API_KEY")
+GALAXY_HISTORY_NAME = os.environ.get("GALAXY_HISTORY_NAME", "launcher_history")
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 

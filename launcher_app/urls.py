@@ -28,9 +28,9 @@ urlpatterns = [
         "authnz/pingfed/callback", views.xcams_redirect
     ),  # TODO: rename to /api/auth/xcams/???
     path("api/auth/user/", views.get_user),
-    # path("api/galaxy/monitor/", views.galaxy_monitor),
-    # path("api/galaxy/launch/", views.galaxy_launch),
-    # path("api/galaxy/stop/", views.galaxy_stop),
+    path("api/galaxy/launch/", views.galaxy_launch),
+    path("api/galaxy/monitor/", views.galaxy_monitor),
+    path("api/galaxy/stop/", views.galaxy_stop),
 ]
 
 if settings.DEBUG:

@@ -29,19 +29,19 @@
               <v-list-item-action>
                 <v-btn v-if="!is_logged_in" disabled>Sign in to run apps</v-btn>
                 <div v-else>
-                  <v-btn @click="job.launchJob.bind(tool.id)">
+                  <v-btn v-if="canLaunch(jobs, tool.id)" @click="job.launchJob(tool.id)">
                     Launch
                     <v-icon>mdi-play</v-icon>
                   </v-btn>
-                  <v-btn :href="tool.id">
+                  <v-btn v-if="canUse(jobs, tool.id)" :href="jobs[tool.id]?.url">
                     Open
                     <v-icon>mdi-open-in-new</v-icon>
                   </v-btn>
-                  <v-btn color="error" @click="job.stopJob.bind(tool.id)">
+                  <v-btn v-if="canUse(jobs, tool.id)" color="error" @click="job.stopJob(tool.id)">
                     Stop
                     <v-icon>mdi-stop</v-icon>
                   </v-btn>
-                  <v-progress-circular indeterminate />
+                  <v-progress-circular v-if="isChanging(jobs, tool.id)" indeterminate />
                 </div>
               </v-list-item-action>
             </template>
@@ -68,8 +68,21 @@ const props = defineProps({
 const route = useRoute()
 
 const job = useJobStore()
+const { jobs } = storeToRefs(job)
 const user = useUserStore()
 const { is_logged_in } = storeToRefs(user)
+
+function canLaunch(jobs, tool_id) {
+  return !['launching', 'launched', 'stopping'].includes(jobs[tool_id]?.state)
+}
+
+function canUse(jobs, tool_id) {
+  return jobs[tool_id]?.state === 'launched'
+}
+
+function isChanging(jobs, tool_id) {
+  return ['launching', 'stopping'].includes(jobs[tool_id]?.state)
+}
 </script>
 
 <style scoped>
