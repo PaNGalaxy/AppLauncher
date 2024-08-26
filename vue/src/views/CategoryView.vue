@@ -27,7 +27,22 @@
 
             <template v-slot:append>
               <v-list-item-action>
-                <v-btn disabled>Sign in to run apps</v-btn>
+                <v-btn v-if="!is_logged_in" disabled>Sign in to run apps</v-btn>
+                <div v-else>
+                  <v-btn @click="job.launchJob.bind(tool.id)">
+                    Launch
+                    <v-icon>mdi-play</v-icon>
+                  </v-btn>
+                  <v-btn :href="tool.id">
+                    Open
+                    <v-icon>mdi-open-in-new</v-icon>
+                  </v-btn>
+                  <v-btn color="error" @click="job.stopJob.bind(tool.id)">
+                    Stop
+                    <v-icon>mdi-stop</v-icon>
+                  </v-btn>
+                  <v-progress-circular indeterminate />
+                </div>
               </v-list-item-action>
             </template>
           </v-list-item>
@@ -38,7 +53,11 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
+
+import { useJobStore } from '@/stores/job'
+import { useUserStore } from '@/stores/user'
 
 const props = defineProps({
   tools: {
@@ -47,6 +66,10 @@ const props = defineProps({
   }
 })
 const route = useRoute()
+
+const job = useJobStore()
+const user = useUserStore()
+const { is_logged_in } = storeToRefs(user)
 </script>
 
 <style scoped>
