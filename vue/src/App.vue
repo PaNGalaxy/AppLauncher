@@ -6,12 +6,15 @@ import { RouterView } from 'vue-router'
   <v-app>
     <v-main>
       <v-app-bar>
-        <v-app-bar-title>NDIP App Dashboard</v-app-bar-title>
+        <v-app-bar-title class="cursor-pointer" @click="$router.push('/')">NDIP App Dashboard</v-app-bar-title>
+
+        <!-- TODO: auth and preferences -->
       </v-app-bar>
 
       <RouterView />
 
       <v-footer class="justify-center my-0 px-1 py-0 text-center" app border>
+        <!-- TODO: set galaxy state -->
         <v-progress-circular class="mr-1" color="primary" size="16" width="3" indeterminate />
         <a href="" class="text-grey-lighten-1 text-caption text-decoration-none" target="_blank">Powered by Calvera</a>
         <v-spacer />
