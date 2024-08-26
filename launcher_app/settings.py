@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -100,6 +101,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# OAuth settings
+UCAMS_AUTH_URL = os.environ.get("UCAMS_AUTH_URL")
+UCAMS_TOKEN_URL = os.environ.get("UCAMS_TOKEN_URL")
+UCAMS_CLIENT_ID = os.environ.get("UCAMS_CLIENT_ID")
+UCAMS_CLIENT_SECRET = os.environ.get("UCAMS_CLIENT_SECRET")
+UCAMS_REDIRECT_URL = os.environ.get("UCAMS_REDIRECT_URL")
+UCAMS_SCOPES = os.environ.get("UCAMS_SCOPES")
+XCAMS_AUTH_URL = os.environ.get("XCAMS_AUTH_URL")
+XCAMS_TOKEN_URL = os.environ.get("XCAMS_TOKEN_URL")
+XCAMS_CLIENT_ID = os.environ.get("XCAMS_CLIENT_ID")
+XCAMS_CLIENT_SECRET = os.environ.get("XCAMS_CLIENT_SECRET")
+XCAMS_REDIRECT_URL = os.environ.get("XCAMS_REDIRECT_URL")
+XCAMS_SCOPES = os.environ.get("XCAMS_SCOPES")
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

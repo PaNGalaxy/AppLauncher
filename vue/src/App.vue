@@ -1,14 +1,20 @@
-<script setup>
-import { RouterView } from 'vue-router'
-</script>
-
 <template>
   <v-app>
     <v-main>
       <v-app-bar>
         <v-app-bar-title class="cursor-pointer" @click="$router.push('/')">NDIP App Dashboard</v-app-bar-title>
 
-        <!-- TODO: auth and preferences -->
+        <span v-if="user.is_logged_in">Welcome, {{ user.name }}</span>
+        <v-btn>
+          Sign In
+
+          <v-menu activator="parent" close-delay="10000" open-on-hover>
+            <v-list>
+              <v-list-item :href="ucams_auth_url">via UCAMS</v-list-item>
+              <v-list-item :href="xcams_auth_url">via XCAMS</v-list-item>
+            </v-list>
+          </v-menu>
+        </v-btn>
       </v-app-bar>
 
       <RouterView />
@@ -23,3 +29,18 @@ import { RouterView } from 'vue-router'
     </v-main>
   </v-app>
 </template>
+
+<script setup>
+import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { RouterView } from 'vue-router'
+
+import { useUserStore } from '@/stores/user'
+
+const user = useUserStore()
+const { ucams_auth_url, xcams_auth_url } = storeToRefs(user)
+
+onMounted(() => {
+  user.getAuthURLs()
+})
+</script>

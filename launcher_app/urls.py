@@ -23,7 +23,8 @@ from launcher_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/redirect/", views.redirect),
+    path("api/auth/redirect/", views.redirect),
+    path("api/auth/urls/", views.get_auth_urls),
     # path("api/galaxy/monitor/", views.galaxy_monitor),
     # path("api/galaxy/launch/", views.galaxy_launch),
     # path("api/galaxy/stop/", views.galaxy_stop),
