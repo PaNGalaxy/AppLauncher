@@ -4,8 +4,8 @@
       <v-app-bar>
         <v-app-bar-title class="cursor-pointer" @click="$router.push('/')">NDIP App Dashboard</v-app-bar-title>
 
-        <span v-if="user.is_logged_in">Welcome, {{ user.name }}</span>
-        <v-btn>
+        <span v-if="user.is_logged_in" class="mr-4">Welcome, {{ user.given_name }}</span>
+        <v-btn v-else>
           Sign In
 
           <v-menu activator="parent" close-delay="10000" open-on-hover>
@@ -41,6 +41,6 @@ const user = useUserStore()
 const { ucams_auth_url, xcams_auth_url } = storeToRefs(user)
 
 onMounted(() => {
-  user.getAuthURLs()
+  user.getUser()
 })
 </script>
