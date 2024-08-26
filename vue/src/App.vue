@@ -1,11 +1,15 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <h1>Hello World!</h1>
-  </header>
+  <v-app>
+    <header>
+      <h1>Hello World!</h1>
+    </header>
 
-  <RouterView />
+    <v-main>
+      <RouterView />
+    </v-main>
+  </v-app>
 </template>
