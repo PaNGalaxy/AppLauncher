@@ -70,30 +70,33 @@ class GalaxyManager:
                 f"{settings.GALAXY_URL}/api/entry_points?running=true"
             )
             for dataset in history_contents:
-                # dataset does not contain tool_id
-                job_id = dataset["creating_job"]
-                job_info = self.galaxy_instance.jobs.show_job(job_id)
-                if (
-                    job_info["state"] == "queued"
-                    or job_info["state"] == "running"
-                    or job_info["state"] == "error"
-                ):
-                    # Search entry points json for correct job listing and try to get the target url.
-                    target = None
-                    for ep in entry_points.json():
-                        if ep["job_id"] == job_id:
-                            target = ep.get("target", None)
-                    if target:
-                        target = f"{settings.GALAXY_URL}{target}"
-                    job_list.append(
-                        {
-                            "job_id": job_id,
-                            "tool_id": job_info["tool_id"],
-                            "state": job_info["state"],
-                            "url": target,
-                        }
-                    )
-
+                try:
+                    # dataset does not contain tool_id
+                    job_id = dataset["creating_job"]
+                    job_info = self.galaxy_instance.jobs.show_job(job_id)
+                    if (
+                        job_info["state"] == "queued"
+                        or job_info["state"] == "running"
+                        or job_info["state"] == "error"
+                    ):
+                        # Search entry points json for correct job listing and try to get the target url.
+                        target = None
+                        for ep in entry_points.json():
+                            if ep["job_id"] == job_id:
+                                target = ep.get("target", None)
+                        if target:
+                            target = f"{settings.GALAXY_URL}{target}"
+                        job_list.append(
+                            {
+                                "job_id": job_id,
+                                "tool_id": job_info["tool_id"],
+                                "state": job_info["state"],
+                                "url": target,
+                            }
+                        )
+                except:
+                    # Some unusual datasets will cause issues. However, We still want to check other datasets.
+                    continue
             return job_list
         except Exception as e:
             # If monitoring fails, reset the connection so that it can be re-established cleanly
