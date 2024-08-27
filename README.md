@@ -7,8 +7,17 @@ Calvera/Galaxy.
 
 ## Install dependencies
 
-```
+You will need to install [Poetry](https://python-poetry.org/) and [pnpm](https://pnpm.io/). After doing so, you can run
+the following commands to build the source code.
+
+```bash
+cd django
 poetry install
+```
+
+```bash
+cd vue
+pnpm i
 ```
 
 ## Run
@@ -19,9 +28,8 @@ secrets, make sure this does not get committed to the upstream repository. You c
 manually in your environment or prefix them to your run command.
 
 You will also need to provide a JSON file containing the configuration data for all the tools that can be launched from this
-application. The default config is provided at `launcher_app/app/tools.json`, however you can also set the environment variable:
-`TRAME_LAUNCHER_TOOL_PATH` to a relative or absolute path to another JSON file. The format of the file  should follow that
-of the provided default file.
+application. The default file is located in `vue/public/tools.json`, and it should be modified in place if you need to make
+changes.
 
 ```json
 {
@@ -42,7 +50,7 @@ of the provided default file.
 
 After your environment is configured, run the following to start the application:
 ```bash
-poetry run ./manage.py runserver_plus --insecure 0.0.0.0:8080
+bash go.sh
 ```
 
 In order to use the authentication locally with a non-https server, you will need to set the following environment variable:
@@ -55,7 +63,6 @@ In order to connect to Galaxy to launch a tool, you will also need to set the fo
 `.env` file or in your environment:
 ```
 GALAXY_URL=https://calvera-test.ornl.gov
-GALAXY_API_KEY={YOUR_API_KEY}
 ```
 
 ## Develop
@@ -69,19 +76,13 @@ to configure your IDE to select the correct Python interpreter.
 without conda and mantid:
 
 ```bash
-docker build -f dockerfiles/Dockerfile -t app .
-```
-
-with conda and mantid
-
-```bash
-docker build --build-arg BUILD_ENV=conda -f dockerfiles/Dockerfile -t app .
+docker build . -f dockerfiles/Dockerfile -t app --platform {your_build_platform}
 ```
 
 ### Run the container
 
-```
-docker run -p 8081:8081 -it -e EP_PATH=/app app bash -c "/prepare_nginx.sh && python -m template_app.app --host 0.0.0.0 --server"
+```bash
+docker run -p 8080:8080 -it --env-file {path/to/your/.env} app
 ```
 
-then open your browser at http://localhost:8081/app/
+then open your browser at http://localhost:8080
