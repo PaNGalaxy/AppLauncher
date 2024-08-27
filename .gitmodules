@@ -1,3 +1,0 @@
-[submodule "vue/trame-facade"]
-	path = vue/trame-facade
-	url = git@code.ornl.gov:ndip/public-packages/trame-facade.git

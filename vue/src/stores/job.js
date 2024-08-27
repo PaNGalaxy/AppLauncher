@@ -30,7 +30,7 @@ export const useJobStore = defineStore('job', {
                 this.galaxy_error = `Galaxy error: ${data.error}`
             }
         },
-        async monitorJobs() {
+        async monitorJobs(autoopen) {
             const response = await fetch('/api/galaxy/monitor/')
             const data = await response.json()
 
@@ -54,6 +54,10 @@ export const useJobStore = defineStore('job', {
                     }
 
                     if (job.state === 'running' && this.jobs[job.tool_id].state !== 'stopping') {
+                        if (this.jobs[job.tool_id].state !== 'launched' && job.url && autoopen) {
+                            window.open(job.url, '_blank')
+                        }
+
                         this.jobs[job.tool_id].id = job.job_id
                         this.jobs[job.tool_id].state = 'launched'
                         this.jobs[job.tool_id].url = job.url
@@ -76,6 +80,10 @@ export const useJobStore = defineStore('job', {
 
             // Turn on the spinner in the footer if any job is being started or stopped
             this.running = Object.values(this.jobs).some((job) => ['launching', 'stopping'].includes(job.state))
+        },
+        startMonitor(user) {
+            this.monitorJobs()
+            setInterval(() => { this.monitorJobs(user.autoopen) }, 5000)
         },
         async stopJob(tool_id) {
             const response = await fetch('/api/galaxy/stop/', {

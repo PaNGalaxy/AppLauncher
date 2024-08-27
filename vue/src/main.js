@@ -8,9 +8,9 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import App from '@/App.vue'
 import router from '@/router'
-import '../trame-facade/trame_facade/core_style.scss'
+import '@/assets/core_style.scss'
 
-fetch('/trame-facade/trame_facade/vuetify_config.json').then((response) => response.json()).then((config) => {
+fetch('/vuetify_config.json').then((response) => response.json()).then((config) => {
     const app = createApp(App)
 
     app.use(createPinia())

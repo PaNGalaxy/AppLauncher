@@ -21,12 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-fz_$rmbytw%^bxs$v0)wgu*pw=%@4o69h155mbpld-9vx$1gn3"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG") != "false"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "nova.ornl.gov", "nova-test.ornl.gov"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080",
+    "https://nova.ornl.gov",
+    "https://nova-test.ornl.gov",
+]
 
 
 # Application definition
@@ -103,24 +108,26 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # OAuth settings
-UCAMS_AUTH_URL = os.environ.get("UCAMS_AUTH_URL")
-UCAMS_TOKEN_URL = os.environ.get("UCAMS_TOKEN_URL")
-UCAMS_CLIENT_ID = os.environ.get("UCAMS_CLIENT_ID")
-UCAMS_CLIENT_SECRET = os.environ.get("UCAMS_CLIENT_SECRET")
-UCAMS_REDIRECT_URL = os.environ.get("UCAMS_REDIRECT_URL")
-UCAMS_SCOPES = os.environ.get("UCAMS_SCOPES")
-XCAMS_AUTH_URL = os.environ.get("XCAMS_AUTH_URL")
-XCAMS_TOKEN_URL = os.environ.get("XCAMS_TOKEN_URL")
-XCAMS_CLIENT_ID = os.environ.get("XCAMS_CLIENT_ID")
-XCAMS_CLIENT_SECRET = os.environ.get("XCAMS_CLIENT_SECRET")
-XCAMS_REDIRECT_URL = os.environ.get("XCAMS_REDIRECT_URL")
-XCAMS_SCOPES = os.environ.get("XCAMS_SCOPES")
+UCAMS_AUTH_URL = os.environ.get("UCAMS_AUTH_URL").strip('"')
+UCAMS_TOKEN_URL = os.environ.get("UCAMS_TOKEN_URL").strip('"')
+UCAMS_CLIENT_ID = os.environ.get("UCAMS_CLIENT_ID").strip('"')
+UCAMS_CLIENT_SECRET = os.environ.get("UCAMS_CLIENT_SECRET").strip('"')
+UCAMS_REDIRECT_URL = os.environ.get("UCAMS_REDIRECT_URL").strip('"')
+UCAMS_SCOPES = os.environ.get("UCAMS_SCOPES").strip('"')
+XCAMS_AUTH_URL = os.environ.get("XCAMS_AUTH_URL").strip('"')
+XCAMS_TOKEN_URL = os.environ.get("XCAMS_TOKEN_URL").strip('"')
+XCAMS_CLIENT_ID = os.environ.get("XCAMS_CLIENT_ID").strip('"')
+XCAMS_CLIENT_SECRET = os.environ.get("XCAMS_CLIENT_SECRET").strip('"')
+XCAMS_REDIRECT_URL = os.environ.get("XCAMS_REDIRECT_URL").strip('"')
+XCAMS_SCOPES = os.environ.get("XCAMS_SCOPES").strip('"')
 
 
 # Galaxy settings
-GALAXY_URL = os.environ.get("GALAXY_URL")
-GALAXY_API_KEY = os.environ.get("GALAXY_API_KEY")
-GALAXY_HISTORY_NAME = os.environ.get("GALAXY_HISTORY_NAME", "launcher_history")
+GALAXY_URL = os.environ.get("GALAXY_URL").strip('"')
+GALAXY_API_KEY = os.environ.get("GALAXY_API_KEY").strip('"')
+GALAXY_HISTORY_NAME = os.environ.get("GALAXY_HISTORY_NAME", "launcher_history").strip(
+    '"'
+)
 
 
 # Internationalization

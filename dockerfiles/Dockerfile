@@ -1,33 +1,44 @@
-FROM --platform=amd64 ubuntu:22.04 as build
+FROM ubuntu:noble
 
-RUN DEBIAN_FRONTEND="noninteractive" apt-get update && apt-get -y install tzdata
-RUN apt-get install -y python3.10 curl
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-RUN pip install poetry
-COPY . /src
-WORKDIR /src
-RUN poetry build --format=wheel
+ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt update && apt upgrade -y && apt install -y \
+    bash \
+    curl \
+    software-properties-common \
+    nginx
+RUN add-apt-repository ppa:deadsnakes/ppa -y
+RUN apt update && apt install -y \
+    python3.10
 
+# Install Poetry
+RUN curl -fsSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3.10 -
+ENV PATH="$PATH:/etc/poetry/bin"
 
-FROM --platform=amd64 kitware/trame:py3.10-conda-glvnd-2024-01 as run
+# Install Node.js LTS & pnpm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt install -y nodejs
+ENV SHELL=bash
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh -
 
-RUN pip install --extra-index-url https://wheels.vtk.org vtk-egl
-RUN pip install --extra-index-url https://code.ornl.gov/api/v4/projects/15758/packages/pypi/simple py-mvvm
+# Setup Django
+ADD django /opt/run/django
+ADD .env /opt/run/django
+WORKDIR /opt/run/django
+RUN poetry install
+RUN poetry run pip install uvicorn gunicorn
 
-COPY --from=build /src/dist /dist
-RUN pip install /dist/*.whl
+# Create static client build
+ADD vue /opt/run/vue
+WORKDIR /opt/run/vue
+RUN /root/.local/share/pnpm/pnpm install
+RUN /root/.local/share/pnpm/pnpm build
 
-RUN apt update && apt install -y nginx
-RUN chmod og+rwX -R /var/lib/nginx
-RUN chmod og+rwX -R /var/log/nginx
-RUN chmod og+rwX -R /etc/nginx
+ADD dockerfiles/nginx.conf /etc/nginx/nginx.conf
+ADD dockerfiles/entrypoint.sh /opt/run/entrypoint.sh
 
-COPY dockerfiles/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY dockerfiles/prepare_nginx.sh /
+RUN mkdir -p /tmp
+RUN mkdir -p /run/nginx
 
-RUN python -m trame.tools.www --client-type vue3 --output /app/www-content
-
-
-USER trame-user
-ENTRYPOINT []
+WORKDIR /opt/run/django
+ENTRYPOINT ["bash", "/opt/run/entrypoint.sh"]
