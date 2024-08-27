@@ -55,6 +55,7 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 
@@ -89,6 +90,17 @@ function canStop(jobs, tool_id) {
 function isChanging(jobs, tool_id) {
   return ['launching', 'stopping'].includes(jobs[tool_id]?.state)
 }
+
+onMounted(async () => {
+    await user.getUser()
+    user.getAutoopen()
+
+    if (user.is_logged_in) {
+      job.startMonitor(user)
+    } else {
+        window.localStorage.setItem('lastpath', route.path)
+    }
+})
 </script>
 
 <style scoped>

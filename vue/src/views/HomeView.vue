@@ -35,10 +35,38 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { useUserStore } from '@/stores/user'
+
 const props = defineProps({
   tools: {
     required: true,
     type: Object,
   }
+})
+
+const router = useRouter()
+const user = useUserStore()
+
+onMounted(async () => {
+    await user.getUser()
+    user.getAutoopen()
+
+    if (user.is_logged_in) {
+        const lastpath = window.localStorage.getItem('lastpath')
+        const redirect = window.localStorage.getItem('redirect')
+
+        if (lastpath !== null && redirect === 'true') {
+            window.localStorage.removeItem('lastpath')
+            window.localStorage.removeItem('redirect')
+
+            router.push(lastpath)
+        }
+    } else {
+        window.localStorage.removeItem('lastpath')
+        window.localStorage.setItem('redirect', true)
+    }
 })
 </script>
