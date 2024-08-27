@@ -62,8 +62,8 @@ const user = useUserStore()
 const { autoopen, given_name, is_logged_in, ucams_auth_url, xcams_auth_url } = storeToRefs(user)
 
 onMounted(() => {
-  job.monitorJobs(true)
-  setInterval(job.monitorJobs.bind(false), 2000)
+  job.monitorJobs()
+  setInterval(job.monitorJobs, 5000)
 
   user.getUser()
   user.getAutoopen()
