@@ -1,3 +1,4 @@
+<!-- Defines the content when the user is on the landing page. -->
 <template>
     <v-container class="align-start d-flex justify-center mt-16">
         <v-card width="1280">
@@ -5,7 +6,6 @@
 
             <v-card-text>
                 <p class="text-center">
-                    <!-- TODO: get prettier to run here??? -->
                     You can view the different categories of tools available below. Simply click on
                     a category to access its tools.
                 </p>
@@ -58,6 +58,7 @@ onMounted(async () => {
         const redirect = window.localStorage.getItem("redirect")
 
         if (lastpath !== null && redirect === "true") {
+            // The user has just logged in, so we need to redirect them to the last page they were on.
             window.localStorage.removeItem("lastpath")
             window.localStorage.removeItem("redirect")
 

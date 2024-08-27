@@ -29,6 +29,25 @@ export const useJobStore = defineStore("job", {
                 this.galaxy_error = `Galaxy error: ${data.error}`
             }
         },
+        async stopJob(tool_id) {
+            const response = await fetch("/api/galaxy/stop/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                body: JSON.stringify({
+                    job_id: this.jobs[tool_id].id
+                })
+            })
+
+            if (response.status === 200) {
+                this.jobs[tool_id].state = "stopping"
+            } else {
+                const data = await response.json()
+                this.galaxy_error = `Galaxy error: ${data.error}`
+            }
+        },
         async monitorJobs(autoopen) {
             const response = await fetch("/api/galaxy/monitor/")
             const data = await response.json()
@@ -90,25 +109,6 @@ export const useJobStore = defineStore("job", {
             setInterval(() => {
                 this.monitorJobs(user.autoopen)
             }, 5000)
-        },
-        async stopJob(tool_id) {
-            const response = await fetch("/api/galaxy/stop/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": Cookies.get("csrftoken")
-                },
-                body: JSON.stringify({
-                    job_id: this.jobs[tool_id].id
-                })
-            })
-
-            if (response.status === 200) {
-                this.jobs[tool_id].state = "stopping"
-            } else {
-                const data = await response.json()
-                this.galaxy_error = `Galaxy error: ${data.error}`
-            }
         }
     }
 })

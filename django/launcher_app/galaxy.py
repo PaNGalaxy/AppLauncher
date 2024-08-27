@@ -1,11 +1,27 @@
+"""
+Defines a class for interacting with a specified Galaxy server.
+
+The server to connect to can be controlled via the GALAXY_URL setting.
+The endpoint on the server through which to get a user's API key can be controlled via the GALAXY_API_KEY_ENDPOINT setting.
+The history name to use for all jobs can be controlled via the GALAXY_HISTORY_NAME setting.
+"""
+
+
 from bioblend import galaxy
 from django.conf import settings
 from requests import get as requests_get
 
+from launcher_app.auth import AuthManager
+
 
 class GalaxyManager:
+    """
+    Manages a connection to Galaxy and provides methods for managing and monitoring Galaxy jobs.
 
-    def __init__(self, auth_manager):
+    auth_manager is an instance of AuthManager that will be used to authenticate with Galaxy to get the user's API key.
+    """
+
+    def __init__(self, auth_manager: AuthManager):
         self.auth_manager = auth_manager
         self.galaxy_instance = None
 

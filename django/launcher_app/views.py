@@ -1,6 +1,11 @@
+"""
+Django views for the launcher app. These views implement the URL schema
+specified in urls.py file.
+"""
+
+
 import json
 
-from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
@@ -40,7 +45,7 @@ def xcams_redirect(request):
     return redirect("/")
 
 
-@ensure_csrf_cookie
+@ensure_csrf_cookie  # This is the first request that the client makes to our API, so we need to set the CSRF cookie here before any POST requests are made.
 @require_GET
 def get_user(request):
     given_name = None
@@ -96,6 +101,11 @@ def galaxy_stop(request):
 
 @require_GET
 def client_proxy(request):
+    """
+    This method is only available in DEBUG mode. It's intended to proxy
+    requests to the Vite dev server during development.
+    """
+
     proxy_response = proxy_request(
         "GET",
         f"http://localhost:5173{request.path}",

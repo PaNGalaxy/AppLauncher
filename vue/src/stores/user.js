@@ -3,7 +3,7 @@ import { defineStore } from "pinia"
 export const useUserStore = defineStore("user", {
     state: () => {
         return {
-            autoopen: false,
+            autoopen: false, // if true, tools will open in a new tab once they've successfully launched
             given_name: null,
             is_logged_in: false,
             ucams_auth_url: "/",

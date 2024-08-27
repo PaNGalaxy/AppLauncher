@@ -1,3 +1,4 @@
+<!-- Defines the content that should be loaded regardless of what route the user is viewing. -->
 <template>
     <v-app>
         <v-main>

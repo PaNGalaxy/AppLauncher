@@ -1,3 +1,4 @@
+<!-- Defines the content when the user is viewing a category's tool list. -->
 <template>
     <v-breadcrumbs class="position-fixed">
         <v-breadcrumbs-item to="/">Home</v-breadcrumbs-item>
@@ -7,9 +8,9 @@
 
     <v-container class="align-start d-flex justify-center mt-16">
         <v-card width="800">
-            <v-card-title class="text-center"
-                >{{ tools[route.params.category].name }} Applications</v-card-title
-            >
+            <v-card-title class="text-center">
+                {{ tools[route.params.category].name }} Applications
+            </v-card-title>
             <v-card-subtitle>
                 The below tools are currently supported for running on Calvera. You must be signed
                 in to launch them. You may sign in using the button in the top right corner of this
@@ -46,7 +47,7 @@
                                         @click="job.launchJob(tool.id)"
                                     >
                                         Launch
-                                        <v-icon>mdi-play </v-icon>
+                                        <v-icon>mdi-play</v-icon>
                                     </v-btn>
                                     <v-btn
                                         v-if="canUse(jobs, tool.id)"

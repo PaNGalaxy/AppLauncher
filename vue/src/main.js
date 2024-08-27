@@ -1,3 +1,7 @@
+/*
+ * This is the entrypoint for our application. We create the Vue app with our desired plugins and mount it into the DOM.
+ */
+
 import merge from "lodash.merge"
 import { createApp } from "vue"
 import { createPinia } from "pinia"
@@ -15,7 +19,7 @@ fetch("/vuetify_config.json")
     .then((config) => {
         const app = createApp(App)
 
-        app.use(createPinia())
+        app.use(createPinia()) // Pinia is a store library for Vue 3 that operates in a similar fashion to how we use view_models in Trame
         app.use(
             createVuetify({
                 icons: {
