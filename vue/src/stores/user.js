@@ -1,19 +1,18 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia"
 
-
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore("user", {
     state: () => {
         return {
             autoopen: false,
             given_name: null,
             is_logged_in: false,
             ucams_auth_url: "/",
-            xcams_auth_url: "/",
+            xcams_auth_url: "/"
         }
     },
     actions: {
         async getUser() {
-            const response = await fetch('/api/auth/user/')
+            const response = await fetch("/api/auth/user/")
             const data = await response.json()
 
             this.given_name = data.given_name
@@ -22,11 +21,11 @@ export const useUserStore = defineStore('user', {
             this.xcams_auth_url = data.xcams
         },
         getAutoopen() {
-            this.autoopen = window.localStorage.getItem('autoopen') === 'true'
+            this.autoopen = window.localStorage.getItem("autoopen") === "true"
         },
         toggleAutoopen() {
             this.autoopen = !this.autoopen
-            window.localStorage.setItem('autoopen', this.autoopen)
+            window.localStorage.setItem("autoopen", this.autoopen)
         }
     }
 })
