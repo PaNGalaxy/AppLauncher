@@ -1,19 +1,27 @@
 from bioblend import galaxy
 from django.conf import settings
+from requests import get as requests_get
 
 
 class GalaxyManager:
 
-    def __init__(self):
+    def __init__(self, auth_manager):
+        self.auth_manager = auth_manager
         self.galaxy_instance = None
-
-        self._connect_to_galaxy()
 
     def _connect_to_galaxy(self):
         try:
             if self.galaxy_instance is None:
+                response = requests_get(
+                    f"{settings.GALAXY_URL}{settings.GALAXY_API_KEY_ENDPOINT}",
+                    headers={
+                        "Authorization": f"Bearer {self.auth_manager.get_token()}"
+                    },
+                )
+                api_key = response.json()["api_key"]
+
                 self.galaxy_instance = galaxy.GalaxyInstance(
-                    url=settings.GALAXY_URL, key=settings.GALAXY_API_KEY
+                    url=settings.GALAXY_URL, key=api_key
                 )
         except:
             self.galaxy_instance = None

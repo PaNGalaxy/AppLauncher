@@ -99,6 +99,7 @@ onMounted(async () => {
       job.startMonitor(user)
     } else {
         window.localStorage.setItem('lastpath', route.path)
+        window.localStorage.setItem('redirect', true)
     }
 })
 </script>

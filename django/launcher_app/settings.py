@@ -124,7 +124,7 @@ XCAMS_SCOPES = os.environ.get("XCAMS_SCOPES").strip('"')
 
 # Galaxy settings
 GALAXY_URL = os.environ.get("GALAXY_URL").strip('"')
-GALAXY_API_KEY = os.environ.get("GALAXY_API_KEY").strip('"')
+GALAXY_API_KEY_ENDPOINT = os.environ.get("GALAXY_API_KEY_ENDPOINT").strip('"')
 GALAXY_HISTORY_NAME = os.environ.get("GALAXY_HISTORY_NAME", "launcher_history").strip(
     '"'
 )
