@@ -50,7 +50,11 @@ export const useJobStore = defineStore("job", {
                 this.galaxy_error = `Galaxy error: ${data.error}`
             }
         },
-        async monitorJobs(autoopen) {
+        async monitorJobs(autoopen, force) {
+            if (!force && !this.running) {
+                return
+            }
+
             const response = await fetch("/api/galaxy/monitor/")
             const data = await response.json()
 
@@ -107,10 +111,10 @@ export const useJobStore = defineStore("job", {
             )
         },
         startMonitor(user) {
-            this.monitorJobs()
+            this.monitorJobs(false, true)
             setInterval(() => {
-                this.monitorJobs(user.autoopen)
-            }, 5000)
+                this.monitorJobs(user.autoopen, false)
+            }, 2000)
         }
     }
 })
