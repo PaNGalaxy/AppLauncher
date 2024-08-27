@@ -24,6 +24,7 @@ export const useJobStore = defineStore("job", {
 
             if (response.status === 200) {
                 this.jobs[tool_id] = { id: "", state: "launching", url: "" }
+                this.running = true
             } else {
                 const data = await response.json()
                 this.galaxy_error = `Galaxy error: ${data.error}`
@@ -43,6 +44,7 @@ export const useJobStore = defineStore("job", {
 
             if (response.status === 200) {
                 this.jobs[tool_id].state = "stopping"
+                this.running = true
             } else {
                 const data = await response.json()
                 this.galaxy_error = `Galaxy error: ${data.error}`
