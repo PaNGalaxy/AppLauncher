@@ -31,7 +31,12 @@ COPY launcher_app/app/tools.json /config/tools.json
 
 # Monitor running sessions
 COPY dockerfiles/check_running_session.sh /opt/trame/check_running_session.sh
-RUN (crontab -l ; echo "* * * * * /opt/trame/check_running_session.sh") | crontab -
+COPY dockerfiles/trame_session_monitor.py /opt/trame/trame_session_monitor.py
+COPY dockerfiles/trame_session_monitor.sh /etc/init.d/trame_session_monitor.sh
+RUN chmod +x /etc/init.d/trame_session_monitor.sh
+RUN chown root /etc/init.d/trame_session_monitor.sh
+RUN chgrp root /etc/init.d/trame_session_monitor.sh
+RUN mkdir /opt/trame/session_ports
 
 # credentials for a dummy Google project. Non-sensitive so I can commit them
 ENV TRAME_UCAMS_AUTH_URL="https://accounts.google.com/o/oauth2/v2/auth"
