@@ -23,10 +23,9 @@ RUN curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 # Setup Django
 ADD django /opt/run/django
-ADD .env /opt/run/django
 WORKDIR /opt/run/django
 RUN poetry install
-RUN poetry run pip install uvicorn gunicorn
+RUN poetry run pip install gunicorn uvicorn-worker
 
 # Create static client build
 ADD vue /opt/run/vue
