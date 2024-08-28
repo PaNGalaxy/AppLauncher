@@ -108,6 +108,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Authentication timeout
+SESSION_COOKIE_AGE = int(
+    os.environ.get("SESSION_COOKIE_AGE", 60 * 60 * 24 * 14)
+)  # 2 weeks
+
+
 # OAuth settings
 UCAMS_AUTH_URL = os.environ.get("UCAMS_AUTH_URL").strip('"')
 UCAMS_TOKEN_URL = os.environ.get("UCAMS_TOKEN_URL").strip('"')
