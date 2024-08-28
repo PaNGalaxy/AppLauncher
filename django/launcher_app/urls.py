@@ -31,6 +31,7 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
+        # TODO: undo this
         # path("redirect", views.ucams_redirect),
         # path("authnz/pingfed/callback", views.xcams_redirect),
         path("ucams", views.ucams_redirect),

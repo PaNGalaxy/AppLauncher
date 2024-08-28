@@ -65,15 +65,18 @@ class AuthManager:
 
         match session_type:
             case "ucams":
-                session = self.ucams_session
+                tokens = self.ucams_session.fetch_token(
+                    settings.UCAMS_TOKEN_URL,
+                    authorization_response=request.build_absolute_uri(),
+                    client_secret=settings.UCAMS_CLIENT_SECRET,
+                )
             case "xcams":
-                session = self.xcams_session
+                tokens = self.xcams_session.fetch_token(
+                    settings.XCAMS_TOKEN_URL,
+                    authorization_response=request.build_absolute_uri(),
+                    client_secret=settings.XCAMS_CLIENT_SECRET,
+                )
 
-        tokens = session.fetch_token(
-            settings.UCAMS_TOKEN_URL,
-            authorization_response=request.build_absolute_uri(),
-            client_secret=settings.UCAMS_CLIENT_SECRET,
-        )
         self.save_token(tokens["access_token"])
 
         return decode(tokens["id_token"], options={"verify_signature": False})
