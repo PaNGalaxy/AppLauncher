@@ -18,6 +18,8 @@ server_state.is_authenticated = False
 @server.controller.add("on_server_bind")
 def app_available(wslink_server):
     """Add our custom REST endpoints to the trame server."""
+    print(f"Add REST endpoint to ucams: {AuthManager().ucams_handler_path}")
+    print(f"Add REST endpoint to xcams: {AuthManager().xcams_handler_path}")
     wslink_server.app.add_routes([web.get(AuthManager().ucams_handler_path, AuthManager().ucams_auth_handler),
                                   web.get(AuthManager().xcams_handler_path, AuthManager().xcams_auth_handler)])
 

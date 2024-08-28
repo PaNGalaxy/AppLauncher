@@ -1,0 +1,76 @@
+server {
+    listen 81;
+    listen [::]:81;
+    server_name localhost;
+    set $port_check /opt/trame/session_ports;
+
+    location /paraview {
+        proxy_pass http://127.0.0.1:9000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /proxy {
+        set $backend_server_port "";
+
+        if ($request_uri ~* "^/([^/]+)/([^/]+)$") {
+            set $backend_server_port $2;
+        }
+
+        rewrite ^/(.*)$ / break;
+        proxy_pass http://127.0.0.1:$backend_server_port/ws;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_socket_keepalive on;
+        proxy_connect_timeout 120;
+        proxy_send_timeout 360;
+        proxy_read_timeout 360;
+    }
+
+    # Redirect based on query parameter and include its value in the URL
+    location / {
+        root  /deploy/server/www;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+
+        # API call
+        if ($arg_state) {
+            proxy_pass http://127.0.0.1:80/api/$arg_state$request_uri;
+            break;
+        }
+
+        # Session URL
+        if ($arg_sessionURL) {
+            rewrite ^ /index.html break;
+        }
+
+        # Static files
+        if ($request_uri ~* "\.(js|html|woff2|css|png|tpl)$") {
+            break;
+        }
+
+        # Served by trame modules (vuetify, ...)
+        if ($request_uri ~* ^/__) {
+            break;
+        }
+
+        # Cookie redirect for JS processing
+        if (-f $port_check/$cookie_trame_launcher_port) {
+            return 302 $scheme://$http_host$request_uri?sessionURL=ws://USE_HOST/proxy/$cookie_trame_launcher_port&secret=$cookie_trame_session_key;
+        }
+    }
+
+    location = /index.html {
+        root /deploy/server/www;
+        default_type text/html;
+    }
+}

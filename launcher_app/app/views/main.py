@@ -24,6 +24,7 @@ class App(ThemedApp):
         self.server.cli.add_argument("--session", help="Session identifier")
         args, _ = self.server.cli.parse_known_args()
         self.session = args.session
+        self.port = args.port
         self.session_key = args.authKey
         self.full_redirect_path = f"/api/{args.session}"
 
@@ -51,6 +52,7 @@ class App(ThemedApp):
                 mounted=(
                     f"""
                     window.document.cookie = 'trame_launcher_session={self.session}';
+                    window.document.cookie = 'trame_launcher_port={self.port}';
                     window.document.cookie = 'trame_session_key={self.session_key}';
                     """
                 )

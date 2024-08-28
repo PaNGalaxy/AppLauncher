@@ -5,7 +5,7 @@
     "endpoint": "paraview",
     "log_dir": "/deploy/server/logs/launcher",
     "proxy_file": "/opt/trame/proxy-mapping.txt",
-    "sessionURL": "ws://USE_HOST/proxy?sessionId=${id}&path=ws",
+    "sessionURL": "ws://USE_HOST/proxy/${port}",
     "timeout": 3600,
     "sanitize": {},
     "fields": []
