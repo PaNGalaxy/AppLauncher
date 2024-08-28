@@ -23,10 +23,6 @@ from launcher_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("redirect", views.ucams_redirect),  # TODO: rename to /api/auth/ucams/???
-    path(
-        "authnz/pingfed/callback", views.xcams_redirect
-    ),  # TODO: rename to /api/auth/xcams/???
     path("api/auth/user/", views.get_user),
     path("api/galaxy/launch/", views.galaxy_launch),
     path("api/galaxy/monitor/", views.galaxy_monitor),
@@ -35,5 +31,12 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
+        path("redirect", views.ucams_redirect),
+        path("authnz/pingfed/callback", views.xcams_redirect),
         re_path("^.*/?$", views.client_proxy),
+    ]
+else:
+    urlpatterns += [
+        path("ucams", views.ucams_redirect),
+        path("redirect", views.xcams_redirect),
     ]

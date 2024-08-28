@@ -76,10 +76,10 @@ class AuthManager:
         )
         self.save_token(tokens["access_token"])
 
-        # TODO: verify signature seems important???
         return decode(tokens["id_token"], options={"verify_signature": False})
 
     def get_token(self):
+        # TODO: test what happens when refresh token is invalid!
         try:
             # Refresh the token if necessary
             match self.oauth_state.session_type:

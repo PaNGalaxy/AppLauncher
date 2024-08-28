@@ -26,6 +26,7 @@ class GalaxyManager:
         self.galaxy_instance = None
 
     def _connect_to_galaxy(self):
+        # TODO: only get the API key when it isn't available in OAuthSessionState
         try:
             response = requests_get(
                 f"{settings.GALAXY_URL}{settings.GALAXY_API_KEY_ENDPOINT}",
