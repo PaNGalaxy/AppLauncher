@@ -31,8 +31,10 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
-        path("redirect", views.ucams_redirect),
-        path("authnz/pingfed/callback", views.xcams_redirect),
+        # path("redirect", views.ucams_redirect),
+        # path("authnz/pingfed/callback", views.xcams_redirect),
+        path("ucams", views.ucams_redirect),
+        path("redirect", views.xcams_redirect),
         re_path("^.*/?$", views.client_proxy),
     ]
 else:
