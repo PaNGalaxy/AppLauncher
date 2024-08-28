@@ -11,14 +11,12 @@ class AuthManager:
 
     def __init__(self, request):
         if request.user.is_authenticated:
-            self.oauth_state = OAuthSessionState.objects.filter(
-                user=request.user
-            ).latest("create_time")
+            self.oauth_state = OAuthSessionState.objects.get(user=request.user)
         else:
             try:
-                self.oauth_state = OAuthSessionState.objects.filter(
+                self.oauth_state = OAuthSessionState.objects.get(
                     state_param=request.GET["state"]
-                ).latest("create_time")
+                )
             except (KeyError, OAuthSessionState.DoesNotExist):
                 self.oauth_state = OAuthSessionState.objects.create(
                     state_param=self.create_state_param()
@@ -53,6 +51,10 @@ class AuthManager:
             )
 
         login(request, user)
+
+        # Removing old session states both reduces the size of the database over
+        # time and allows us to make OAuthSessionState.user a OneToOneField.
+        OAuthSessionState.objects.filter(user=user).delete()
 
         self.oauth_state.user = user
         self.oauth_state.save()
