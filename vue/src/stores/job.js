@@ -11,6 +11,8 @@ export const useJobStore = defineStore("job", {
     },
     actions: {
         async launchJob(tool_id) {
+            this.jobs[tool_id] = { id: "", state: "launching", url: "" }
+
             const response = await fetch("/api/galaxy/launch/", {
                 method: "POST",
                 headers: {
@@ -23,14 +25,17 @@ export const useJobStore = defineStore("job", {
             })
 
             if (response.status === 200) {
-                this.jobs[tool_id] = { id: "", state: "launching", url: "" }
                 this.running = true
             } else {
+                this.jobs[tool_id].state = "stopped"
+
                 const data = await response.json()
                 this.galaxy_error = `Galaxy error: ${data.error}`
             }
         },
         async stopJob(tool_id) {
+            this.jobs[tool_id].state = "stopping"
+
             const response = await fetch("/api/galaxy/stop/", {
                 method: "POST",
                 headers: {
@@ -43,9 +48,10 @@ export const useJobStore = defineStore("job", {
             })
 
             if (response.status === 200) {
-                this.jobs[tool_id].state = "stopping"
                 this.running = true
             } else {
+                this.jobs[tool_id].state = "launched"
+
                 const data = await response.json()
                 this.galaxy_error = `Galaxy error: ${data.error}`
             }

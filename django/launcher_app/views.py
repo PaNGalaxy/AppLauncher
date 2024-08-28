@@ -17,12 +17,9 @@ from launcher_app.auth import AuthManager
 from launcher_app.galaxy import GalaxyManager
 
 
-auth_manager = AuthManager()
-galaxy_manager = GalaxyManager(auth_manager)
-
-
 @require_GET
 def ucams_redirect(request):
+    auth_manager = AuthManager(request)
     user_info = auth_manager.redirect_handler(request, "ucams")
 
     email = user_info["email"]
@@ -35,6 +32,7 @@ def ucams_redirect(request):
 
 @require_GET
 def xcams_redirect(request):
+    auth_manager = AuthManager(request)
     user_info = auth_manager.redirect_handler(request, "xcams")
 
     email = user_info["email"]
@@ -48,6 +46,8 @@ def xcams_redirect(request):
 @ensure_csrf_cookie  # This is the first request that the client makes to our API, so we need to set the CSRF cookie here before any POST requests are made.
 @require_GET
 def get_user(request):
+    auth_manager = AuthManager(request)
+
     given_name = None
     if request.user.is_authenticated:
         given_name = request.user.first_name
@@ -69,6 +69,9 @@ def _create_galaxy_error(exception):
 @login_required
 @require_POST
 def galaxy_launch(request):
+    auth_manager = AuthManager(request)
+    galaxy_manager = GalaxyManager(auth_manager)
+
     try:
         data = json.loads(request.body)
         galaxy_manager.launch_job(data.get("tool_id", None))
@@ -80,7 +83,10 @@ def galaxy_launch(request):
 
 @login_required
 @require_GET
-def galaxy_monitor(_):
+def galaxy_monitor(request):
+    auth_manager = AuthManager(request)
+    galaxy_manager = GalaxyManager(auth_manager)
+
     try:
         return JsonResponse({"jobs": galaxy_manager.monitor_jobs()})
     except Exception as e:
@@ -90,6 +96,9 @@ def galaxy_monitor(_):
 @login_required
 @require_POST
 def galaxy_stop(request):
+    auth_manager = AuthManager(request)
+    galaxy_manager = GalaxyManager(auth_manager)
+
     try:
         data = json.loads(request.body)
         galaxy_manager.stop_job(data.get("job_id", None))
