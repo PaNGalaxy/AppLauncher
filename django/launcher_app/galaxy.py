@@ -9,7 +9,6 @@ The history name to use for all jobs can be controlled via the GALAXY_HISTORY_NA
 
 from bioblend import galaxy
 from django.conf import settings
-from requests import get as requests_get
 
 from launcher_app.auth import AuthManager
 
@@ -26,18 +25,12 @@ class GalaxyManager:
         self.galaxy_instance = None
 
     def _connect_to_galaxy(self):
-        # TODO: only get the API key when it isn't available in OAuthSessionState
         try:
-            response = requests_get(
-                f"{settings.GALAXY_URL}{settings.GALAXY_API_KEY_ENDPOINT}",
-                headers={"Authorization": f"Bearer {self.auth_manager.get_token()}"},
-            )
-            api_key = response.json()["api_key"]
-
             self.galaxy_instance = galaxy.GalaxyInstance(
-                url=settings.GALAXY_URL, key=api_key
+                url=settings.GALAXY_URL, key=self.auth_manager.get_galaxy_api_key()
             )
         except:
+            self.auth_manager.delete_galaxy_api_key()
             self.galaxy_instance = None
 
     def _get_history_id(self):

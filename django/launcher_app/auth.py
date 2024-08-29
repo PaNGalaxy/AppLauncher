@@ -1,7 +1,15 @@
+"""
+Defines a class for interacting with our OAuth providers.
+
+The UCAMS/XCAMS OAuth providers must be configured via your .env file. See
+.env.sample for the available configuration options.
+"""
+
 from django.conf import settings
 from django.contrib.auth import get_user_model, login
 from django.utils.crypto import get_random_string
 from jwt import decode
+from requests import get as requests_get
 from requests_oauthlib import OAuth2Session
 
 from launcher_app.models import OAuthSessionState
@@ -27,7 +35,6 @@ class AuthManager:
             auto_refresh_url=settings.UCAMS_TOKEN_URL,
             redirect_uri=settings.UCAMS_REDIRECT_URL,
             scope=settings.UCAMS_SCOPES.split(" "),
-            state=self.oauth_state.state_param,
             token_updater=self.save_token,
         )
         self.xcams_session = OAuth2Session(
@@ -35,12 +42,15 @@ class AuthManager:
             auto_refresh_url=settings.XCAMS_TOKEN_URL,
             redirect_uri=settings.XCAMS_REDIRECT_URL,
             scope=settings.XCAMS_SCOPES.split(" "),
-            state=self.oauth_state.state_param,
             token_updater=self.save_token,
         )
 
     def create_state_param(self):
         return get_random_string(length=128)
+
+    def delete_galaxy_api_key(self):
+        self.oauth_state.galaxy_api_key = ""
+        self.oauth_state.save()
 
     def login(self, request, email, given_name):
         try:
@@ -81,8 +91,18 @@ class AuthManager:
 
         return decode(tokens["id_token"], options={"verify_signature": False})
 
+    def get_galaxy_api_key(self):
+        if self.oauth_state.galaxy_api_key == "":
+            response = requests_get(
+                f"{settings.GALAXY_URL}{settings.GALAXY_API_KEY_ENDPOINT}",
+                headers={"Authorization": f"Bearer {self.get_token()}"},
+            )
+            self.oauth_state.galaxy_api_key = response.json()["api_key"]
+            self.oauth_state.save()
+
+        return self.oauth_state.galaxy_api_key
+
     def get_token(self):
-        # TODO: test what happens when refresh token is invalid!
         try:
             # Refresh the token if necessary
             match self.oauth_state.session_type:
@@ -95,12 +115,12 @@ class AuthManager:
 
         return self.oauth_state.access_token
 
-    def save_token(self, token):
-        self.oauth_state.access_token = token
-        self.oauth_state.save()
-
     def get_ucams_auth_url(self):
         return self.ucams_session.authorization_url(settings.UCAMS_AUTH_URL)[0]
 
     def get_xcams_auth_url(self):
         return self.xcams_session.authorization_url(settings.XCAMS_AUTH_URL)[0]
+
+    def save_token(self, token):
+        self.oauth_state.access_token = token
+        self.oauth_state.save()

@@ -23,5 +23,6 @@ class OAuthSessionState(models.Model):
     )
     access_token = models.CharField(max_length=255, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
+    galaxy_api_key = models.CharField(max_length=128, blank=True)
     session_type = models.CharField(max_length=32, blank=True)  # ucams or xcams
     state_param = models.CharField(max_length=128, blank=True)
