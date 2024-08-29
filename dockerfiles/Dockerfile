@@ -1,9 +1,7 @@
 FROM ubuntu:noble
-
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt upgrade -y && apt install -y \
-    bash \
     curl \
     software-properties-common \
     nginx
@@ -25,6 +23,7 @@ RUN curl -fsSL https://get.pnpm.io/install.sh | sh -
 ADD django /opt/run/django
 WORKDIR /opt/run/django
 RUN poetry install
+# Install dependencies only used in production builds
 RUN poetry run pip install gunicorn uvicorn-worker
 
 # Create static client build

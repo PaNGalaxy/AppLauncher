@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY").strip('"')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG") != "false"
+DEBUG = os.environ.get("DEBUG").strip('"') != "false"
 
 ALLOWED_HOSTS = ["localhost", "nova.ornl.gov", "nova-test.ornl.gov"]
 CSRF_TRUSTED_ORIGINS = [
