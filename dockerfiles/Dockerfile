@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM --platform=amd64 ubuntu:noble
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt upgrade -y && apt install -y \
