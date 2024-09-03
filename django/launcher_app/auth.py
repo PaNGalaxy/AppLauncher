@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model, login
 from django.utils.crypto import get_random_string
 from jwt import decode
 from requests import get as requests_get
+from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
 
 from launcher_app.models import OAuthSessionState
@@ -35,14 +36,14 @@ class AuthManager:
             auto_refresh_url=settings.UCAMS_TOKEN_URL,
             redirect_uri=settings.UCAMS_REDIRECT_URL,
             scope=settings.UCAMS_SCOPES.split(" "),
-            token_updater=self.save_token,
+            token_updater=self.save_access_token,
         )
         self.xcams_session = OAuth2Session(
             settings.XCAMS_CLIENT_ID,
             auto_refresh_url=settings.XCAMS_TOKEN_URL,
             redirect_uri=settings.XCAMS_REDIRECT_URL,
             scope=settings.XCAMS_SCOPES.split(" "),
-            token_updater=self.save_token,
+            token_updater=self.save_access_token,
         )
 
     def create_state_param(self):
@@ -87,31 +88,49 @@ class AuthManager:
                     client_secret=settings.XCAMS_CLIENT_SECRET,
                 )
 
-        self.save_token(tokens["access_token"])
+        self.save_access_token(tokens["access_token"])
+        self.save_refresh_token(tokens["refresh_token"])
 
         return decode(tokens["id_token"], options={"verify_signature": False})
 
     def get_galaxy_api_key(self):
         if self.oauth_state.galaxy_api_key == "":
+            access_token = self.get_token()
             response = requests_get(
                 f"{settings.GALAXY_URL}{settings.GALAXY_API_KEY_ENDPOINT}",
-                headers={"Authorization": f"Bearer {self.get_token()}"},
+                headers={"Authorization": f"Bearer {access_token}"},
             )
+
+            data = response.json()
+            if "err_msg" in data:
+                raise Exception(data["err_msg"])
+
             self.oauth_state.galaxy_api_key = response.json()["api_key"]
             self.oauth_state.save()
 
         return self.oauth_state.galaxy_api_key
 
     def get_token(self):
-        try:
-            # Refresh the token if necessary
-            match self.oauth_state.session_type:
-                case "ucams":
-                    self.ucams_session.get("")
-                case "xcams":
-                    self.xcams_session.get("")
-        except:
-            pass
+        match self.oauth_state.session_type:
+            case "ucams":
+                tokens = self.ucams_session.refresh_token(
+                    settings.UCAMS_TOKEN_URL,
+                    auth=HTTPBasicAuth(
+                        settings.UCAMS_CLIENT_ID, settings.UCAMS_CLIENT_SECRET
+                    ),
+                    refresh_token=self.oauth_state.refresh_token,
+                )
+            case "xcams":
+                tokens = self.xcams_session.refresh_token(
+                    settings.XCAMS_TOKEN_URL,
+                    auth=HTTPBasicAuth(
+                        settings.XCAMS_CLIENT_ID, settings.XCAMS_CLIENT_SECRET
+                    ),
+                    refresh_token=self.oauth_state.refresh_token,
+                )
+
+        self.save_access_token(tokens["access_token"])
+        self.save_refresh_token(tokens["refresh_token"])
 
         return self.oauth_state.access_token
 
@@ -121,6 +140,10 @@ class AuthManager:
     def get_xcams_auth_url(self):
         return self.xcams_session.authorization_url(settings.XCAMS_AUTH_URL)[0]
 
-    def save_token(self, token):
+    def save_access_token(self, token):
         self.oauth_state.access_token = token
+        self.oauth_state.save()
+
+    def save_refresh_token(self, token):
+        self.oauth_state.refresh_token = token
         self.oauth_state.save()

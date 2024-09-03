@@ -7,10 +7,16 @@ The history name to use for all jobs can be controlled via the GALAXY_HISTORY_NA
 """
 
 
+import logging
+
 from bioblend import galaxy
 from django.conf import settings
 
 from launcher_app.auth import AuthManager
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class GalaxyManager:
@@ -29,9 +35,13 @@ class GalaxyManager:
             self.galaxy_instance = galaxy.GalaxyInstance(
                 url=settings.GALAXY_URL, key=self.auth_manager.get_galaxy_api_key()
             )
-        except:
+        except Exception as e:
+            logger.error(f"Failed to connect to Galaxy: {e}")
+
             self.auth_manager.delete_galaxy_api_key()
             self.galaxy_instance = None
+
+            raise Exception(f"Failed to connect to Galaxy: {e}")
 
     def _get_history_id(self):
         histories = self.galaxy_instance.histories.get_histories(
