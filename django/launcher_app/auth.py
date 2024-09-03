@@ -5,6 +5,7 @@ The UCAMS/XCAMS OAuth providers must be configured via your .env file. See
 .env.sample for the available configuration options.
 """
 
+from cryptography.fernet import Fernet
 from django.conf import settings
 from django.contrib.auth import get_user_model, login
 from django.utils.crypto import get_random_string
@@ -95,7 +96,7 @@ class AuthManager:
 
     def get_galaxy_api_key(self):
         if self.oauth_state.galaxy_api_key == "":
-            access_token = self.get_token()
+            access_token = self.get_access_token()
             response = requests_get(
                 f"{settings.GALAXY_URL}{settings.GALAXY_API_KEY_ENDPOINT}",
                 headers={"Authorization": f"Bearer {access_token}"},
@@ -110,7 +111,7 @@ class AuthManager:
 
         return self.oauth_state.galaxy_api_key
 
-    def get_token(self):
+    def get_access_token(self):
         match self.oauth_state.session_type:
             case "ucams":
                 tokens = self.ucams_session.refresh_token(
@@ -118,7 +119,7 @@ class AuthManager:
                     auth=HTTPBasicAuth(
                         settings.UCAMS_CLIENT_ID, settings.UCAMS_CLIENT_SECRET
                     ),
-                    refresh_token=self.oauth_state.refresh_token,
+                    refresh_token=self.get_refresh_token(),
                 )
             case "xcams":
                 tokens = self.xcams_session.refresh_token(
@@ -126,13 +127,20 @@ class AuthManager:
                     auth=HTTPBasicAuth(
                         settings.XCAMS_CLIENT_ID, settings.XCAMS_CLIENT_SECRET
                     ),
-                    refresh_token=self.oauth_state.refresh_token,
+                    refresh_token=self.get_refresh_token(),
                 )
 
         self.save_access_token(tokens["access_token"])
         self.save_refresh_token(tokens["refresh_token"])
 
         return self.oauth_state.access_token
+
+    def get_refresh_token(self):
+        return (
+            Fernet(settings.REFRESH_TOKEN_KEY)
+            .decrypt(self.oauth_state.refresh_token.encode())
+            .decode()
+        )
 
     def get_ucams_auth_url(self):
         return self.ucams_session.authorization_url(settings.UCAMS_AUTH_URL)[0]
@@ -145,5 +153,7 @@ class AuthManager:
         self.oauth_state.save()
 
     def save_refresh_token(self, token):
-        self.oauth_state.refresh_token = token
+        self.oauth_state.refresh_token = (
+            Fernet(settings.REFRESH_TOKEN_KEY).encrypt(token.encode()).decode()
+        )
         self.oauth_state.save()
