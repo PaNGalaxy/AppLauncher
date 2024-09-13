@@ -13,7 +13,15 @@ from launcher_app.app.views.view_controller import ViewController
 # ---------------------------------------------------------
 # Engine class
 # ---------------------------------------------------------
-
+# server = get_server()
+# @server.controller.add("on_server_ready")
+# def create_port_file(wslink_server):
+#     var = 1
+#     pass
+#
+# @server.controller.add("on_server_exited")
+# def cleanup_port_file(wslink_server):
+#     pass
 
 @TrameApp()
 class App(ThemedApp):
@@ -38,6 +46,11 @@ class App(ThemedApp):
 
         self.view_controller = ViewController(self.server, self.vm, self.vuetify_config)
         self.create_ui()
+        # create port file to indicate to nginx that this port is open and ready for the user
+        try:
+            open(f"/opt/trame/session_ports/{self.port}", "a").close()
+        except Exception as e:
+            print(f"Error creating port file. {e}")
 
 
     @property

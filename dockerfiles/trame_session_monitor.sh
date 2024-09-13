@@ -8,7 +8,7 @@
 # Description:       <DESCRIPTION>
 ### END INIT INFO
 
-SCRIPT="python /opt/trame/trame_session_monitor.py"
+SCRIPT="python /opt/trame/trame_session_monitor.py --user trame-user --target /opt/trame/session_ports --watch /opt/trame/proxy-mapping.txt --refresh 30"
 RUNAS=root
 
 PIDFILE=/var/run/trame_session_monitor.pid

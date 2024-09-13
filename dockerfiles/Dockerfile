@@ -37,6 +37,7 @@ RUN chmod +x /etc/init.d/trame_session_monitor.sh
 RUN chown root /etc/init.d/trame_session_monitor.sh
 RUN chgrp root /etc/init.d/trame_session_monitor.sh
 RUN mkdir /opt/trame/session_ports
+RUN chmod 777 /opt/trame/session_ports
 
 # credentials for a dummy Google project. Non-sensitive so I can commit them
 ENV TRAME_UCAMS_AUTH_URL="https://accounts.google.com/o/oauth2/v2/auth"

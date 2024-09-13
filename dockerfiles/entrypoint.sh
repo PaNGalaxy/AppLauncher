@@ -19,6 +19,8 @@ else
   # Start the server
   /opt/trame/runtime_patch.sh
   service nginx restart
+  # Should put this somewhere else eventually
+  python -m pip install psutil watchdog
   service trame_session_monitor.sh start
   echo "Starting server..."
   gosu trame-user /opt/trame/run.sh
