@@ -3,7 +3,7 @@ stages:
 
 variables:
   GIT_STRATEGY: clone
-  IMAGE_NAME: ${CI_REGISTRY_IMAGE}
+  IMAGE_NAME: ${NDIP_DOCKER_REPOSITORY}/${CI_PROJECT_PATH}
 
 before_script:
   - curl https://code.ornl.gov/rse-deployment/rse-sharables/raw/master/rse-bash-modules.sh -O
@@ -25,8 +25,8 @@ build-image:
   when: manual
   script:
     - docker build -f dockerfiles/Dockerfile -t image .
-    - docker tag image ${IMAGE_NAME}:$CI_COMMIT_SHORT_SHA
-    - docker push ${IMAGE_NAME}:$CI_COMMIT_SHORT_SHA
+    - docker tag image ${IMAGE_NAME}:build-$CI_COMMIT_SHORT_SHA
+    - docker push ${IMAGE_NAME}:build-$CI_COMMIT_SHORT_SHA
     - >
       if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ] || [ "$FORCE_TAGS" == "true" ]; then
         docker tag image ${IMAGE_NAME}:latest
